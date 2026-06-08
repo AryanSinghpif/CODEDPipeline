@@ -17,272 +17,478 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ── CSS ────────────────────────────────────────────────────────────────────────
+# ── Design System ──────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --red:      #C8102E;
+  --red-hi:   #E0142F;
+  --red-dim:  rgba(200,16,46,0.12);
+  --red-rim:  rgba(200,16,46,0.28);
+  --white:    #F2EDE8;
+  --white2:   #C8C0BC;
+  --bg:       #080808;
+  --surf:     #0E0E0E;
+  --card:     #111111;
+  --border:   #1C1C1C;
+  --muted:    #484848;
+  --mono:     'JetBrains Mono', monospace;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body, [class*="css"], .stApp {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: 'Space Grotesk', -apple-system, sans-serif !important;
+  background: var(--bg) !important;
+  color: var(--white) !important;
 }
 
-/* Hide Streamlit chrome */
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer, header { visibility: hidden !important; }
 
-/* Main container */
 .block-container {
-    padding: 3rem 4rem 5rem !important;
-    max-width: 1080px !important;
+  padding: 0 80px 80px !important;
+  max-width: 100% !important;
 }
 
-/* ── Hero ── */
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 5px 14px;
-    background: rgba(79, 126, 247, 0.10);
-    border: 1px solid rgba(79, 126, 247, 0.25);
-    border-radius: 100px;
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #4f7ef7;
-    margin-bottom: 20px;
+/* ── Hero band ── */
+.hero {
+  margin-left: -80px;
+  margin-right: -80px;
+  padding: 72px 80px 60px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(200,16,46,0.06) 0%, transparent 70%),
+    var(--bg);
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 13px 5px 10px;
+  border: 1px solid var(--red-rim);
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 28px;
+}
+
+.hero-eyebrow-dot {
+  width: 6px; height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
 .hero-title {
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: -2px;
-    line-height: 1.1;
-    background: linear-gradient(135deg, #ffffff 0%, #999 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 14px;
+  font-size: clamp(52px, 6vw, 80px);
+  font-weight: 700;
+  letter-spacing: -3px;
+  line-height: 0.95;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.hero-title-red {
+  color: var(--red);
+  display: block;
+}
+
+.hero-divline {
+  width: 48px;
+  height: 2px;
+  background: var(--red);
+  margin: 22px 0;
 }
 
 .hero-sub {
-    font-size: 15px;
-    color: #777;
-    line-height: 1.65;
-    max-width: 480px;
-    margin-bottom: 28px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 420px;
+  margin-bottom: 40px;
 }
 
 /* ── Pipeline steps ── */
-.pipeline {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
+.pipeline-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
 }
 
-.p-step {
-    padding: 5px 13px;
-    background: #111;
-    border: 1px solid #1f1f1f;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #888;
+.p-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: var(--card);
 }
 
-.p-step.active { color: #4f7ef7; border-color: rgba(79,126,247,0.3); background: rgba(79,126,247,0.06); }
-.p-step.done   { color: #22c55e; border-color: rgba(34,197,94,0.3);  background: rgba(34,197,94,0.05);  }
+.p-node:first-child { border-radius: 4px 0 0 4px; }
+.p-node:last-child  { border-radius: 0 4px 4px 0; }
 
-.p-arrow { color: #2a2a2a; font-size: 14px; font-weight: 300; }
+.p-node.done {
+  color: var(--red);
+  border-color: var(--red-rim);
+  background: var(--red-dim);
+}
 
-/* ── Upload zone ── */
+.p-sep {
+  width: 1px;
+  height: 100%;
+  background: var(--border);
+}
+
+.p-connector {
+  width: 20px;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Main content area ── */
+.content {
+  padding: 0 80px 80px;
+  max-width: 1240px;
+}
+
+/* ── Upload section ── */
+.upload-section {
+  padding: 48px 0 32px;
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
 [data-testid="stFileUploader"] {
-    border: 2px dashed #1e1e1e !important;
-    border-radius: 14px !important;
-    background: #0c0c0c !important;
-    transition: border-color 0.2s !important;
-    padding: 4px !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-left: 3px solid var(--red) !important;
+  border-radius: 0 6px 6px 0 !important;
+  transition: border-color 0.2s, background 0.2s !important;
 }
 
 [data-testid="stFileUploader"]:hover {
-    border-color: rgba(79,126,247,0.5) !important;
+  background: #141414 !important;
+  border-color: var(--red-rim) !important;
+  border-left-color: var(--red) !important;
 }
 
 [data-testid="stFileUploaderDropzone"] {
-    padding: 28px 24px !important;
-    background: transparent !important;
-    border: none !important;
+  padding: 32px 28px !important;
+  background: transparent !important;
+  border: none !important;
 }
 
+[data-testid="stFileUploaderDropzoneInstructions"] p,
 section[data-testid="stFileUploaderDropzone"] p {
-    color: #555 !important;
-    font-size: 13px !important;
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
 }
 
-/* ── Info box ── */
-[data-testid="stInfo"] {
-    background: rgba(79,126,247,0.05) !important;
-    border: 1px solid rgba(79,126,247,0.15) !important;
-    border-radius: 10px !important;
-    font-size: 13px !important;
-    color: #888 !important;
+/* ── Notes ── */
+.note {
+  margin-top: 14px;
+  padding: 14px 18px 14px 20px;
+  border-left: 2px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
 }
 
-/* ── Progress bar ── */
-[data-testid="stProgressBar"] > div { border-radius: 4px !important; overflow: hidden; }
+.note strong { color: #777; font-weight: 600; }
+
+/* ── Progress ── */
+[data-testid="stProgressBar"] > div {
+  background: #1a1a1a !important;
+  border-radius: 1px !important;
+  height: 2px !important;
+}
+
 [data-testid="stProgressBar"] > div > div {
-    background: linear-gradient(90deg, #4f7ef7 0%, #7c3aed 100%) !important;
-    border-radius: 4px !important;
-    transition: width 0.4s ease !important;
+  background: var(--red) !important;
+  border-radius: 1px !important;
+  transition: width 0.5s ease !important;
+}
+
+[data-testid="stProgressBar"] p,
+div[data-testid="stProgressBar"] + div {
+  font-family: var(--mono) !important;
+  font-size: 11px !important;
+  color: var(--muted) !important;
+}
+
+/* ── Stat cards ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 40px 0;
+}
+
+.stat-card {
+  padding: 28px 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 2px solid;
+  border-radius: 4px;
+}
+
+.stat-card.total  { border-top-color: var(--border); }
+.stat-card.ok     { border-top-color: var(--red); }
+.stat-card.fail   { border-top-color: #333; }
+.stat-card.fail.nonzero { border-top-color: var(--red); }
+
+.stat-num {
+  font-size: 3.6rem;
+  font-weight: 700;
+  letter-spacing: -3px;
+  line-height: 1;
+  font-family: var(--mono);
+}
+
+.stat-card.total .stat-num  { color: var(--white2); }
+.stat-card.ok    .stat-num  { color: var(--red); }
+.stat-card.fail  .stat-num  { color: var(--muted); }
+.stat-card.fail.nonzero .stat-num { color: var(--red); }
+
+.stat-rule {
+  width: 24px;
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0 12px;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: #333;
+  margin-top: 4px;
+  font-family: var(--mono);
+}
+
+/* ── Section header ── */
+.sect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sect-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sect-name {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sect-count {
+  padding: 2px 9px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-rim);
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--red);
+  font-family: var(--mono);
+}
+
+/* ── Table ── */
+[data-testid="stDataFrame"] {
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
 }
 
 /* ── Download buttons ── */
 [data-testid="stDownloadButton"] button {
-    background: #4f7ef7 !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    padding: 9px 18px !important;
-    letter-spacing: 0.1px !important;
-    transition: opacity 0.15s, transform 0.1s !important;
-    box-shadow: 0 2px 12px rgba(79,126,247,0.25) !important;
+  background: var(--red) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 3px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.8px !important;
+  padding: 10px 20px !important;
+  transition: background 0.15s, transform 0.1s !important;
+  font-family: 'Space Grotesk', sans-serif !important;
 }
 
 [data-testid="stDownloadButton"] button:hover {
-    opacity: 0.88 !important;
-    transform: translateY(-1px) !important;
-}
-
-/* ── Dataframe ── */
-[data-testid="stDataFrame"] {
-    border-radius: 10px !important;
-    overflow: hidden !important;
-    border: 1px solid #1a1a1a !important;
-}
-
-/* ── Select box ── */
-[data-testid="stSelectbox"] > div > div {
-    background: #0f0f0f !important;
-    border: 1px solid #222 !important;
-    border-radius: 8px !important;
-    color: #ccc !important;
-    font-size: 13px !important;
+  background: var(--red-hi) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* ── Text input ── */
 [data-testid="stTextInput"] input {
-    background: #0f0f0f !important;
-    border: 1px solid #222 !important;
-    border-radius: 8px !important;
-    color: #ccc !important;
-    font-size: 13px !important;
-    padding: 9px 14px !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 3px !important;
+  color: var(--white) !important;
+  font-size: 13px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  padding: 10px 14px !important;
 }
 
 [data-testid="stTextInput"] input:focus {
-    border-color: rgba(79,126,247,0.5) !important;
-    box-shadow: 0 0 0 3px rgba(79,126,247,0.08) !important;
+  border-color: var(--red-rim) !important;
+  box-shadow: 0 0 0 3px rgba(200,16,46,0.06) !important;
+  outline: none !important;
 }
 
-/* ── Expander ── */
-[data-testid="stExpander"] {
-    background: #0f0f0f !important;
-    border: 1px solid #1a1a1a !important;
-    border-radius: 10px !important;
-}
+[data-testid="stTextInput"] input::placeholder { color: var(--muted) !important; }
 
-/* ── Divider ── */
-hr {
-    border: none !important;
-    border-top: 1px solid #1a1a1a !important;
-    margin: 28px 0 !important;
+/* ── Selectbox ── */
+[data-testid="stSelectbox"] > div > div {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 3px !important;
+  color: var(--white) !important;
+  font-size: 13px !important;
 }
 
 /* ── Spinner ── */
-[data-testid="stSpinner"] { color: #4f7ef7 !important; }
+[data-testid="stSpinner"] > div { border-top-color: var(--red) !important; }
+
+/* ── Expander ── */
+[data-testid="stExpander"] {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-left: 3px solid var(--red) !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+
+/* ── HR ── */
+hr {
+  border: none !important;
+  border-top: 1px solid var(--border) !important;
+  margin: 36px 0 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
-def stat_card(label, value, color="#e0e0e0", sublabel=None):
-    sub = f'<div style="font-size:11px;color:#444;margin-top:4px">{sublabel}</div>' if sublabel else ""
+def stat_card(cls, value, label, sub=""):
+    sub_html = f'<div class="stat-sub">{sub}</div>' if sub else ""
     return f"""
-    <div style="
-        background:#0f0f0f;
-        border:1px solid #1a1a1a;
-        border-top:2px solid {color};
-        border-radius:12px;
-        padding:22px 24px;
-    ">
-        <div style="font-size:2.6rem;font-weight:800;letter-spacing:-2px;color:{color};line-height:1">{value}</div>
-        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:#444;margin-top:8px">{label}</div>
-        {sub}
-    </div>
-    """
+    <div class="stat-card {cls}">
+        <div class="stat-num">{value}</div>
+        <div class="stat-rule"></div>
+        <div class="stat-label">{label}</div>
+        {sub_html}
+    </div>"""
 
 
-def section_label(title, count=None):
-    badge = ""
-    if count is not None:
-        badge = f"""<span style="
-            display:inline-flex;align-items:center;justify-content:center;
-            min-width:22px;height:22px;padding:0 7px;
-            background:rgba(79,126,247,0.10);border:1px solid rgba(79,126,247,0.22);
-            border-radius:100px;font-size:11px;font-weight:700;color:#4f7ef7;
-            margin-left:8px">{count}</span>"""
+def sect_header(name, count=None):
+    badge = f'<span class="sect-count">{count}</span>' if count is not None else ""
     return f"""
-    <div style="display:flex;align-items:center;margin-bottom:14px">
-        <span style="font-size:11px;font-weight:700;text-transform:uppercase;
-            letter-spacing:0.9px;color:#444">{title}</span>{badge}
-    </div>
-    """
+    <div class="sect">
+        <div class="sect-title">
+            <span class="sect-name">{name}</span>
+            {badge}
+        </div>
+    </div>"""
 
 
 # ── Hero ───────────────────────────────────────────────────────────────────────
 
 st.markdown("""
-<div class="hero-badge">⬡ &nbsp;PDF Extraction Pipeline</div>
-<div class="hero-title">CODEDPipeline</div>
-<div class="hero-sub">Upload a government statistical report — the pipeline finds every table, cleans it, and hands you clean CSVs.</div>
-<div class="pipeline">
-    <div class="p-step">PDF</div>
-    <div class="p-arrow">›</div>
-    <div class="p-step">Camelot Extract</div>
-    <div class="p-arrow">›</div>
-    <div class="p-step">Clean + Dedupe</div>
-    <div class="p-arrow">›</div>
-    <div class="p-step">Detect Headers</div>
-    <div class="p-arrow">›</div>
-    <div class="p-step">Validate</div>
-    <div class="p-arrow">›</div>
-    <div class="p-step done">CSV Export</div>
+<div class="hero">
+    <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        District Extraction Engine
+    </div>
+    <div class="hero-title">
+        CODED
+        <span class="hero-title-red">Pipeline</span>
+    </div>
+    <div class="hero-divline"></div>
+    <div class="hero-sub">
+        Upload a government statistical report.
+        The pipeline finds every table, cleans it,
+        and hands you structured CSVs — ready to analyse.
+    </div>
+    <div class="pipeline-row">
+        <div class="p-node">PDF</div>
+        <div class="p-connector"></div>
+        <div class="p-node">Camelot Extract</div>
+        <div class="p-connector"></div>
+        <div class="p-node">Clean + Dedupe</div>
+        <div class="p-connector"></div>
+        <div class="p-node">Header Detection</div>
+        <div class="p-connector"></div>
+        <div class="p-node">Validate</div>
+        <div class="p-connector"></div>
+        <div class="p-node done">&#10003; &nbsp;CSV Export</div>
+    </div>
 </div>
+<div class="content">
 """, unsafe_allow_html=True)
 
 # ── Upload ─────────────────────────────────────────────────────────────────────
 
+st.markdown('<div class="upload-section"><div class="section-label">Input</div>', unsafe_allow_html=True)
+
 uploaded = st.file_uploader(
-    "Drop your PDF here, or click to browse",
+    "Drop PDF here or click to browse",
     type=["pdf"],
-    label_visibility="visible",
+    label_visibility="collapsed",
 )
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 if uploaded is None:
     st.markdown("""
-    <div style="margin-top:16px;padding:14px 18px;background:#0c0c0c;border:1px solid #1a1a1a;
-        border-radius:10px;font-size:13px;color:#555;line-height:1.7">
-        <strong style="color:#777">Supported:</strong> Bordered / lattice tables — DES district statistical reports, census data, government annexures.<br>
-        <strong style="color:#777">Not supported:</strong> Scanned PDFs or stream-style tables without visible borders.
+    <div class="note">
+        <strong>Supported</strong> — Bordered / lattice tables: DES district reports, census annexures, government statistical publications.<br>
+        <strong>Not supported</strong> — Scanned PDFs, image-only files, or stream-style tables without visible cell borders.
+    </div>
     </div>
     """, unsafe_allow_html=True)
     st.stop()
 
-# ── Pipeline ───────────────────────────────────────────────────────────────────
+# ── Run pipeline ───────────────────────────────────────────────────────────────
 
 with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
     tmp.write(uploaded.getvalue())
@@ -294,7 +500,7 @@ try:
         tables = extract_tables(pdf_path)
 
     if not tables:
-        st.error("No tables found. The PDF must contain bordered (lattice) tables.")
+        st.error("No tables found. PDF must contain bordered (lattice) tables.")
         st.stop()
 
     from backend.app.cleaning.header_builder import apply_headers
@@ -305,42 +511,41 @@ try:
     from backend.app.standardization.table_name_extractor import extract_table_name
     from backend.app.validation.table_validator import validate_table
 
-    prog = st.progress(0, text=f"Processing 0 / {len(tables)} tables…")
+    prog = st.progress(0, text=f"0 / {len(tables)}")
     catalog, failed, table_dfs = [], [], {}
 
-    for i, table in enumerate(tables):
+    for i, t in enumerate(tables):
         prog.progress(
             (i + 1) / len(tables),
-            text=f"Table {table['table_id']} / {len(tables)}  ·  page {table['page']}",
+            text=f"{i+1} / {len(tables)}  ·  table {t['table_id']}  ·  p.{t['page']}",
         )
         try:
             with redirect_stdout(io.StringIO()):
-                df = clean_dataframe(table["dataframe"])
-                h  = detect_header_rows(df)
-                nm = extract_table_name(df, h)
-                df = apply_headers(df, h)
-                df = clean_headers(df)
-            status = validate_table(df)
-            if status["passed"]:
-                catalog.append(build_metadata(table["table_id"], nm, table["page"], df))
-                table_dfs[table["table_id"]] = df
+                df  = clean_dataframe(t["dataframe"])
+                h   = detect_header_rows(df)
+                nm  = extract_table_name(df, h)
+                df  = apply_headers(df, h)
+                df  = clean_headers(df)
+            s = validate_table(df)
+            if s["passed"]:
+                catalog.append(build_metadata(t["table_id"], nm, t["page"], df))
+                table_dfs[t["table_id"]] = df
             else:
-                failed.append({"table": table["table_id"], "page": table["page"], "reason": status["reason"]})
+                failed.append({"table": t["table_id"], "page": t["page"], "reason": s["reason"]})
         except Exception as e:
-            failed.append({"table": table["table_id"], "page": table["page"], "reason": str(e)})
+            failed.append({"table": t["table_id"], "page": t["page"], "reason": str(e)})
 
     prog.empty()
 
     # ── Stats ──────────────────────────────────────────────────────────────────
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown(stat_card("Total Tables", len(tables), "#888"), unsafe_allow_html=True)
-    with c2:
-        st.markdown(stat_card("Extracted", len(catalog), "#22c55e"), unsafe_allow_html=True)
-    with c3:
-        clr = "#f87171" if failed else "#22c55e"
-        st.markdown(stat_card("Failed", len(failed), clr), unsafe_allow_html=True)
+    fail_cls = "fail nonzero" if failed else "fail"
+    st.markdown(f"""
+    <div class="stats-row">
+        {stat_card("total", len(tables),  "Total Tables",  f"{uploaded.name}")}
+        {stat_card("ok",    len(catalog), "Extracted",     f"{round(len(catalog)/len(tables)*100)}% success rate")}
+        {stat_card(fail_cls, len(failed), "Failed",        "validation" if failed else "clean run")}
+    </div>
+    """, unsafe_allow_html=True)
 
     if not catalog:
         st.warning("All tables failed validation.")
@@ -354,27 +559,24 @@ try:
         zf.writestr("table_catalog.csv", pd.DataFrame(catalog).to_csv(index=False))
     zip_buf.seek(0)
 
+    # ── Catalog ────────────────────────────────────────────────────────────────
     st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown(sect_header("Extracted Tables", len(catalog)), unsafe_allow_html=True)
 
-    # ── Catalog header row ─────────────────────────────────────────────────────
     lc, rc = st.columns([5, 1])
     with lc:
-        st.markdown(section_label("Extracted Tables", len(catalog)), unsafe_allow_html=True)
+        search = st.text_input(
+            "s", placeholder="Search by name or table ID…",
+            label_visibility="collapsed",
+        )
     with rc:
         st.download_button(
-            "⬇ All CSVs",
+            "↓ All CSVs",
             zip_buf,
             file_name=f"{uploaded.name.replace('.pdf','')}_tables.zip",
             mime="application/zip",
             use_container_width=True,
         )
-
-    # ── Search ─────────────────────────────────────────────────────────────────
-    search = st.text_input(
-        "search",
-        placeholder="🔍  Filter by table name or ID…",
-        label_visibility="collapsed",
-    )
 
     catalog_df = pd.DataFrame(catalog)
     if search:
@@ -399,41 +601,37 @@ try:
 
     # ── Preview ────────────────────────────────────────────────────────────────
     st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown(section_label("Preview & Download"), unsafe_allow_html=True)
+    st.markdown(sect_header("Preview & Download"), unsafe_allow_html=True)
 
     options = {
-        f"#{r.table_id}  ·  {r.table_name}  (p. {r.page})": r.table_id
+        f"#{r.table_id}  ·  {r.table_name}  ·  p.{r.page}": r.table_id
         for r in pd.DataFrame(catalog).itertuples()
     }
-    selected = st.selectbox("table", list(options.keys()), label_visibility="collapsed")
+    sel = st.selectbox("t", list(options.keys()), label_visibility="collapsed")
 
-    if selected:
-        tid = options[selected]
-        df_preview = table_dfs[tid]
-
+    if sel:
+        tid     = options[sel]
+        df_prev = table_dfs[tid]
         st.markdown(
-            f'<div style="font-size:11px;color:#444;margin-bottom:8px">'
-            f'{len(df_preview)} rows · {len(df_preview.columns)} columns</div>',
+            f'<div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-family:var(--mono)">'
+            f'{len(df_prev)} rows &nbsp;·&nbsp; {len(df_prev.columns)} columns</div>',
             unsafe_allow_html=True,
         )
-        st.dataframe(df_preview, use_container_width=True, hide_index=True)
-
+        st.dataframe(df_prev, use_container_width=True, hide_index=True)
         st.download_button(
-            f"⬇  Download table_{tid}.csv",
-            df_preview.to_csv(index=False),
+            f"↓ table_{tid}.csv",
+            df_prev.to_csv(index=False),
             file_name=f"table_{tid}.csv",
             mime="text/csv",
         )
 
     # ── Failed ─────────────────────────────────────────────────────────────────
     if failed:
-        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-        with st.expander(f"⚠  {len(failed)} tables failed validation", expanded=False):
-            st.dataframe(
-                pd.DataFrame(failed),
-                use_container_width=True,
-                hide_index=True,
-            )
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+        with st.expander(f"{len(failed)} tables failed validation", expanded=False):
+            st.dataframe(pd.DataFrame(failed), use_container_width=True, hide_index=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 finally:
     os.unlink(pdf_path)

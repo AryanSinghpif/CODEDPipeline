@@ -1,0 +1,41 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Data — generated outputs and uploads
+backend/data/uploads/
+backend/data/jobs/
+backend/data/exports/csv/
+backend/data/exports/failed_tables.csv
+backend/data/exports/table_catalog.csv
+
+# Keep the exports folder itself
+!backend/data/exports/.gitkeep
+!backend/data/uploads/.gitkeep
+!backend/data/jobs/.gitkeep
+
+# PDFs — too large for git
+*.pdf
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+.claude/
+backend_files.txt
+project_tree.txt

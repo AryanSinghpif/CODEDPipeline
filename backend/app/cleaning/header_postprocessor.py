@@ -1,0 +1,108 @@
+import re
+
+VOWELS = set("aeiou")
+
+KEEP_WORDS = {
+    # geography / administration
+    "district", "urban", "rural", "total", "number", "percentage",
+    "density", "growth", "rate", "per", "capita", "census", "table",
+    # demographics
+    "population", "male", "males", "female", "females",
+    "scheduled", "caste", "tribe", "household",
+    # education / literacy
+    "literacy", "education", "school", "students", "teachers",
+    "primary", "middle", "high", "higher", "secondary",
+    # agriculture
+    "agriculture", "area", "forest", "cropping", "intensity",
+    "gross", "net", "sown", "irrigated", "production", "yield",
+    "crop", "food", "grain", "wheat", "rice", "soybean", "soyabean",
+    "hect", "hectare",
+    # banking / finance
+    "banking", "bank", "banks", "loan", "credit", "deposit", "deposite",
+    "branches", "branch", "commercial", "cooperative", "schedule",
+    "receipts", "revenue", "sales", "tax", "excise", "lakh", "crore",
+    # labour / employment
+    "work", "worker", "cultivator", "labourers", "employment", "placement",
+    # health
+    "medical", "health", "hospital", "beds", "allopathic", "institution",
+    "institutions",
+}
+
+
+def _vowel_ratio(word):
+    if not word:
+        return 0
+    return sum(1 for c in word if c in VOWELS) / len(word)
+
+
+def clean_column_name(col):
+
+    col_str = str(col).lower()
+
+    # preserve standalone year patterns
+    if re.fullmatch(r"\d{4}[_\-]\d{2}", col_str):
+        return col_str.replace("-", "_")
+
+    years = re.findall(r"\d{4}[_\-]\d{2}", col_str)
+
+    words = re.findall(r"[a-z]+", col_str)
+
+    # filter: must have vowel and length >= 3
+    english_words = [
+        w for w in words
+        if len(w) >= 3 and any(c in VOWELS for c in w)
+    ]
+
+    # prefer KEEP_WORDS matches
+    keep = [w for w in english_words if w in KEEP_WORDS]
+
+    if keep:
+        parts = list(dict.fromkeys(keep))
+    elif english_words:
+        # no vocab match — keep words with vowel ratio >= 30%
+        plausible = [
+            w for w in english_words
+            if _vowel_ratio(w) >= 0.30
+        ]
+        parts = list(dict.fromkeys(plausible))
+    else:
+        parts = []
+
+    if years:
+        for y in years:
+            y_clean = y.replace("-", "_")
+            if y_clean not in parts:
+                parts.append(y_clean)
+
+    if not parts:
+        return None
+
+    return "_".join(parts)
+
+
+def clean_headers(df):
+
+    new_cols = []
+    for i, col in enumerate(df.columns):
+        cleaned = clean_column_name(col)
+        if cleaned is None:
+            cleaned = f"col_{i}"
+        new_cols.append(cleaned)
+
+    df.columns = new_cols
+
+    if "district" in df.columns:
+
+        cols = list(df.columns)
+
+        if len(cols) > 2:
+
+            possible_hindi_col = cols[1]
+
+            if possible_hindi_col != "district":
+
+                df = df.drop(
+                    columns=[possible_hindi_col]
+                )
+
+    return df

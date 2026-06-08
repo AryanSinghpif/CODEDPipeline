@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-const API = ''
+const API = import.meta.env.VITE_API_URL || ''
 
 export default function App() {
   const [stage, setStage] = useState('upload')

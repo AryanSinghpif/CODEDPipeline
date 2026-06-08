@@ -24,16 +24,17 @@ st.markdown("""
 
 :root {
   --red:      #C8102E;
-  --red-hi:   #E0142F;
-  --red-dim:  rgba(200,16,46,0.12);
-  --red-rim:  rgba(200,16,46,0.28);
-  --white:    #F2EDE8;
-  --white2:   #C8C0BC;
-  --bg:       #080808;
-  --surf:     #0E0E0E;
-  --card:     #111111;
-  --border:   #1C1C1C;
-  --muted:    #484848;
+  --red-hi:   #A80D25;
+  --red-dim:  rgba(200,16,46,0.07);
+  --red-rim:  rgba(200,16,46,0.22);
+  --text:     #1A1210;
+  --text2:    #5C5450;
+  --bg:       #F5F0EB;
+  --surf:     #FAF7F4;
+  --card:     #FFFFFF;
+  --border:   #E2D9D0;
+  --border2:  #EDE6DF;
+  --muted:    #9A908A;
   --mono:     'JetBrains Mono', monospace;
 }
 
@@ -43,7 +44,7 @@ st.markdown("""
 html, body, [class*="css"], .stApp {
   font-family: 'Space Grotesk', -apple-system, sans-serif !important;
   background: var(--bg) !important;
-  color: var(--white) !important;
+  color: var(--text) !important;
 }
 
 #MainMenu, footer, header { visibility: hidden !important; }
@@ -60,8 +61,8 @@ html, body, [class*="css"], .stApp {
   padding: 72px 80px 60px;
   border-bottom: 1px solid var(--border);
   background:
-    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(200,16,46,0.06) 0%, transparent 70%),
-    var(--bg);
+    radial-gradient(ellipse 55% 50% at 85% 50%, rgba(200,16,46,0.05) 0%, transparent 65%),
+    var(--surf);
 }
 
 .hero-eyebrow {
@@ -96,7 +97,7 @@ html, body, [class*="css"], .stApp {
   font-weight: 700;
   letter-spacing: -3px;
   line-height: 0.95;
-  color: var(--white);
+  color: var(--text);
   margin-bottom: 6px;
 }
 
@@ -115,7 +116,7 @@ html, body, [class*="css"], .stApp {
 .hero-sub {
   font-size: 15px;
   font-weight: 400;
-  color: var(--muted);
+  color: var(--text2);
   line-height: 1.65;
   max-width: 420px;
   margin-bottom: 40px;
@@ -136,7 +137,7 @@ html, body, [class*="css"], .stApp {
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.3px;
-  color: var(--muted);
+  color: var(--text2);
   border: 1px solid var(--border);
   background: var(--card);
 }
@@ -188,10 +189,11 @@ html, body, [class*="css"], .stApp {
   border-left: 3px solid var(--red) !important;
   border-radius: 0 6px 6px 0 !important;
   transition: border-color 0.2s, background 0.2s !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
 }
 
 [data-testid="stFileUploader"]:hover {
-  background: #141414 !important;
+  background: #FDFAF8 !important;
   border-color: var(--red-rim) !important;
   border-left-color: var(--red) !important;
 }
@@ -214,12 +216,14 @@ section[data-testid="stFileUploaderDropzone"] p {
   margin-top: 14px;
   padding: 14px 18px 14px 20px;
   border-left: 2px solid var(--border);
+  background: var(--card);
+  border-radius: 0 4px 4px 0;
   font-size: 12px;
   color: var(--muted);
   line-height: 1.7;
 }
 
-.note strong { color: #777; font-weight: 600; }
+.note strong { color: var(--text2); font-weight: 600; }
 
 /* ── Progress ── */
 [data-testid="stProgressBar"] > div {
@@ -252,14 +256,15 @@ div[data-testid="stProgressBar"] + div {
 .stat-card {
   padding: 28px 24px;
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border2);
   border-top: 2px solid;
   border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
 .stat-card.total  { border-top-color: var(--border); }
 .stat-card.ok     { border-top-color: var(--red); }
-.stat-card.fail   { border-top-color: #333; }
+.stat-card.fail   { border-top-color: var(--border); }
 .stat-card.fail.nonzero { border-top-color: var(--red); }
 
 .stat-num {
@@ -270,7 +275,7 @@ div[data-testid="stProgressBar"] + div {
   font-family: var(--mono);
 }
 
-.stat-card.total .stat-num  { color: var(--white2); }
+.stat-card.total .stat-num  { color: var(--text2); }
 .stat-card.ok    .stat-num  { color: var(--red); }
 .stat-card.fail  .stat-num  { color: var(--muted); }
 .stat-card.fail.nonzero .stat-num { color: var(--red); }
@@ -292,7 +297,7 @@ div[data-testid="stProgressBar"] + div {
 
 .stat-sub {
   font-size: 11px;
-  color: #333;
+  color: var(--muted);
   margin-top: 4px;
   font-family: var(--mono);
 }
@@ -332,11 +337,22 @@ div[data-testid="stProgressBar"] + div {
   font-family: var(--mono);
 }
 
+/* ── Section label ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
 /* ── Table ── */
 [data-testid="stDataFrame"] {
-  border: 1px solid var(--border) !important;
+  border: 1px solid var(--border2) !important;
   border-radius: 4px !important;
   overflow: hidden !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
 }
 
 /* ── Download buttons ── */
@@ -351,6 +367,7 @@ div[data-testid="stProgressBar"] + div {
   padding: 10px 20px !important;
   transition: background 0.15s, transform 0.1s !important;
   font-family: 'Space Grotesk', sans-serif !important;
+  box-shadow: 0 2px 8px rgba(200,16,46,0.18) !important;
 }
 
 [data-testid="stDownloadButton"] button:hover {
@@ -363,7 +380,7 @@ div[data-testid="stProgressBar"] + div {
   background: var(--card) !important;
   border: 1px solid var(--border) !important;
   border-radius: 3px !important;
-  color: var(--white) !important;
+  color: var(--text) !important;
   font-size: 13px !important;
   font-family: 'Space Grotesk', sans-serif !important;
   padding: 10px 14px !important;
@@ -382,7 +399,7 @@ div[data-testid="stProgressBar"] + div {
   background: var(--card) !important;
   border: 1px solid var(--border) !important;
   border-radius: 3px !important;
-  color: var(--white) !important;
+  color: var(--text) !important;
   font-size: 13px !important;
 }
 
@@ -392,7 +409,7 @@ div[data-testid="stProgressBar"] + div {
 /* ── Expander ── */
 [data-testid="stExpander"] {
   background: var(--card) !important;
-  border: 1px solid var(--border) !important;
+  border: 1px solid var(--border2) !important;
   border-left: 3px solid var(--red) !important;
   border-radius: 0 4px 4px 0 !important;
 }
@@ -400,7 +417,7 @@ div[data-testid="stProgressBar"] + div {
 /* ── HR ── */
 hr {
   border: none !important;
-  border-top: 1px solid var(--border) !important;
+  border-top: 1px solid var(--border2) !important;
   margin: 36px 0 !important;
 }
 </style>
@@ -613,7 +630,7 @@ try:
         tid     = options[sel]
         df_prev = table_dfs[tid]
         st.markdown(
-            f'<div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-family:var(--mono)">'
+            f'<div style="font-size:11px;color:#9A908A;margin-bottom:10px;font-family:JetBrains Mono,monospace">'
             f'{len(df_prev)} rows &nbsp;·&nbsp; {len(df_prev.columns)} columns</div>',
             unsafe_allow_html=True,
         )

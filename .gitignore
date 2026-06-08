@@ -39,3 +39,4 @@ frontend/.vite/
 .claude/
 backend_files.txt
 project_tree.txt
+.vercel

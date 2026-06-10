@@ -1,5 +1,6 @@
 import io
 import os
+import time
 import tempfile
 import warnings
 import zipfile
@@ -225,6 +226,7 @@ div[data-testid="stFileUploader"] section button {
 div[data-testid="stDataFrame"] {
   border: 1px solid rgba(148,184,242,0.25); border-radius: 8px;
 }
+.stTabs { margin-top: 14px; }
 .stTabs [data-baseweb="tab-list"] {
   gap: 4px; background: transparent;
   border-bottom: 1px solid rgba(148,184,242,0.25);
@@ -480,15 +482,15 @@ gsap.to('#hint',{y:5,duration:1.1,repeat:-1,yoyo:true,ease:'sine.inOut'});
 INTERACTIVE_CUBE = """
 <style>
 html,body{margin:0;background:transparent;overflow:hidden}
-#wrap{width:100%;height:310px;display:flex;flex-direction:column;align-items:center;
+#wrap{width:100%;height:500px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none}
 #wrap:active{cursor:grabbing}
-#persp{perspective:900px}
+#persp{perspective:1100px;transform:scale(1.45)}
 #cube{position:relative;width:150px;height:150px;transform-style:preserve-3d}
 .cb{position:absolute;width:48px;height:48px;transform-style:preserve-3d}
 .f{position:absolute;width:46px;height:46px;border-radius:5px;border:1px solid #010d6e}
 #hint{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.24em;
-  text-transform:uppercase;color:#94b8f2;margin-top:30px}
+  text-transform:uppercase;color:#94b8f2;margin-top:64px}
 </style>
 <div id="wrap">
   <div id="persp"><div id="cube"></div></div>
@@ -543,6 +545,50 @@ def cube_pane(mode="solving", caption=""):
         f'<div class="cube-pane {cls}">{cube}'
         f'<div class="cube-shadow"></div></div>'
     )
+
+
+def status_anim(msg, sub, pct_prev, pct, eta=""):
+    """GSAP-animated progress: counts the percent up smoothly and
+    tweens the bar between updates; shows estimated time remaining."""
+    eta_html = f" &nbsp;&middot;&nbsp; ~{eta} left" if eta else ""
+    return f"""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Space+Mono&display=swap');
+html,body{{margin:0;background:transparent;overflow:hidden}}
+#wrap{{max-width:660px;font-family:'Space Mono',monospace}}
+#row{{display:flex;align-items:baseline;justify-content:space-between}}
+#msg{{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#e6c35c}}
+#msg::after{{content:'\258d';animation:bl 1s steps(1) infinite}}
+@keyframes bl{{50%{{opacity:0}}}}
+#pct{{font-family:'Instrument Serif',Georgia,serif;font-size:34px;color:#e6c35c;line-height:1}}
+#sub{{color:#94b8f2;font-size:10px;margin-top:6px;letter-spacing:.08em}}
+#bar{{height:3px;border-radius:2px;background:rgba(148,184,242,.25);margin-top:14px;overflow:hidden}}
+#fill{{height:100%;border-radius:2px;background:#e6c35c;width:{pct_prev:.1f}%}}
+</style>
+<div id="wrap">
+  <div id="row"><span id="msg">{msg}</span><span id="pct">{pct_prev:.0f}%</span></div>
+  <div id="sub">{sub}{eta_html}</div>
+  <div id="bar"><div id="fill"></div></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+const el=document.getElementById('pct'),fill=document.getElementById('fill');
+if(window.gsap){{
+  const o={{v:{pct_prev:.1f}}};
+  gsap.to(o,{{v:{pct:.1f},duration:.5,ease:'power1.out',
+    onUpdate:()=>{{el.textContent=Math.round(o.v)+'%';}}}});
+  gsap.to(fill,{{width:'{pct:.1f}%',duration:.5,ease:'power1.out'}});
+}}else{{
+  el.textContent='{pct:.0f}%';fill.style.width='{pct:.1f}%';
+}}
+</script>"""
+
+
+def _fmt_eta(seconds):
+    seconds = int(max(0, seconds))
+    if seconds >= 60:
+        return f"{seconds // 60}m {seconds % 60:02d}s"
+    return f"{seconds}s"
 
 
 def status_html(msg, sub="", pct=None):
@@ -632,17 +678,27 @@ try:
         ]
 
         from backend.app.standardization.table_stitcher import stitch_tables
+        import streamlit.components.v1 as _components
 
         passed, failed = [], []
+        t0 = time.time()
+        prev_pct = 0.0
+        step = max(1, len(tables) // 100)
         for i, t in enumerate(tables):
-            status_ph.markdown(
-                status_html(
-                    MSGS[i % len(MSGS)],
-                    f"table {t['table_id']} · page {t['page']} · {i + 1} / {len(tables)}",
-                    pct=100 * (i + 1) / len(tables),
-                ),
-                unsafe_allow_html=True,
-            )
+            if i % step == 0 or i == len(tables) - 1:
+                pct = 100 * (i + 1) / len(tables)
+                elapsed = time.time() - t0
+                eta = _fmt_eta(elapsed / (i + 1) * (len(tables) - i - 1)) if i else ""
+                with status_ph:
+                    _components.html(
+                        status_anim(
+                            MSGS[i % len(MSGS)],
+                            f"table {t['table_id']} · page {t['page']} · {i + 1} / {len(tables)}",
+                            prev_pct, pct, eta,
+                        ),
+                        height=110,
+                    )
+                prev_pct = pct
             try:
                 with redirect_stdout(io.StringIO()):
                     df = clean_dataframe(t["dataframe"])
@@ -679,11 +735,12 @@ try:
             catalog.append(build_metadata(it["table_id"], nm, it["page"], it["df"]))
             table_dfs[it["table_id"]] = it["df"]
 
-        status_ph.markdown(
-            status_html("building excel workbook + csv bundle",
-                        f"{len(table_dfs)} tables", pct=100),
-            unsafe_allow_html=True,
-        )
+        with status_ph:
+            _components.html(
+                status_anim("building excel workbook + csv bundle",
+                            f"{len(passed)} tables", prev_pct, 100),
+                height=110,
+            )
 
         zip_buf = io.BytesIO()
         with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -708,16 +765,17 @@ try:
     import streamlit.components.v1 as components
 
     with cube_ph:
-        components.html(INTERACTIVE_CUBE, height=380)
+        components.html(INTERACTIVE_CUBE, height=520)
 
     fail_cls = "bad" if failed else "good"
     pages_covered = len(table_dfs) and max(m["page"] for m in catalog)
     base = uploaded.name.replace(".pdf", "")
 
     status_ph.markdown(f"""
-    <div class="bpage bpage-l pop" style="border-radius:10px;border:none">
+    <div class="bpage bpage-l pop" style="border-radius:10px;border:none;
+         max-width:660px;padding:22px 28px 24px">
       <div class="bk-kicker">The Extraction</div>
-      <div class="bk-title">Solved.</div>
+      <div class="bk-title" style="font-size:36px">Solved.</div>
       <div class="bk-stats">
         <div class="bk-stat pop pop-2"><div class="v">{R["n_raw"]}</div><div class="k">Tables found</div></div>
         <div class="bk-stat pop pop-2"><div class="v good">{len(catalog)}</div><div class="k">Extracted</div></div>

@@ -244,79 +244,76 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 }
 .note strong { color: var(--ice); font-weight: 500; }
 
-/* ── upload scene: man at his desk, monitor = the app ── */
-.scene {
-  position: relative; width: 860px; height: 540px; margin: 0 auto;
+/* ── upload hero: sleep-well first page ── */
+.night {
+  position: relative; width: 100%; height: 560px; margin: 0 auto;
+  overflow: hidden; border-radius: 0 0 18px 18px;
 }
 .star { position: absolute; width: 3px; height: 3px; border-radius: 50%;
   background: var(--gold); animation: twinkle 3s ease-in-out infinite; }
-@keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: .95; } }
-.scene-eyebrow {
-  position: absolute; top: 0; left: 0; right: 0; text-align: center;
-  font-family: var(--mono); font-size: 10px; letter-spacing: 0.24em;
-  text-transform: uppercase; color: var(--soft);
+@keyframes twinkle { 0%,100% { opacity: .1; } 50% { opacity: .95; } }
+.aurora {
+  position: absolute; left: -10%; right: -10%; top: 270px; height: 170px;
+  background:
+    radial-gradient(50% 90% at 30% 50%, rgba(148,184,242,0.30), transparent 70%),
+    radial-gradient(45% 80% at 70% 40%, rgba(37,117,246,0.28), transparent 70%),
+    radial-gradient(60% 100% at 50% 60%, rgba(238,244,255,0.14), transparent 75%);
+  filter: blur(14px);
+  animation: aurora-drift 9s ease-in-out infinite alternate;
 }
-.scene-eyebrow::before, .scene-eyebrow::after { content: ' • '; color: var(--blue); }
-.desk {
-  position: absolute; left: 90px; right: 90px; top: 442px; height: 10px;
-  background: var(--cream); border-radius: 5px;
-  box-shadow: 0 26px 40px rgba(1,9,64,0.65);
+@keyframes aurora-drift {
+  from { transform: translateX(-26px) scaleY(1); }
+  to   { transform: translateX(26px) scaleY(1.18); }
 }
-.desk-leg { position: absolute; top: 452px; width: 7px; height: 78px;
-  background: linear-gradient(var(--cream-2), rgba(253,231,175,0.25)); }
-.monitor {
-  position: absolute; left: 50%; top: 56px; width: 470px; height: 330px;
-  margin-left: -235px;
-  border: 3px solid var(--cream); border-radius: 14px;
-  background: rgba(1,9,64,0.55);
-  box-shadow: 0 0 0 1px rgba(1,9,64,0.6), 0 24px 70px rgba(1,9,64,0.6),
-              inset 0 0 60px rgba(37,117,246,0.12);
+.moon-emblem {
+  position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
+  width: 44px; height: 58px; border: 2px solid var(--cream);
+  border-radius: 50% / 42%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 0 3px var(--night), inset 0 0 0 4px rgba(254,241,208,0.6);
 }
-.monitor-stand { position: absolute; left: 50%; top: 386px; width: 14px; height: 44px;
-  margin-left: -7px; background: var(--cream); }
-.monitor-base { position: absolute; left: 50%; top: 428px; width: 130px; height: 9px;
-  margin-left: -65px; background: var(--cream); border-radius: 5px; }
-.screen-title {
-  font-family: var(--serif); font-size: 44px; letter-spacing: 0.16em;
-  color: var(--ice); text-align: center; margin-top: 30px; line-height: 1;
+.moon-emblem span { color: var(--cream); font-size: 18px; line-height: 1;
+  transform: rotate(-22deg); }
+.night-eyebrow {
+  position: absolute; top: 118px; left: 0; right: 0; text-align: center;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--ice);
 }
-.screen-title em { font-style: italic; color: var(--gold); }
-.screen-sub {
-  font-family: var(--mono); font-size: 9px; letter-spacing: 0.26em;
-  text-transform: uppercase; color: var(--soft); text-align: center; margin-top: 10px;
+.night-eyebrow b { color: var(--soft); font-weight: 400; padding: 0 14px; }
+.night-title {
+  position: absolute; top: 148px; left: 0; right: 0; text-align: center;
+  font-family: var(--serif); font-weight: 400;
+  font-size: 76px; letter-spacing: 0.30em; text-indent: 0.30em;
+  color: var(--ice); line-height: 1.1;
+  text-shadow: 0 0 40px rgba(238,244,255,0.25);
+  animation: title-in 2.2s ease-out backwards;
 }
-.kbd { position: absolute; left: 50%; top: 420px; width: 150px; height: 10px;
-  margin-left: -160px; background: var(--cream-2); border-radius: 4px; opacity: .85;
-  transform: skewX(-18deg); }
-.mug { position: absolute; left: 50%; top: 408px; width: 26px; height: 32px;
-  margin-left: 218px; border: 3px solid var(--cream); border-radius: 3px 3px 8px 8px; }
-.mug::after { content: ''; position: absolute; right: -12px; top: 6px; width: 10px;
-  height: 13px; border: 3px solid var(--cream); border-radius: 0 6px 6px 0; border-left: 0; }
-.steam { position: absolute; left: 50%; top: 384px; margin-left: 224px;
-  font-family: var(--serif); color: var(--soft); font-size: 15px; opacity: .7;
-  animation: steam 2.6s ease-in-out infinite; }
-@keyframes steam { 0%,100% { transform: translateY(0); opacity:.25; }
-  50% { transform: translateY(-7px); opacity:.8; } }
-.tower { position: absolute; left: 50%; top: 452px; width: 52px; height: 78px;
-  margin-left: 150px; border: 3px solid rgba(148,184,242,0.7); border-radius: 6px; }
-.tower::before { content: ''; position: absolute; left: 9px; right: 9px; top: 10px;
-  height: 3px; background: var(--gold); animation: twinkle 1.6s steps(2) infinite; }
-.tower::after { content: ''; position: absolute; left: 9px; right: 9px; top: 20px;
-  height: 3px; background: rgba(148,184,242,0.6); }
-.sitter { position: absolute; left: 16px; top: 226px; width: 300px; height: 322px; }
-.type-arm { transform-origin: 150px 120px; animation: typing 1.1s ease-in-out infinite; }
-.type-arm.b { animation-delay: .55s; }
-@keyframes typing { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(5deg); } }
-.head-bob { transform-origin: 96px 66px; animation: bob 4s ease-in-out infinite; }
-@keyframes bob { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-3deg); } }
+@keyframes title-in { from { opacity: 0; letter-spacing: 0.5em; }
+  to { opacity: 1; letter-spacing: 0.30em; } }
+.night-title em { font-style: italic; color: var(--gold); }
+.dunes { position: absolute; left: 0; right: 0; bottom: 0; height: 240px; }
+.dunes svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.figure {
+  position: absolute; left: 50%; bottom: 116px; width: 46px; height: 110px;
+  transform: translateX(-50%);
+}
+.scroll-hint {
+  position: absolute; left: 0; right: 0; bottom: 14px; text-align: center;
+  font-family: var(--sans); font-size: 12px; color: var(--blue);
+  letter-spacing: 0.02em;
+}
+.grain { position: absolute; inset: 0; opacity: 0.5; pointer-events: none;
+  mix-blend-mode: overlay; }
 
-/* uploader pulled INSIDE the monitor screen */
+/* uploader floats over the night scene, under the title */
 div[data-testid="stFileUploader"] {
-  margin-top: -388px; position: relative; z-index: 5;
-  border: 1px dashed rgba(254,241,208,0.5) !important;
-  background: rgba(1,13,110,0.35) !important;
+  margin-top: -300px; position: relative; z-index: 6;
+  border: 1px dashed rgba(254,241,208,0.55) !important;
+  background: rgba(1,9,64,0.55) !important;
+  backdrop-filter: blur(3px);
 }
-.note { margin-top: 230px !important; }
+.note { margin-top: 170px !important; border-top: none !important;
+  text-align: center; }
 
 /* ── morph: monitor collapses into the cube ── */
 .ghost-monitor {
@@ -515,60 +512,70 @@ if _stage == "results":
 uploaded = None
 hero = st.empty()
 
-SITTER_SVG = """
-<svg class="sitter" viewBox="0 0 270 290" fill="none">
-  <g class="head-bob">
-    <circle cx="96" cy="58" r="20" stroke="#94B8F2" stroke-width="4"/>
-    <path d="M108 44 C 116 36, 122 36, 128 40" stroke="#94B8F2" stroke-width="4" stroke-linecap="round"/>
-  </g>
-  <path d="M96 78 C 98 110, 100 128, 104 150" stroke="#94B8F2" stroke-width="4" stroke-linecap="round"/>
-  <path class="type-arm" d="M100 96 C 124 104, 142 112, 158 116" stroke="#FEF1D0" stroke-width="4" stroke-linecap="round"/>
-  <path class="type-arm b" d="M100 104 C 122 116, 140 124, 154 128" stroke="#FEF1D0" stroke-width="4" stroke-linecap="round"/>
-  <path d="M104 150 C 126 158, 144 162, 158 164 L 158 208" stroke="#94B8F2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M104 150 L 104 208" stroke="#94B8F2" stroke-width="4" stroke-linecap="round"/>
-  <path d="M84 152 L 84 252 M 84 168 L 130 168 L 130 252" stroke="#FDE7AF" stroke-width="4" stroke-linecap="round"/>
-  <path d="M66 252 L 148 252" stroke="#FDE7AF" stroke-width="4" stroke-linecap="round"/>
+STARS = "".join(
+    f'<span class="star" style="left:{l}%;top:{t}px;animation-delay:{d}s;'
+    f'width:{s}px;height:{s}px"></span>'
+    for l, t, d, s in [(5, 70, 0, 3), (11, 160, 1.2, 2), (17, 45, 2.1, 3),
+                       (24, 120, .6, 2), (31, 60, 1.8, 3), (38, 170, .3, 2),
+                       (45, 40, 2.4, 2), (52, 100, 1, 3), (59, 55, .9, 2),
+                       (66, 150, 1.5, 3), (73, 70, 2.7, 2), (80, 130, 2, 3),
+                       (87, 50, .4, 2), (93, 110, 1.7, 3), (97, 200, .8, 2),
+                       (8, 260, 2.3, 2), (90, 270, 1.1, 2), (50, 15, 2.9, 2)]
+)
+
+DUNES_SVG = """
+<svg viewBox="0 0 1400 240" preserveAspectRatio="none" fill="none">
+  <path d="M0 150 C 180 90, 320 90, 470 140 C 600 183, 800 183, 930 140
+           C 1080 90, 1220 90, 1400 150 L 1400 240 L 0 240 Z" fill="#0A0A14"/>
+  <path d="M0 168 C 200 116, 360 112, 520 156 C 660 194, 760 194, 890 156
+           C 1050 112, 1210 116, 1400 168 L 1400 240 L 0 240 Z" fill="#F3EBD8"/>
+  <path d="M60 200 C 130 184, 210 184, 280 202 C 220 214, 130 214, 60 200 Z" fill="#0A0A14"/>
+  <path d="M420 214 C 500 196, 600 196, 690 212 C 600 228, 490 228, 420 214 Z" fill="#0A0A14"/>
+  <path d="M860 204 C 940 188, 1030 188, 1110 204 C 1030 220, 930 220, 860 204 Z" fill="#0A0A14"/>
+  <path d="M1180 196 C 1240 184, 1310 186, 1360 198 C 1300 210, 1230 208, 1180 196 Z" fill="#0A0A14"/>
+  <path d="M0 226 C 300 208, 1100 208, 1400 226 L 1400 240 L 0 240 Z" fill="#E9DFC6"/>
 </svg>"""
 
-STARS = "".join(
-    f'<span class="star" style="left:{l}%;top:{t}px;animation-delay:{d}s"></span>'
-    for l, t, d in [(6, 60, 0), (13, 150, 1.2), (22, 40, 2.1), (31, 110, .6),
-                    (44, 30, 1.8), (58, 50, .3), (69, 120, 2.4), (78, 35, 1),
-                    (87, 90, .9), (94, 170, 1.5), (50, 12, 2.7), (90, 290, 2)]
-)
+FIGURE_SVG = """
+<svg class="figure" viewBox="0 0 46 110" fill="none">
+  <circle cx="23" cy="10" r="8" fill="#0A0A14"/>
+  <path d="M23 16 C 12 22, 10 52, 13 78 L 33 78 C 36 52, 34 22, 23 16 Z" fill="#0A0A14"/>
+  <path d="M16 78 L 16 102 M 30 78 L 30 102" stroke="#0A0A14" stroke-width="5" stroke-linecap="round"/>
+  <path d="M14 30 C 10 42, 10 54, 12 64 M 32 30 C 36 42, 36 54, 34 64"
+    stroke="#0A0A14" stroke-width="4" stroke-linecap="round"/>
+</svg>"""
+
+GRAIN_SVG = """
+<svg class="grain" width="100%" height="100%">
+  <filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2"/>
+  <feColorMatrix type="saturate" values="0"/><feComponentTransfer>
+  <feFuncA type="linear" slope="0.10"/></feComponentTransfer></filter>
+  <rect width="100%" height="100%" filter="url(#g)"/>
+</svg>"""
 
 with hero.container():
     st.markdown(f"""
-    <div class="scene">
+    <div class="night">
       {STARS}
-      <div class="scene-eyebrow">Government PDF → clean data</div>
-      {SITTER_SVG}
-      <div class="monitor">
-        <div class="screen-title">Data<em>Gen</em></div>
-        <div class="screen-sub">upload the data</div>
-      </div>
-      <div class="monitor-stand"></div>
-      <div class="monitor-base"></div>
-      <div class="kbd"></div>
-      <div class="mug"></div><div class="steam">~</div>
-      <div class="tower"></div>
-      <div class="desk"></div>
-      <div class="desk-leg" style="left:110px"></div>
-      <div class="desk-leg" style="right:110px"></div>
+      <div class="aurora"></div>
+      <div class="moon-emblem"><span>☾</span></div>
+      <div class="night-eyebrow"><b>•</b>GOVERNMENT PDF → CLEAN DATA<b>•</b></div>
+      <div class="night-title">DATA<em>GEN</em></div>
+      <div class="dunes">{DUNES_SVG}</div>
+      {FIGURE_SVG}
+      <div class="scroll-hint">⌄&nbsp; Drop a PDF to begin</div>
+      {GRAIN_SVG}
     </div>
     """, unsafe_allow_html=True)
-    st.markdown('<div class="upl-inside">', unsafe_allow_html=True)
-    c1, c2, c3 = st.columns([1.05, 1.1, 1.05])
+    c1, c2, c3 = st.columns([1, 1.3, 1])
     with c2:
         uploaded = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")
         if uploaded is None:
             st.markdown("""
             <div class="note">
               <strong>Supported</strong> — bordered (lattice) and borderless (stream) tables:
-              DES district reports, census annexures, statistical publications.<br>
-              <strong>Not supported</strong> — scanned or image-only PDFs.
+              DES district reports, census annexures, statistical publications.
             </div>""", unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 if uploaded is None:
     st.stop()

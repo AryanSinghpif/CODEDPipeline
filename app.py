@@ -526,6 +526,7 @@ try:
     from backend.app.cleaning.universal_cleaner import clean_dataframe
     from backend.app.standardization.metadata_builder import build_metadata
     from backend.app.standardization.table_name_extractor import extract_table_name
+    from backend.app.translation.hindi_translator import translate_dataframe
     from backend.app.validation.table_validator import validate_table
 
     prog = st.progress(0, text=f"0 / {len(tables)}")
@@ -542,6 +543,7 @@ try:
                 h   = detect_header_rows(df)
                 nm  = extract_table_name(df, h)
                 df  = apply_headers(df, h)
+                df  = translate_dataframe(df)
                 df  = clean_headers(df)
             s = validate_table(df)
             if s["passed"]:

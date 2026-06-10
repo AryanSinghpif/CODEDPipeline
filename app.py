@@ -114,9 +114,12 @@ html, body, [class*="css"], .stApp {
 /* ── scanner / loading ── */
 .scan-box {
   position: relative; border: 1px solid var(--border2); border-radius: 10px;
-  background: var(--bg2); padding: 34px 30px 30px; text-align: center;
+  background: var(--bg2); padding: 48px 64px;
   overflow: hidden; margin: 8px 0;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 40px; min-height: 340px;
 }
+.scan-left { position: relative; text-align: left; max-width: 380px; }
 .scan-box::before {
   content: ''; position: absolute; inset: 0;
   background-image:
@@ -127,7 +130,8 @@ html, body, [class*="css"], .stApp {
 }
 /* ── plasma orb (AI-assistant style) ── */
 .orb {
-  position: relative; width: 110px; height: 110px; margin: 0 auto 20px;
+  position: relative; width: 230px; height: 230px; margin: 0 auto;
+  flex-shrink: 0;
   border-radius: 50%; overflow: hidden;
   background: radial-gradient(circle at 38% 32%,
     #ffffff 0%, #ffc2ef 16%, #ff7ce4 38%, #ff4fd8 58%, #b026c9 78%, #4a0d5c 100%);
@@ -176,19 +180,19 @@ html, body, [class*="css"], .stApp {
   0%   { opacity: .7; transform: translate(-50%,-82%) scale(1); }
   100% { opacity: 0;  transform: translate(-50%,-82%) scale(2.2); }
 }
-.scan-title { position: relative; font-weight: 600; font-size: 15px; }
+.scan-title { position: relative; font-weight: 600; font-size: 14px; }
 .scan-msg {
-  position: relative; font-family: var(--mono); font-size: 11px;
+  position: relative; font-family: var(--mono); font-size: 10px;
   letter-spacing: 1.5px; text-transform: uppercase; color: var(--green);
-  margin-top: 8px; min-height: 16px;
+  margin-top: 10px; min-height: 14px;
 }
 .scan-msg::after { content: '▍'; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
-.scan-sub { position: relative; color: var(--muted); font-size: 12px; margin-top: 6px;
+.scan-sub { position: relative; color: var(--muted); font-size: 10px; margin-top: 6px;
   font-family: var(--mono); }
 .scan-bar {
-  position: relative; height: 4px; border-radius: 2px; background: var(--border);
-  margin: 18px auto 0; max-width: 420px; overflow: hidden;
+  position: relative; height: 3px; border-radius: 2px; background: var(--border);
+  margin: 22px 0 0; max-width: 320px; overflow: hidden;
 }
 .scan-bar > div {
   height: 100%; background: linear-gradient(90deg, var(--green-dk), var(--green-hi));
@@ -266,12 +270,13 @@ def scanner_html(title, msg, sub="", pct=None):
     width = f"{pct:.0f}%" if pct is not None else "35%"
     return f"""
     <div class="scan-box">
-      <div class="scan-pulse"></div>
+      <div class="scan-left">
+        <div class="scan-title">{title}</div>
+        <div class="scan-msg">{msg}</div>
+        <div class="scan-sub">{sub}</div>
+        <div class="{bar_cls}"><div style="width:{width}"></div></div>
+      </div>
       <div class="orb"><div class="ribbon1"></div><div class="ribbon2"></div><div class="sheen"></div></div>
-      <div class="scan-title">{title}</div>
-      <div class="scan-msg">{msg}</div>
-      <div class="scan-sub">{sub}</div>
-      <div class="{bar_cls}"><div style="width:{width}"></div></div>
     </div>"""
 
 

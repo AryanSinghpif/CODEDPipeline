@@ -112,7 +112,8 @@ def translate_text(text):
 
 def translate_dataframe(df):
     """Translate legacy-Hindi cells in all text columns; unknown text is kept as-is."""
-    for col in df.columns:
-        if df[col].dtype == object:
-            df[col] = df[col].map(translate_text)
+    # iterate positionally — df[col] breaks on duplicate column names
+    for i in range(df.shape[1]):
+        if df.iloc[:, i].dtype == object:
+            df.iloc[:, i] = df.iloc[:, i].map(translate_text)
     return df

@@ -118,6 +118,36 @@ def _read(pdf_path, pages, flavor):
         return []
 
 
+def _read_resilient(pdf_path, page_list, flavor):
+    """
+    camelot raises (e.g. "max() arg is an empty sequence") on blank or
+    vector-only pages, aborting the whole multi-page call. Try the chunk
+    first; on failure fall back to page-by-page so one bad page cannot
+    sink its 39 neighbours.
+    """
+
+    try:
+        return list(
+            camelot.read_pdf(
+                pdf_path, pages=",".join(page_list), flavor=flavor
+            )
+        )
+    except Exception:
+        pass
+
+    tables = []
+
+    for p in page_list:
+        try:
+            tables.extend(
+                camelot.read_pdf(pdf_path, pages=p, flavor=flavor)
+            )
+        except Exception:
+            continue
+
+    return tables
+
+
 def extract_tables(pdf_path):
 
     plumber_pdf = None
@@ -167,9 +197,9 @@ def extract_tables(pdf_path):
 
         for chunk_start in range(0, len(missing), 40):
 
-            chunk = ",".join(missing[chunk_start:chunk_start + 40])
+            chunk_pages = missing[chunk_start:chunk_start + 40]
 
-            for table in _read(pdf_path, chunk, "stream"):
+            for table in _read_resilient(pdf_path, chunk_pages, "stream"):
 
                 try:
                     page = int(table.page)

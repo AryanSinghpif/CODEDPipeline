@@ -16,7 +16,12 @@ def validate_table(df):
     # Reject only degenerate shapes that cannot be a table.
     #
 
-    if rows < 2:
+    #
+    # A single data row is still a table (e.g. a KPI strip:
+    # header row of years + one row of totals).
+    #
+
+    if rows < 1:
 
         return {
             "passed": False,

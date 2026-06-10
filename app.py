@@ -305,15 +305,46 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 .grain { position: absolute; inset: 0; opacity: 0.5; pointer-events: none;
   mix-blend-mode: overlay; }
 
-/* uploader floats over the night scene, under the title */
-div[data-testid="stFileUploader"] {
-  margin-top: -270px; position: relative; z-index: 6;
-  border: 1px dashed rgba(254,241,208,0.55) !important;
-  background: rgba(1,9,64,0.55) !important;
-  backdrop-filter: blur(3px);
+/* ── single-page layout: heading + dropzone left, cube right ── */
+.hero-left { padding: 46px 0 8px; text-align: left; }
+.hl-eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--ice);
 }
-.note { margin-top: 140px !important; border-top: none !important;
-  text-align: center; }
+.hl-eyebrow b { color: var(--soft); font-weight: 400;
+  animation: eyeflash 2s ease-in-out infinite; }
+@keyframes eyeflash { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
+.hl-title {
+  font-family: var(--serif); font-weight: 400; font-size: 72px;
+  letter-spacing: 0.06em; line-height: 1.1; color: var(--ice);
+  margin-top: 10px; text-shadow: 0 0 50px rgba(238,244,255,0.25);
+  animation: hl-in 1.6s ease-out backwards;
+}
+@keyframes hl-in { from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); } }
+.hl-title em { font-style: italic; color: var(--gold); }
+.hl-sub {
+  font-family: var(--serif); font-style: italic; font-size: 19px;
+  color: var(--soft); margin: 6px 0 26px;
+  animation: hl-in 1.6s ease-out .4s backwards;
+}
+div[data-testid="stFileUploader"] {
+  border: 1px dashed rgba(254,241,208,0.55) !important;
+  background: rgba(1,9,64,0.45) !important;
+}
+.note { border-top: none !important; padding-top: 8px; }
+.status-left { padding: 10px 2px 0; }
+
+.cube-pane { position: relative; height: 420px; }
+.cube-pane .cube-stage { top: 150px; transform: scale(2.1); }
+.cube-pane .cube-shadow { top: 268px; transform: scale(2.1); }
+.cube-pane .cube-cap {
+  position: absolute; left: 0; right: 0; bottom: 10px; text-align: center;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--soft);
+}
+.cube-idle .slice { animation: none !important; }
+.cube-idle .cube-rotor { animation-duration: 18s; }
 
 /* ── morph: monitor collapses into the cube ── */
 .ghost-monitor {
@@ -499,152 +530,73 @@ window.addEventListener('pointerup',()=>{dragging=false;
 """
 
 
-def scanner_html(title, msg, sub="", pct=None, morph=False):
+def cube_pane(mode="solving", caption=""):
+    cls = "cube-idle" if mode == "idle" else ""
+    cube = (
+        '<div class="cube-stage"><div class="cube-rotor">'
+        + _slice("top") + _slice("mid") + _slice("bot")
+        + "</div></div>"
+    )
+    return (
+        f'<div class="cube-pane {cls}">{cube}'
+        f'<div class="cube-shadow"></div>'
+        f'<div class="cube-cap">{caption}</div></div>'
+    )
+
+
+def status_html(msg, sub="", pct=None):
     bar_cls = "scan-bar" if pct is not None else "scan-bar indet"
     width = f"{pct:.0f}%" if pct is not None else "35%"
-    solver = _cube_solver()
-    if morph:
-        solver = solver.replace(
-            'class="solver"', 'class="solver morph-in"'
-        ).replace(
-            '<div class="cube-stage">',
-            '<div class="ghost-monitor"></div><div class="cube-stage">',
-        )
     return f"""
-    <div class="solver-box">
-      <div class="scan-left">
-        <div class="scan-title">{title}</div>
-        <div class="scan-msg">{msg}</div>
-        <div class="scan-sub">{sub}</div>
-        <div class="{bar_cls}"><div style="width:{width}"></div></div>
-      </div>
-      {solver}
+    <div class="status-left">
+      <div class="scan-msg">{msg}</div>
+      <div class="scan-sub">{sub}</div>
+      <div class="{bar_cls}"><div style="width:{width}"></div></div>
     </div>"""
 
 
-# ── Stage previews (dev): ?stage=solve | ?stage=results ───────────────────────
-_stage = st.query_params.get("stage")
+# ── Main page: heading + dropzone left, rubik's cube right ────────────────────
+left, right = st.columns([1.3, 1], gap="large")
 
-if _stage == "solve":
-    st.markdown(
-        scanner_html("Solving your PDF…", "merging hierarchical headers",
-                     "table 47 · page 92 · 47 / 186", pct=42, morph=True),
-        unsafe_allow_html=True,
-    )
-    st.stop()
+with right:
+    cube_ph = st.empty()
 
-if _stage == "results":
-    import streamlit.components.v1 as components
-    L, Rcol = st.columns([1.25, 1])
-    with L:
-        st.markdown("""
-        <div class="bpage bpage-l pop" style="border-radius:10px;border:none">
-          <div class="bk-kicker">The Extraction</div>
-          <div class="bk-title">Solved.</div>
-          <div class="bk-sub">Every table in your report, pressed into clean pages.</div>
-          <div class="bk-stats">
-            <div class="bk-stat pop pop-2"><div class="v">186</div><div class="k">Tables found</div></div>
-            <div class="bk-stat pop pop-2"><div class="v good">184</div><div class="k">Extracted</div></div>
-            <div class="bk-stat pop pop-3"><div class="v bad">2</div><div class="k">Set aside</div></div>
-            <div class="bk-stat pop pop-3"><div class="v">200</div><div class="k">Pages covered</div></div>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
-        b1, b2 = st.columns(2)
-        with b1:
-            st.download_button("↓ Download Excel", b"x", file_name="t.xlsx", use_container_width=True)
-        with b2:
-            st.download_button("↓ Download CSVs", b"x", file_name="t.zip", use_container_width=True)
-    with Rcol:
-        components.html(INTERACTIVE_CUBE, height=330)
-    st.stop()
-
-# ── Upload / hero ──────────────────────────────────────────────────────────────
-uploaded = None
-hero = st.empty()
-
-STARS = "".join(
-    f'<span class="star" style="left:{l}%;top:{t}px;animation-delay:{d}s;'
-    f'width:{s}px;height:{s}px"></span>'
-    for l, t, d, s in [(5, 70, 0, 3), (11, 160, 1.2, 2), (17, 45, 2.1, 3),
-                       (24, 120, .6, 2), (31, 60, 1.8, 3), (38, 170, .3, 2),
-                       (45, 40, 2.4, 2), (52, 100, 1, 3), (59, 55, .9, 2),
-                       (66, 150, 1.5, 3), (73, 70, 2.7, 2), (80, 130, 2, 3),
-                       (87, 50, .4, 2), (93, 110, 1.7, 3), (97, 200, .8, 2),
-                       (8, 260, 2.3, 2), (90, 270, 1.1, 2), (50, 15, 2.9, 2)]
-)
-
-DUNES_SVG = """
-<svg viewBox="0 0 1400 240" preserveAspectRatio="none" fill="none">
-  <path d="M0 150 C 180 90, 320 90, 470 140 C 600 183, 800 183, 930 140
-           C 1080 90, 1220 90, 1400 150 L 1400 240 L 0 240 Z" fill="#0A0A14"/>
-  <path d="M0 168 C 200 116, 360 112, 520 156 C 660 194, 760 194, 890 156
-           C 1050 112, 1210 116, 1400 168 L 1400 240 L 0 240 Z" fill="#F3EBD8"/>
-  <path d="M60 200 C 130 184, 210 184, 280 202 C 220 214, 130 214, 60 200 Z" fill="#0A0A14"/>
-  <path d="M420 214 C 500 196, 600 196, 690 212 C 600 228, 490 228, 420 214 Z" fill="#0A0A14"/>
-  <path d="M860 204 C 940 188, 1030 188, 1110 204 C 1030 220, 930 220, 860 204 Z" fill="#0A0A14"/>
-  <path d="M1180 196 C 1240 184, 1310 186, 1360 198 C 1300 210, 1230 208, 1180 196 Z" fill="#0A0A14"/>
-  <path d="M0 226 C 300 208, 1100 208, 1400 226 L 1400 240 L 0 240 Z" fill="#E9DFC6"/>
-</svg>"""
-
-FIGURE_SVG = """
-<svg class="figure" viewBox="0 0 46 110" fill="none">
-  <circle cx="23" cy="10" r="8" fill="#0A0A14"/>
-  <path d="M23 16 C 12 22, 10 52, 13 78 L 33 78 C 36 52, 34 22, 23 16 Z" fill="#0A0A14"/>
-  <path d="M16 78 L 16 102 M 30 78 L 30 102" stroke="#0A0A14" stroke-width="5" stroke-linecap="round"/>
-  <path d="M14 30 C 10 42, 10 54, 12 64 M 32 30 C 36 42, 36 54, 34 64"
-    stroke="#0A0A14" stroke-width="4" stroke-linecap="round"/>
-</svg>"""
-
-GRAIN_SVG = """
-<svg class="grain" width="100%" height="100%">
-  <filter id="g"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2"/>
-  <feColorMatrix type="saturate" values="0"/><feComponentTransfer>
-  <feFuncA type="linear" slope="0.10"/></feComponentTransfer></filter>
-  <rect width="100%" height="100%" filter="url(#g)"/>
-</svg>"""
-
-def _gsap_tag():
-    from pathlib import Path as _P
-    local = _P(__file__).parent / "static" / "gsap.min.js"
-    if local.exists():
-        return "<script>" + local.read_text() + "</script>"
-    return ('<script src="https://cdnjs.cloudflare.com/ajax/libs/'
-            'gsap/3.12.5/gsap.min.js"></script>')
-
-
-with hero.container():
-    import streamlit.components.v1 as components
-    components.html(HERO_GSAP.replace("__GSAP_JS__", _gsap_tag()), height=560)
-    c1, c2, c3 = st.columns([1, 1.3, 1])
-    with c2:
-        uploaded = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")
-        if uploaded is None:
-            st.markdown("""
-            <div class="note">
-              <strong>Supported</strong> — bordered (lattice) and borderless (stream) tables:
-              DES district reports, census annexures, statistical publications.
-            </div>""", unsafe_allow_html=True)
+with left:
+    st.markdown("""
+    <div class="hero-left">
+      <div class="hl-eyebrow"><b>&#9679;</b>&nbsp; GOVERNMENT PDF &rarr; CLEAN DATA</div>
+      <div class="hl-title">Data<em>Gen</em></div>
+      <div class="hl-sub">Every table in your report &mdash; solved, page by page.</div>
+    </div>
+    """, unsafe_allow_html=True)
+    uploaded = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")
+    status_ph = st.empty()
 
 if uploaded is None:
+    cube_ph.markdown(
+        cube_pane("idle", "drop a pdf &mdash; the cube starts solving"),
+        unsafe_allow_html=True,
+    )
+    status_ph.markdown("""
+    <div class="note">
+      <strong>Supported</strong> &mdash; bordered (lattice) and borderless (stream)
+      tables: DES district reports, census annexures, statistical publications.
+    </div>""", unsafe_allow_html=True)
     st.stop()
 
-hero.empty()
+cube_ph.markdown(cube_pane("solving", "solving&hellip;"), unsafe_allow_html=True)
 
 # ── Run pipeline ───────────────────────────────────────────────────────────────
 with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
     tmp.write(uploaded.getvalue())
     pdf_path = tmp.name
 
-stage = st.empty()
-
 try:
     if "results" not in st.session_state or st.session_state.get("pdf_name") != uploaded.name:
 
-        stage.markdown(
-            scanner_html("Solving your PDF…", "locating tables",
-                         f"{uploaded.name} · camelot lattice + stream",
-                         morph=True),
+        status_ph.markdown(
+            status_html("locating tables",
+                        f"{uploaded.name} · camelot lattice + stream"),
             unsafe_allow_html=True,
         )
 
@@ -652,7 +604,6 @@ try:
         tables = extract_tables(pdf_path)
 
         if not tables:
-            stage.empty()
             st.error("No tables found in this PDF.")
             st.stop()
 
@@ -677,9 +628,8 @@ try:
 
         catalog, failed, table_dfs = [], [], {}
         for i, t in enumerate(tables):
-            stage.markdown(
-                scanner_html(
-                    "Solving your PDF…",
+            status_ph.markdown(
+                status_html(
                     MSGS[i % len(MSGS)],
                     f"table {t['table_id']} · page {t['page']} · {i + 1} / {len(tables)}",
                     pct=100 * (i + 1) / len(tables),
@@ -704,13 +654,12 @@ try:
                 failed.append({"table": t["table_id"], "page": t["page"], "reason": str(e)})
 
         if not table_dfs:
-            stage.empty()
             st.warning("All tables failed validation.")
             st.stop()
 
-        stage.markdown(
-            scanner_html("Binding the book", "building excel workbook + csv bundle",
-                         f"{len(table_dfs)} tables", pct=100),
+        status_ph.markdown(
+            status_html("building excel workbook + csv bundle",
+                        f"{len(table_dfs)} tables", pct=100),
             unsafe_allow_html=True,
         )
 
@@ -730,33 +679,33 @@ try:
         }
         st.session_state["pdf_name"] = uploaded.name
 
-    stage.empty()
     R = st.session_state["results"]
     catalog, failed, table_dfs = R["catalog"], R["failed"], R["table_dfs"]
 
-    # ── Results: stats left, interactive solved cube right ────────────────────
+    # ── Results: solved cube right, stats + downloads left ────────────────────
     import streamlit.components.v1 as components
+
+    with cube_ph:
+        components.html(INTERACTIVE_CUBE, height=380)
 
     fail_cls = "bad" if failed else "good"
     pages_covered = len(table_dfs) and max(m["page"] for m in catalog)
     base = uploaded.name.replace(".pdf", "")
 
-    L, Rcol = st.columns([1.25, 1])
+    status_ph.markdown(f"""
+    <div class="bpage bpage-l pop" style="border-radius:10px;border:none">
+      <div class="bk-kicker">The Extraction</div>
+      <div class="bk-title">Solved.</div>
+      <div class="bk-stats">
+        <div class="bk-stat pop pop-2"><div class="v">{R["n_raw"]}</div><div class="k">Tables found</div></div>
+        <div class="bk-stat pop pop-2"><div class="v good">{len(catalog)}</div><div class="k">Extracted</div></div>
+        <div class="bk-stat pop pop-3"><div class="v {fail_cls}">{len(failed)}</div><div class="k">Set aside</div></div>
+        <div class="bk-stat pop pop-3"><div class="v">{pages_covered}</div><div class="k">Pages covered</div></div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with L:
-        st.markdown(f"""
-        <div class="bpage bpage-l pop" style="border-radius:10px;border:none">
-          <div class="bk-kicker">The Extraction</div>
-          <div class="bk-title">Solved.</div>
-          <div class="bk-sub">Every table in your report, pressed into clean pages.</div>
-          <div class="bk-stats">
-            <div class="bk-stat pop pop-2"><div class="v">{R["n_raw"]}</div><div class="k">Tables found</div></div>
-            <div class="bk-stat pop pop-2"><div class="v good">{len(catalog)}</div><div class="k">Extracted</div></div>
-            <div class="bk-stat pop pop-3"><div class="v {fail_cls}">{len(failed)}</div><div class="k">Set aside</div></div>
-            <div class="bk-stat pop pop-3"><div class="v">{pages_covered}</div><div class="k">Pages covered</div></div>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
+    with left:
         b1, b2 = st.columns(2)
         with b1:
             st.download_button("↓ Download Excel", R["xlsx"], file_name=f"{base}_tables.xlsx",
@@ -765,9 +714,6 @@ try:
         with b2:
             st.download_button("↓ Download CSVs", R["zip"], file_name=f"{base}_tables.zip",
                                mime="application/zip", use_container_width=True)
-
-    with Rcol:
-        components.html(INTERACTIVE_CUBE, height=330)
 
     search = st.text_input("s", placeholder="Search by name or table ID…", label_visibility="collapsed")
 

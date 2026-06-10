@@ -315,7 +315,7 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   animation: eyeflash 2s ease-in-out infinite; }
 @keyframes eyeflash { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
 .hl-title {
-  font-family: var(--serif); font-weight: 400; font-size: 56px;
+  font-family: var(--serif); font-weight: 700; font-size: 42px;
   letter-spacing: 0.30em; line-height: 1.15; color: var(--ice);
   text-transform: uppercase;
   margin-top: 12px; text-shadow: 0 0 50px rgba(238,244,255,0.25);
@@ -323,7 +323,7 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 }
 @keyframes hl-in { from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); } }
-.hl-title em { font-style: italic; color: var(--gold); }
+.hl-title em { font-style: normal; color: var(--ice); }
 .hl-sub {
   font-family: var(--serif); font-style: italic; font-size: 19px;
   color: var(--soft); margin: 6px 0 26px;
@@ -559,7 +559,7 @@ with right:
 with left:
     st.markdown("""
     <div class="hero-left">
-      <div class="hl-title">DATA <em>RUBIKS</em></div>
+      <div class="hl-title">DATA RUBIKS</div>
       <div class="hl-sub">Every table in your report &mdash; solved, page by page.</div>
     </div>
     """, unsafe_allow_html=True)

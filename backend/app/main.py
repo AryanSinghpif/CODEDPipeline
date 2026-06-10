@@ -56,12 +56,16 @@ def run_pipeline(job_id: str, pdf_path: str):
 
     JOBS[job_id]["total"] = len(tables)
     catalog, failed = [], []
+    unnamed_seq = 0
 
     for table in tables:
         try:
             df = clean_dataframe(table["dataframe"])
             h = detect_header_rows(df)
             table_name = extract_table_name(df, h, table.get("caption"))
+            if not table_name:
+                unnamed_seq += 1
+                table_name = f"Table {unnamed_seq} (p.{table['page']})"
             df = apply_headers(df, h)
             df = translate_dataframe(df)
             df = clean_headers(df)

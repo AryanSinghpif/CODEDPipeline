@@ -621,6 +621,7 @@ try:
         ]
 
         catalog, failed, table_dfs = [], [], {}
+        unnamed_seq = 0
         for i, t in enumerate(tables):
             status_ph.markdown(
                 status_html(
@@ -635,6 +636,9 @@ try:
                     df = clean_dataframe(t["dataframe"])
                     h = detect_header_rows(df)
                     nm = extract_table_name(df, h, t.get("caption"))
+                    if not nm:
+                        unnamed_seq += 1
+                        nm = f"Table {unnamed_seq} (p.{t['page']})"
                     df = apply_headers(df, h)
                     df = translate_dataframe(df)
                     df = clean_headers(df)

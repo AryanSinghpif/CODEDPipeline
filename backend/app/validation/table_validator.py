@@ -11,14 +11,19 @@ def validate_table(df):
     rows = len(df)
     cols = len(df.columns)
 
-    if rows < 5:
+    #
+    # Keep every real table, even tiny or headingless ones.
+    # Reject only degenerate shapes that cannot be a table.
+    #
+
+    if rows < 2:
 
         return {
             "passed": False,
             "reason": "too_few_rows"
         }
 
-    if cols < 3:
+    if cols < 2:
 
         return {
             "passed": False,
@@ -33,8 +38,8 @@ def validate_table(df):
         if c.strip() in ("", "nan", "None")
     )
 
-    # phantom tables (charts parsed as tables) are mostly blank
-    if total and empty / total > 0.6:
+    # phantom tables (charts parsed as tables) are almost entirely blank
+    if total and empty / total > 0.85:
 
         return {
             "passed": False,
@@ -54,17 +59,10 @@ def validate_table(df):
             "reason": "merged_rows"
         }
 
-    col_headers = sum(
-        str(c).startswith("col")
-        for c in df.columns
-    )
-
-    if cols and col_headers / cols > 0.7:
-
-        return {
-            "passed": False,
-            "reason": "weak_headers"
-        }
+    #
+    # Headingless tables are kept (named "Table N" downstream);
+    # weak headers alone are not grounds for rejection.
+    #
 
     return {
         "passed": True,

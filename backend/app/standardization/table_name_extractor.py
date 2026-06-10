@@ -82,25 +82,22 @@ def extract_table_name(df, header_rows, caption=None):
         if title:
             return title
 
-    # 2) caption text itself (line printed just above the table)
+    # 2) caption text — but only if it reads like a TITLE, not prose:
+    #    a short line (2–10 words) without sentence punctuation.
     if caption:
 
-        cleaned = _clean_title_words(caption)
+        for line in str(caption).splitlines():
 
-        if len(cleaned.split()) >= 2:
-            return cleaned
+            line = line.strip()
+            cleaned = _clean_title_words(line, limit=12)
+            n_words = len(cleaned.split())
 
-    # 3) longest English-looking header cell
-    best = ""
+            if (
+                2 <= n_words <= 10
+                and not re.search(r"[.;:]\s|\.$", line)
+                and len(cleaned) >= 0.6 * len(line)
+            ):
+                return cleaned
 
-    for value in header_df.astype(str).values.flatten():
-
-        cleaned = _clean_title_words(value)
-
-        if len(cleaned) > len(best):
-            best = cleaned
-
-    if len(best.split()) >= 2:
-        return best
-
-    return "table"
+    # 3) no confident title — caller assigns a sequential "Table N"
+    return None

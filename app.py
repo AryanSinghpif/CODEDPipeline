@@ -559,7 +559,6 @@ with right:
 with left:
     st.markdown("""
     <div class="hero-left">
-      <div class="hl-eyebrow"><b>&#9679;</b>&nbsp; GOVERNMENT PDF &rarr; CLEAN DATA</div>
       <div class="hl-title">DATA <em>RUBIKS</em></div>
       <div class="hl-sub">Every table in your report &mdash; solved, page by page.</div>
     </div>

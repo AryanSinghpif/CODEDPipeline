@@ -306,7 +306,7 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   mix-blend-mode: overlay; }
 
 /* ── single-page layout: heading + dropzone left, cube right ── */
-.hero-left { padding: 46px 0 8px; text-align: left; }
+.hero-left { padding: 18vh 0 8px; text-align: left; }
 .hl-eyebrow {
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.28em;
   text-transform: uppercase; color: var(--ice);
@@ -336,7 +336,7 @@ div[data-testid="stFileUploader"] {
 .note { border-top: none !important; padding-top: 8px; }
 .status-left { padding: 10px 2px 0; }
 
-.cube-pane { position: relative; height: 460px; }
+.cube-pane { position: relative; height: 460px; margin-top: 14vh; }
 .cube-pane .cube-stage { top: 140px; transform: scale(1.55); }
 .cube-pane .cube-shadow { top: 330px; transform: scale(2.4); }
 .cube-idle .slice { animation: none !important; }

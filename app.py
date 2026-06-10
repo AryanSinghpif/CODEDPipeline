@@ -332,7 +332,9 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 div[data-testid="stFileUploader"] {
   border: 1px dashed rgba(254,241,208,0.55) !important;
   background: rgba(1,9,64,0.45) !important;
+  max-width: 660px;
 }
+.note { max-width: 660px; }
 .note { border-top: none !important; padding-top: 8px; }
 .status-left { padding: 10px 2px 0; }
 

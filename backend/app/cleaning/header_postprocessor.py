@@ -30,6 +30,9 @@ KEEP_WORDS = {
     "telephone", "center", "centre", "connection", "connections",
     "transport", "communication", "post", "office", "offices",
     "road", "roads", "vehicles", "registered",
+    # utilities / misc
+    "hand", "pump", "pumps", "installed", "thousand",
+    "electrified", "villages", "village", "towns", "town",
 }
 
 

@@ -65,6 +65,46 @@ def _has_vowel(word):
     return any(c in VOWELS for c in word.lower())
 
 
+#
+# Lowercase words allowed in headers. Legacy Kruti Dev
+# soup ("tula", "gtkj", "dh") is lowercase or has internal
+# capitals ("gSaMiaiksa"), while real English header text
+# in these PDFs is Titlecase ("Number of Installed Hand
+# Pumps"). So a word is kept only if it is Titlecase,
+# ALL-CAPS, or a known lowercase English word.
+#
+
+ALLOWED_LOWER = {
+    "of", "per", "and", "the", "in", "on", "for", "to",
+    "no", "by", "at",
+}
+
+
+def _looks_english(word):
+
+    bare = re.sub(r"[^A-Za-z]", "", word)
+
+    if not bare or not _has_vowel(bare):
+        return False
+
+    if bare.lower() in ALLOWED_LOWER:
+        return True
+
+    if len(bare) < 3:
+        return False
+
+    # Titlecase: Number, Telephone
+    if bare[0].isupper() and bare[1:].islower():
+        return True
+
+    # ALL CAPS: DISTRICT
+    if bare.isupper():
+        return True
+
+    # mixed internal caps (gSaMiaiksa) or lowercase soup (tula)
+    return False
+
+
 def extract_english(text):
 
     text = str(text)
@@ -78,7 +118,7 @@ def extract_english(text):
     for chunk in matches:
         words = [
             w for w in chunk.split()
-            if len(w) >= 3 and _has_vowel(w)
+            if _looks_english(w)
         ]
         if words:
             filtered.append(" ".join(words))

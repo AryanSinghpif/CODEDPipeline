@@ -11,7 +11,7 @@ import streamlit as st
 warnings.filterwarnings("ignore")
 
 st.set_page_config(
-    page_title="CODEDPipeline",
+    page_title="Data Rubiks",
     page_icon="⬡",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -315,9 +315,10 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   animation: eyeflash 2s ease-in-out infinite; }
 @keyframes eyeflash { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
 .hl-title {
-  font-family: var(--serif); font-weight: 400; font-size: 72px;
-  letter-spacing: 0.06em; line-height: 1.1; color: var(--ice);
-  margin-top: 10px; text-shadow: 0 0 50px rgba(238,244,255,0.25);
+  font-family: var(--serif); font-weight: 400; font-size: 56px;
+  letter-spacing: 0.30em; line-height: 1.15; color: var(--ice);
+  text-transform: uppercase;
+  margin-top: 12px; text-shadow: 0 0 50px rgba(238,244,255,0.25);
   animation: hl-in 1.6s ease-out backwards;
 }
 @keyframes hl-in { from { opacity: 0; transform: translateY(14px); }
@@ -369,7 +370,7 @@ div[data-testid="stFileUploader"] {
 st.markdown("""
 <div class="topbar">
   <div class="logo-mark">⬡</div>
-  <div class="logo-name">Data<span>Gen</span></div>
+  <div class="logo-name">Data<span>Rubiks</span></div>
   <div class="topbar-right">District extraction engine</div>
 </div>
 """, unsafe_allow_html=True)
@@ -559,7 +560,7 @@ with left:
     st.markdown("""
     <div class="hero-left">
       <div class="hl-eyebrow"><b>&#9679;</b>&nbsp; GOVERNMENT PDF &rarr; CLEAN DATA</div>
-      <div class="hl-title">Data<em>Gen</em></div>
+      <div class="hl-title">DATA <em>RUBIKS</em></div>
       <div class="hl-sub">Every table in your report &mdash; solved, page by page.</div>
     </div>
     """, unsafe_allow_html=True)

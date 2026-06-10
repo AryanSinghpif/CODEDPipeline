@@ -128,7 +128,41 @@ def apply_headers(df, header_rows):
     ):
         header_rows = data_start
 
-    header_df = df.iloc[:header_rows]
+    header_df = df.iloc[:header_rows].copy()
+
+    #
+    # Merged (spanning) header cells: camelot puts the
+    # group label only in the FIRST cell of the span and
+    # leaves the rest empty. Forward-fill each header row
+    # horizontally so every sub-column (e.g. each year)
+    # inherits its parent group label.
+    #
+    # Skip rows that are table titles (only one non-empty
+    # cell), otherwise the title would leak into every column.
+    #
+
+    #
+    # Never fill the LAST header row (the sub-header row,
+    # e.g. years) — its cells are per-column, not spans,
+    # and filling would leak values into unrelated columns.
+    #
+
+    for i in range(max(len(header_df) - 1, 0)):
+
+        row = header_df.iloc[i].astype(str).str.strip()
+
+        non_empty = (row != "").sum()
+
+        if non_empty < 2:
+            continue
+
+        filled = (
+            header_df.iloc[i]
+            .replace("", None)
+            .ffill()
+        )
+
+        header_df.iloc[i] = filled.fillna("")
 
     data_df = (
         df.iloc[header_rows:]

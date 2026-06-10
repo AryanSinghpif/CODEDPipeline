@@ -26,6 +26,10 @@ KEEP_WORDS = {
     # health
     "medical", "health", "hospital", "beds", "allopathic", "institution",
     "institutions",
+    # transport / communication
+    "telephone", "center", "centre", "connection", "connections",
+    "transport", "communication", "post", "office", "offices",
+    "road", "roads", "vehicles", "registered",
 }
 
 
@@ -53,20 +57,15 @@ def clean_column_name(col):
         if len(w) >= 3 and any(c in VOWELS for c in w)
     ]
 
-    # prefer KEEP_WORDS matches
-    keep = [w for w in english_words if w in KEEP_WORDS]
-
-    if keep:
-        parts = list(dict.fromkeys(keep))
-    elif english_words:
-        # no vocab match — keep words with vowel ratio >= 30%
-        plausible = [
-            w for w in english_words
-            if _vowel_ratio(w) >= 0.30
-        ]
-        parts = list(dict.fromkeys(plausible))
-    else:
-        parts = []
+    # keep a word if it is in the vocabulary OR looks like
+    # plausible English (vowel ratio >= 30%) — do NOT drop
+    # legitimate words (e.g. "telephone center") just because
+    # a vocabulary word is also present
+    plausible = [
+        w for w in english_words
+        if w in KEEP_WORDS or _vowel_ratio(w) >= 0.30
+    ]
+    parts = list(dict.fromkeys(plausible))
 
     if years:
         for y in years:

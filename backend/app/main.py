@@ -37,6 +37,7 @@ def run_pipeline(job_id: str, pdf_path: str):
     from backend.app.cleaning.universal_cleaner import clean_dataframe
     from backend.app.extract.table_extractor import extract_tables
     from backend.app.standardization.metadata_builder import build_metadata
+    from backend.app.translation.hindi_translator import translate_dataframe
     from backend.app.standardization.table_name_extractor import extract_table_name
     from backend.app.validation.table_validator import validate_table
 
@@ -62,6 +63,7 @@ def run_pipeline(job_id: str, pdf_path: str):
             h = detect_header_rows(df)
             table_name = extract_table_name(df, h)
             df = apply_headers(df, h)
+            df = translate_dataframe(df)
             df = clean_headers(df)
             status = validate_table(df)
 

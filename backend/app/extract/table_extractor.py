@@ -76,10 +76,18 @@ def _repair_crushed_header_rows(df):
     return df
 
 
+TITLE_LINE = re.compile(
+    r"^(table|tabel|statement|annexure|appendix)\s*[\(\-:.]?\s*\d",
+    re.IGNORECASE,
+)
+
+
 def _extract_caption(plumber_pdf, page_num, bbox):
     """
-    Grab the text lines printed just above the table on the page —
-    usually the table title/caption.
+    Find the table's title. First preference: an explicit
+    "Table/Statement/Annexure N ..." line anywhere above the table
+    (reports like PLFS print it at the top of the page, far from the
+    table). Fallback: the text lines printed just above the table.
     """
 
     if plumber_pdf is None or bbox is None:
@@ -95,7 +103,7 @@ def _extract_caption(plumber_pdf, page_num, bbox):
         if table_top <= 0:
             return None
 
-        region = page.crop((0, max(0, table_top - 90), page.width, table_top))
+        region = page.crop((0, 0, page.width, table_top))
         text = region.extract_text() or ""
 
         lines = [l.strip() for l in text.split("\n") if l.strip()]
@@ -103,7 +111,24 @@ def _extract_caption(plumber_pdf, page_num, bbox):
         if not lines:
             return None
 
-        # caption is the line(s) closest to the table
+        # explicit title line, closest one to the table wins;
+        # absorb a wrapped continuation line (starts lowercase)
+        for i in range(len(lines) - 1, -1, -1):
+
+            if TITLE_LINE.match(lines[i]):
+
+                title = lines[i]
+
+                if (
+                    i + 1 < len(lines)
+                    and lines[i + 1][:1].islower()
+                    and not TITLE_LINE.match(lines[i + 1])
+                ):
+                    title += " " + lines[i + 1]
+
+                return title[:300]
+
+        # fallback: the line(s) printed right above the table
         return " ".join(lines[-2:])[:300]
 
     except Exception:

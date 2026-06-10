@@ -2,9 +2,9 @@ import re
 
 
 TITLE_PATTERN = re.compile(
-    r"(Table|Statement|Annexure|Appendix)"
+    r"(Table|Tabel|Statement|Annexure|Appendix)"
     r"[\s\-:.]*"
-    r"(\d+([.\-]\d+)*)"
+    r"\(?\s*(\d+([.\-]\d+)*)\s*\)?"
     r"[\s\-:.]*"
     r"(.*)",
     re.IGNORECASE,

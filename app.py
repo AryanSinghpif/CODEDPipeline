@@ -23,17 +23,17 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
-  --night:      #010d6e;
-  --night-deep: #010940;
-  --navy:       #002e77;
-  --blue:       #2575f6;
-  --blue-dim:   #0042af;
-  --soft:       #94b8f2;
-  --ice:        #eef4ff;
+  --night:      #4a1d00;
+  --night-deep: #2a0e00;
+  --navy:       #7a3502;
+  --blue:       #f97316;
+  --blue-dim:   #b45309;
+  --soft:       #fdba74;
+  --ice:        #fff7ed;
   --cream:      #fef1d0;
   --cream-2:    #fde7af;
   --gold:       #d4c500;
-  --ink:        #0a1240;
+  --ink:        #401a0a;
   --serif: 'Instrument Serif', Georgia, serif;
   --sans:  'Space Grotesk', Arial, sans-serif;
   --mono:  'Space Mono', monospace;
@@ -55,7 +55,7 @@ html, body, [class*="css"], .stApp {
 /* ── top bar ── */
 .topbar {
   display: flex; align-items: center; gap: 12px;
-  padding: 0 0 16px; border-bottom: 1px solid rgba(148,184,242,0.25);
+  padding: 0 0 16px; border-bottom: 1px solid rgba(253,186,116,0.25);
   margin-bottom: 20px;
 }
 .logo-mark { color: var(--gold); font-size: 20px; }
@@ -88,7 +88,7 @@ html, body, [class*="css"], .stApp {
 /* ── the solver: person + rubik's cube (pure CSS) ── */
 .solver-box {
   position: relative; border-radius: 14px;
-  border: 1px solid rgba(148,184,242,0.25);
+  border: 1px solid rgba(253,186,116,0.25);
   background: rgba(238,244,255,0.03);
   padding: 44px 64px; margin: 8px 0; min-height: 360px;
   display: flex; align-items: center; justify-content: space-between; gap: 40px;
@@ -105,7 +105,7 @@ html, body, [class*="css"], .stApp {
 .scan-sub { color: var(--soft); font-size: 10px; margin-top: 6px; font-family: var(--mono); letter-spacing: 0.08em; }
 .scan-bar {
   position: relative; height: 3px; border-radius: 2px;
-  background: rgba(148,184,242,0.25);
+  background: rgba(253,186,116,0.25);
   margin: 22px 0 0; max-width: 320px; overflow: hidden;
 }
 .scan-bar > div {
@@ -164,20 +164,20 @@ html, body, [class*="css"], .stApp {
 .cube-shadow {
   position: absolute; left: 50%; top: 188px; width: 110px; height: 16px;
   margin-left: -55px; border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(1,9,64,0.9) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(26,9,0,0.9) 0%, transparent 70%);
 }
 
 /* ── book spread (results) ── */
 .book {
   position: relative; display: flex; border-radius: 10px;
   background: var(--night-deep); padding: 12px; margin: 4px 0 18px;
-  box-shadow: 0 30px 60px rgba(1,9,64,0.5), inset 0 0 0 1px rgba(148,184,242,0.18);
+  box-shadow: 0 30px 60px rgba(26,9,0,0.5), inset 0 0 0 1px rgba(253,186,116,0.18);
 }
 .bpage {
   background: linear-gradient(135deg, var(--cream) 0%, var(--cream-2) 100%);
   color: var(--ink); padding: 30px 34px; flex: 1;
 }
-.bpage-l { border-radius: 6px 0 0 6px; border-right: 1px solid rgba(10,18,64,0.18); }
+.bpage-l { border-radius: 6px 0 0 6px; border-right: 1px solid rgba(64,26,10,0.18); }
 .bpage-r { border-radius: 0 6px 6px 0; }
 .bk-kicker {
   font-family: var(--mono); font-size: 10px; text-transform: uppercase;
@@ -187,20 +187,20 @@ html, body, [class*="css"], .stApp {
   font-family: var(--serif); font-style: italic; font-weight: 400;
   font-size: 44px; line-height: 1; margin: 10px 0 8px; color: var(--ink);
 }
-.bk-sub { font-size: 13px; font-weight: 300; color: rgba(10,18,64,0.7); max-width: 320px; }
+.bk-sub { font-size: 13px; font-weight: 300; color: rgba(64,26,10,0.7); max-width: 320px; }
 .bk-stats { display: flex; gap: 30px; margin-top: 8px; }
 .bk-stat .v { font-family: var(--serif); font-size: 38px; line-height: 1.1; color: var(--ink); }
 .bk-stat .v.good { color: var(--blue-dim); }
 .bk-stat .v.bad { color: #a4541b; }
 .bk-stat .k {
   font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: rgba(10,18,64,0.6); margin-top: 2px;
+  text-transform: uppercase; color: rgba(64,26,10,0.6); margin-top: 2px;
 }
 
 /* ── widgets, recoloured to the palette ── */
 .stTextInput input, .stSelectbox div[data-baseweb] {
   background: rgba(238,244,255,0.06) !important;
-  border-color: rgba(148,184,242,0.35) !important;
+  border-color: rgba(253,186,116,0.35) !important;
   color: var(--ice) !important; font-family: var(--mono) !important; font-size: 12px !important;
 }
 .stDownloadButton button, .stButton button {
@@ -223,11 +223,11 @@ div[data-testid="stFileUploader"] section button {
   font-weight: 600 !important;
 }
 div[data-testid="stDataFrame"] {
-  border: 1px solid rgba(148,184,242,0.25); border-radius: 8px;
+  border: 1px solid rgba(253,186,116,0.25); border-radius: 8px;
 }
 .stTabs [data-baseweb="tab-list"] {
   gap: 4px; background: transparent;
-  border-bottom: 1px solid rgba(148,184,242,0.25);
+  border-bottom: 1px solid rgba(253,186,116,0.25);
 }
 .stTabs [data-baseweb="tab"] {
   font-family: var(--mono) !important; font-size: 11px !important;
@@ -236,9 +236,9 @@ div[data-testid="stDataFrame"] {
 .stTabs [aria-selected="true"] {
   color: var(--gold) !important; border-bottom: 2px solid var(--gold) !important;
 }
-hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important; }
+hr { border-color: rgba(253,186,116,0.25) !important; margin: 10px 0 !important; }
 .note {
-  border-top: 1px solid rgba(148,184,242,0.3);
+  border-top: 1px solid rgba(253,186,116,0.3);
   padding: 14px 4px 0; color: var(--soft); font-size: 13px;
   font-weight: 300; line-height: 1.7; max-width: 720px; margin: 18px auto 0;
 }
@@ -255,8 +255,8 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 .aurora {
   position: absolute; left: -10%; right: -10%; top: 270px; height: 170px;
   background:
-    radial-gradient(50% 90% at 30% 50%, rgba(148,184,242,0.30), transparent 70%),
-    radial-gradient(45% 80% at 70% 40%, rgba(37,117,246,0.28), transparent 70%),
+    radial-gradient(50% 90% at 30% 50%, rgba(253,186,116,0.30), transparent 70%),
+    radial-gradient(45% 80% at 70% 40%, rgba(249,115,22,0.28), transparent 70%),
     radial-gradient(60% 100% at 50% 60%, rgba(238,244,255,0.14), transparent 75%);
   filter: blur(14px);
   animation: aurora-drift 9s ease-in-out infinite alternate;
@@ -309,7 +309,7 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 div[data-testid="stFileUploader"] {
   margin-top: -300px; position: relative; z-index: 6;
   border: 1px dashed rgba(254,241,208,0.55) !important;
-  background: rgba(1,9,64,0.55) !important;
+  background: rgba(26,9,0,0.55) !important;
   backdrop-filter: blur(3px);
 }
 .note { margin-top: 170px !important; border-top: none !important;
@@ -393,6 +393,125 @@ def _cube_solver():
     return f'<div class="solver">{person}{cube}<div class="cube-shadow"></div></div>'
 
 
+HERO_WEBGL = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap');
+html,body{margin:0;overflow:hidden;background:#2a0e00}
+#gl{position:absolute;inset:0}
+.ov{position:absolute;left:0;right:0;text-align:center;pointer-events:none;z-index:2}
+#emblem{top:16px}
+#emblem div{display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:56px;border:2px solid #fef1d0;border-radius:50%/42%;
+  box-shadow:inset 0 0 0 3px #2a0e00,inset 0 0 0 4px rgba(254,241,208,.6)}
+#emblem span{color:#fef1d0;font-size:17px;transform:rotate(-22deg)}
+#eye{top:114px;font-family:'Space Mono',monospace;font-size:11px;
+  letter-spacing:.3em;text-transform:uppercase;color:#eef4ff}
+#eye b{color:#fdba74;font-weight:400;padding:0 12px;animation:flash 2s ease-in-out infinite}
+@keyframes flash{0%,100%{opacity:.2}50%{opacity:1}}
+#title{top:142px;font-family:'Instrument Serif',Georgia,serif;font-size:74px;
+  color:#eef4ff;letter-spacing:.3em;text-indent:.3em;
+  text-shadow:0 0 40px rgba(238,244,255,.25);animation:tin 2.2s ease-out backwards}
+#title em{font-style:italic;color:#d4c500}
+@keyframes tin{from{opacity:0;letter-spacing:.5em}to{opacity:1;letter-spacing:.3em}}
+#hint{bottom:12px;font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:.2em;color:#f97316;text-transform:uppercase}
+#grain{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.5;
+  mix-blend-mode:overlay}
+</style>
+<div id="gl"></div>
+<div class="ov" id="emblem"><div><span>&#9790;</span></div></div>
+<div class="ov" id="eye"><b>&#9679;</b>GOVERNMENT PDF &rarr; CLEAN DATA<b>&#9679;</b></div>
+<div class="ov" id="title">DATA<em>GEN</em></div>
+<div class="ov" id="hint">&#8964; drop a pdf to begin</div>
+<svg id="grain" width="100%" height="100%"><filter id="g">
+<feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2"/>
+<feColorMatrix type="saturate" values="0"/><feComponentTransfer>
+<feFuncA type="linear" slope="0.09"/></feComponentTransfer></filter>
+<rect width="100%" height="100%" filter="url(#g)"/></svg>
+__THREE_JS__
+<script>
+const W=innerWidth,H=560;
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x2a0e00,40,140);
+const cam=new THREE.PerspectiveCamera(40,W/H,0.1,200);
+cam.position.set(0,4,34);
+const ren=new THREE.WebGLRenderer({antialias:true,alpha:true});
+ren.setSize(W,H);ren.setPixelRatio(Math.min(devicePixelRatio,2));
+document.getElementById('gl').appendChild(ren.domElement);
+
+const NS=260,sg=new THREE.BufferGeometry(),pos=[],phase=[];
+for(let i=0;i<NS;i++){pos.push((Math.random()-.5)*140,Math.random()*45+2,-20-Math.random()*50);
+  phase.push(Math.random()*Math.PI*2);}
+sg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+const stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xd4c500,size:.5,
+  transparent:true,opacity:.9,sizeAttenuation:true}));
+scene.add(stars);
+
+function duneMesh(color,amp,yBase,z,seed){
+  const g=new THREE.PlaneGeometry(160,26,120,12);
+  const p=g.attributes.position;
+  for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);
+    p.setZ(i,Math.sin(x*.08+seed)*amp+Math.sin(x*.21+seed*2)*amp*.5
+      +Math.cos(y*.3+seed)*amp*.3);}
+  g.computeVertexNormals();
+  const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color}));
+  m.rotation.x=-Math.PI/2.25;m.position.set(0,yBase,z);
+  return m;
+}
+const duneFar=duneMesh(0x0a0a14,2.2,-3.5,-6,1.7);
+const duneMid=duneMesh(0xf3ebd8,2.6,-4.2,2,4.2);
+const duneNear=duneMesh(0xe9dfc6,1.8,-5.2,9,8.5);
+scene.add(duneFar,duneMid,duneNear);
+
+const spots=new THREE.Group();
+for(let i=0;i<9;i++){
+  const e=new THREE.Mesh(new THREE.CircleGeometry(1,24),
+    new THREE.MeshBasicMaterial({color:0x0a0a14}));
+  e.scale.set(1.4+Math.random()*1.4,.35+Math.random()*.25,1);
+  e.rotation.x=-Math.PI/2.22;
+  e.position.set(-36+i*9+(Math.random()*4-2),-3.05,3.5+(i%3)*2.4);
+  spots.add(e);
+}
+scene.add(spots);
+
+const ac=document.createElement('canvas');ac.width=512;ac.height=128;
+const x=ac.getContext('2d');
+const gr=x.createRadialGradient(256,64,10,256,64,250);
+gr.addColorStop(0,'rgba(253,186,116,.55)');gr.addColorStop(.5,'rgba(249,115,22,.25)');
+gr.addColorStop(1,'rgba(42,14,0,0)');
+x.fillStyle=gr;x.fillRect(0,0,512,128);
+const aur=new THREE.Mesh(new THREE.PlaneGeometry(120,22),
+  new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(ac),transparent:true,
+  blending:THREE.AdditiveBlending,depthWrite:false}));
+aur.position.set(0,6,-12);scene.add(aur);
+
+const fig=new THREE.Group();
+const dark=new THREE.MeshBasicMaterial({color:0x0a0a14});
+const head=new THREE.Mesh(new THREE.SphereGeometry(.34,16,16),dark);head.position.y=3;
+const body=new THREE.Mesh(new THREE.CylinderGeometry(.34,.52,2.1,12),dark);body.position.y=1.7;
+const legs=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,1.3,8),dark);legs.position.y=.45;
+fig.add(head,body,legs);fig.scale.set(.85,.85,.85);fig.position.set(0,-1.9,3.4);
+scene.add(fig);
+
+let mx=0,my=0;
+addEventListener('mousemove',e=>{mx=(e.clientX/W-.5)*2;my=(e.clientY/H-.5)*2;});
+let t=0;
+(function loop(){
+  t+=0.008;
+  stars.material.opacity=.55+Math.sin(t*3)*.35;
+  aur.position.x=Math.sin(t*.7)*6;
+  aur.scale.y=1+Math.sin(t*1.1)*.18;
+  duneMid.position.x=Math.sin(t*.3)*.6;
+  duneNear.position.x=-Math.sin(t*.3)*.9;
+  cam.position.x+=((mx*2.2)-cam.position.x)*.04;
+  cam.position.y+=((4-my*1.2)-cam.position.y)*.04;
+  cam.lookAt(0,2,0);
+  ren.render(scene,cam);
+  requestAnimationFrame(loop);
+})();
+</script>
+"""
+
 INTERACTIVE_CUBE = """
 <style>
 html,body{margin:0;background:transparent;overflow:hidden}
@@ -402,16 +521,16 @@ html,body{margin:0;background:transparent;overflow:hidden}
 #persp{perspective:900px}
 #cube{position:relative;width:150px;height:150px;transform-style:preserve-3d}
 .cb{position:absolute;width:48px;height:48px;transform-style:preserve-3d}
-.f{position:absolute;width:46px;height:46px;border-radius:5px;border:1px solid #010940}
+.f{position:absolute;width:46px;height:46px;border-radius:5px;border:1px solid #2a0e00}
 #hint{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.24em;
-  text-transform:uppercase;color:#94b8f2;margin-top:30px}
+  text-transform:uppercase;color:#fdba74;margin-top:30px}
 </style>
 <div id="wrap">
   <div id="persp"><div id="cube"></div></div>
   <div id="hint">drag to rotate &mdash; solved</div>
 </div>
 <script>
-const COLS={F:'#2575F6',B:'#0042AF',R:'#EEF4FF',L:'#94B8F2',U:'#D4C500',D:'#FEF1D0'};
+const COLS={F:'#F97316',B:'#B45309',R:'#FFF7ED',L:'#FDBA74',U:'#D4C500',D:'#FEF1D0'};
 const cube=document.getElementById('cube'),S=50;
 for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++){
   const c=document.createElement('div');c.className='cb';
@@ -553,20 +672,18 @@ GRAIN_SVG = """
   <rect width="100%" height="100%" filter="url(#g)"/>
 </svg>"""
 
+def _three_tag():
+    from pathlib import Path as _P
+    local = _P(__file__).parent / "static" / "three.min.js"
+    if local.exists():
+        return "<script>" + local.read_text() + "</script>"
+    return ('<script src="https://cdnjs.cloudflare.com/ajax/libs/'
+            'three.js/r128/three.min.js"></script>')
+
+
 with hero.container():
-    st.markdown(f"""
-    <div class="night">
-      {STARS}
-      <div class="aurora"></div>
-      <div class="moon-emblem"><span>☾</span></div>
-      <div class="night-eyebrow"><b>•</b>GOVERNMENT PDF → CLEAN DATA<b>•</b></div>
-      <div class="night-title">DATA<em>GEN</em></div>
-      <div class="dunes">{DUNES_SVG}</div>
-      {FIGURE_SVG}
-      <div class="scroll-hint">⌄&nbsp; Drop a PDF to begin</div>
-      {GRAIN_SVG}
-    </div>
-    """, unsafe_allow_html=True)
+    import streamlit.components.v1 as components
+    components.html(HERO_WEBGL.replace("__THREE_JS__", _three_tag()), height=560)
     c1, c2, c3 = st.columns([1, 1.3, 1])
     with c2:
         uploaded = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")

@@ -239,8 +239,8 @@ div[data-testid="stDataFrame"] {
 hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important; }
 .note {
   border-top: 1px solid rgba(148,184,242,0.3);
-  padding: 14px 4px 0; color: var(--soft); font-size: 13px;
-  font-weight: 300; line-height: 1.7; max-width: 720px; margin: 18px auto 0;
+  padding: 14px 0 0; color: var(--soft); font-size: 13px;
+  font-weight: 300; line-height: 1.7; max-width: 660px; margin: 18px 0 0 !important;
 }
 .note strong { color: var(--ice); font-weight: 500; }
 
@@ -332,9 +332,8 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 div[data-testid="stFileUploader"] {
   border: 1px dashed rgba(254,241,208,0.55) !important;
   background: rgba(1,9,64,0.45) !important;
-  max-width: 660px;
+  max-width: 660px !important;
 }
-.note { max-width: 660px; }
 .note { border-top: none !important; padding-top: 8px; }
 .status-left { padding: 10px 2px 0; }
 .scan-row { display: flex; align-items: baseline; justify-content: space-between;

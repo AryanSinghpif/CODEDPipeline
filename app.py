@@ -126,8 +126,8 @@ html, body, [class*="css"], .stApp {
 
 .cube-stage {
   position: absolute; left: 50%; top: 96px;
-  width: 72px; height: 72px; margin-left: -36px;
-  perspective: 700px;
+  width: 126px; height: 126px; margin-left: -63px;
+  perspective: 1100px;
 }
 .cube-rotor {
   position: absolute; inset: 0; transform-style: preserve-3d;
@@ -138,31 +138,31 @@ html, body, [class*="css"], .stApp {
   to   { transform: rotateX(-24deg) rotateY(360deg); }
 }
 .slice {
-  position: absolute; left: 0; width: 72px; height: 24px;
+  position: absolute; left: 0; width: 126px; height: 42px;
   transform-style: preserve-3d;
 }
 .slice-top { top: 0;    animation: twist-a 7.2s cubic-bezier(.7,0,.2,1) infinite; }
-.slice-mid { top: 24px; animation: twist-b 7.2s cubic-bezier(.7,0,.2,1) infinite; }
-.slice-bot { top: 48px; animation: twist-c 7.2s cubic-bezier(.7,0,.2,1) infinite; }
+.slice-mid { top: 42px; animation: twist-b 7.2s cubic-bezier(.7,0,.2,1) infinite; }
+.slice-bot { top: 84px; animation: twist-c 7.2s cubic-bezier(.7,0,.2,1) infinite; }
 /* sequential layer moves, like solving */
 @keyframes twist-a { 0%,8% {transform:rotateY(0)} 16%,100% {transform:rotateY(90deg)} }
 @keyframes twist-b { 0%,36% {transform:rotateY(0)} 46%,100% {transform:rotateY(-90deg)} }
 @keyframes twist-c { 0%,66% {transform:rotateY(0)} 76%,100% {transform:rotateY(90deg)} }
 .slice-face {
-  position: absolute; width: 72px; height: 24px;
+  position: absolute; width: 126px; height: 42px;
   display: flex; flex-direction: column;
   background: var(--night-deep);
 }
-.sf-0 { transform: rotateY(0deg)   translateZ(36px); }
-.sf-1 { transform: rotateY(90deg)  translateZ(36px); }
-.sf-2 { transform: rotateY(180deg) translateZ(36px); }
-.sf-3 { transform: rotateY(270deg) translateZ(36px); }
-.sf-up { width: 72px; height: 72px; transform: rotateX(90deg) translateZ(12px); }
+.sf-0 { transform: rotateY(0deg)   translateZ(63px); }
+.sf-1 { transform: rotateY(90deg)  translateZ(63px); }
+.sf-2 { transform: rotateY(180deg) translateZ(63px); }
+.sf-3 { transform: rotateY(270deg) translateZ(63px); }
+.sf-up { width: 126px; height: 126px; transform: rotateX(90deg) translateZ(63px); }
 .sticker-row { display: flex; flex: 1; gap: 2px; padding: 1px; height: 100%; }
 .sf-up .sticker-row { height: 33.3%; }
 .sticker { flex: 1; border-radius: 3px; display: block; }
 .cube-shadow {
-  position: absolute; left: 50%; top: 188px; width: 110px; height: 16px;
+  position: absolute; left: 50%; top: 250px; width: 130px; height: 18px;
   margin-left: -55px; border-radius: 50%;
   background: radial-gradient(ellipse, rgba(1,9,64,0.9) 0%, transparent 70%);
 }
@@ -335,14 +335,9 @@ div[data-testid="stFileUploader"] {
 .note { border-top: none !important; padding-top: 8px; }
 .status-left { padding: 10px 2px 0; }
 
-.cube-pane { position: relative; height: 420px; }
-.cube-pane .cube-stage { top: 150px; transform: scale(2.1); }
-.cube-pane .cube-shadow { top: 268px; transform: scale(2.1); }
-.cube-pane .cube-cap {
-  position: absolute; left: 0; right: 0; bottom: 10px; text-align: center;
-  font-family: var(--mono); font-size: 9px; letter-spacing: 0.24em;
-  text-transform: uppercase; color: var(--soft);
-}
+.cube-pane { position: relative; height: 460px; }
+.cube-pane .cube-stage { top: 140px; transform: scale(1.55); }
+.cube-pane .cube-shadow { top: 330px; transform: scale(2.4); }
 .cube-idle .slice { animation: none !important; }
 .cube-idle .cube-rotor { animation-duration: 18s; }
 
@@ -539,8 +534,7 @@ def cube_pane(mode="solving", caption=""):
     )
     return (
         f'<div class="cube-pane {cls}">{cube}'
-        f'<div class="cube-shadow"></div>'
-        f'<div class="cube-cap">{caption}</div></div>'
+        f'<div class="cube-shadow"></div></div>'
     )
 
 
@@ -574,7 +568,7 @@ with left:
 
 if uploaded is None:
     cube_ph.markdown(
-        cube_pane("idle", "drop a pdf &mdash; the cube starts solving"),
+        cube_pane("idle"),
         unsafe_allow_html=True,
     )
     status_ph.markdown("""
@@ -584,7 +578,7 @@ if uploaded is None:
     </div>""", unsafe_allow_html=True)
     st.stop()
 
-cube_ph.markdown(cube_pane("solving", "solving&hellip;"), unsafe_allow_html=True)
+cube_ph.markdown(cube_pane("solving"), unsafe_allow_html=True)
 
 # ── Run pipeline ───────────────────────────────────────────────────────────────
 with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:

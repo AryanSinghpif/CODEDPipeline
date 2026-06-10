@@ -243,6 +243,102 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   font-weight: 300; line-height: 1.7; max-width: 720px; margin: 18px auto 0;
 }
 .note strong { color: var(--ice); font-weight: 500; }
+
+/* ── upload scene: man at his desk, monitor = the app ── */
+.scene {
+  position: relative; width: 860px; height: 540px; margin: 0 auto;
+}
+.star { position: absolute; width: 3px; height: 3px; border-radius: 50%;
+  background: var(--gold); animation: twinkle 3s ease-in-out infinite; }
+@keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: .95; } }
+.scene-eyebrow {
+  position: absolute; top: 0; left: 0; right: 0; text-align: center;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--soft);
+}
+.scene-eyebrow::before, .scene-eyebrow::after { content: ' • '; color: var(--blue); }
+.desk {
+  position: absolute; left: 90px; right: 90px; top: 442px; height: 10px;
+  background: var(--cream); border-radius: 5px;
+  box-shadow: 0 26px 40px rgba(1,9,64,0.65);
+}
+.desk-leg { position: absolute; top: 452px; width: 7px; height: 78px;
+  background: linear-gradient(var(--cream-2), rgba(253,231,175,0.25)); }
+.monitor {
+  position: absolute; left: 50%; top: 56px; width: 470px; height: 330px;
+  margin-left: -235px;
+  border: 3px solid var(--cream); border-radius: 14px;
+  background: rgba(1,9,64,0.55);
+  box-shadow: 0 0 0 1px rgba(1,9,64,0.6), 0 24px 70px rgba(1,9,64,0.6),
+              inset 0 0 60px rgba(37,117,246,0.12);
+}
+.monitor-stand { position: absolute; left: 50%; top: 386px; width: 14px; height: 44px;
+  margin-left: -7px; background: var(--cream); }
+.monitor-base { position: absolute; left: 50%; top: 428px; width: 130px; height: 9px;
+  margin-left: -65px; background: var(--cream); border-radius: 5px; }
+.screen-title {
+  font-family: var(--serif); font-size: 44px; letter-spacing: 0.16em;
+  color: var(--ice); text-align: center; margin-top: 30px; line-height: 1;
+}
+.screen-title em { font-style: italic; color: var(--gold); }
+.screen-sub {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--soft); text-align: center; margin-top: 10px;
+}
+.kbd { position: absolute; left: 50%; top: 420px; width: 150px; height: 10px;
+  margin-left: -160px; background: var(--cream-2); border-radius: 4px; opacity: .85;
+  transform: skewX(-18deg); }
+.mug { position: absolute; left: 50%; top: 408px; width: 26px; height: 32px;
+  margin-left: 218px; border: 3px solid var(--cream); border-radius: 3px 3px 8px 8px; }
+.mug::after { content: ''; position: absolute; right: -12px; top: 6px; width: 10px;
+  height: 13px; border: 3px solid var(--cream); border-radius: 0 6px 6px 0; border-left: 0; }
+.steam { position: absolute; left: 50%; top: 384px; margin-left: 224px;
+  font-family: var(--serif); color: var(--soft); font-size: 15px; opacity: .7;
+  animation: steam 2.6s ease-in-out infinite; }
+@keyframes steam { 0%,100% { transform: translateY(0); opacity:.25; }
+  50% { transform: translateY(-7px); opacity:.8; } }
+.tower { position: absolute; left: 50%; top: 452px; width: 52px; height: 78px;
+  margin-left: 150px; border: 3px solid rgba(148,184,242,0.7); border-radius: 6px; }
+.tower::before { content: ''; position: absolute; left: 9px; right: 9px; top: 10px;
+  height: 3px; background: var(--gold); animation: twinkle 1.6s steps(2) infinite; }
+.tower::after { content: ''; position: absolute; left: 9px; right: 9px; top: 20px;
+  height: 3px; background: rgba(148,184,242,0.6); }
+.sitter { position: absolute; left: 16px; top: 226px; width: 300px; height: 322px; }
+.type-arm { transform-origin: 150px 120px; animation: typing 1.1s ease-in-out infinite; }
+.type-arm.b { animation-delay: .55s; }
+@keyframes typing { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(5deg); } }
+.head-bob { transform-origin: 96px 66px; animation: bob 4s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-3deg); } }
+
+/* uploader pulled INSIDE the monitor screen */
+div[data-testid="stFileUploader"] {
+  margin-top: -388px; position: relative; z-index: 5;
+  border: 1px dashed rgba(254,241,208,0.5) !important;
+  background: rgba(1,13,110,0.35) !important;
+}
+.note { margin-top: 230px !important; }
+
+/* ── morph: monitor collapses into the cube ── */
+.ghost-monitor {
+  position: absolute; left: 50%; top: 70px; width: 220px; height: 150px;
+  margin-left: -110px; border: 3px solid var(--cream); border-radius: 10px;
+  animation: collapse 1.5s cubic-bezier(.6,-0.1,.3,1) forwards;
+}
+.ghost-monitor::after { content: ''; position: absolute; left: 50%; bottom: -26px;
+  width: 10px; height: 26px; margin-left: -5px; background: var(--cream); }
+@keyframes collapse {
+  0%   { transform: scale(1) rotate(0deg); opacity: .9; }
+  70%  { transform: scale(.28) rotate(200deg); opacity: .7; }
+  100% { transform: scale(.06) rotate(360deg); opacity: 0; }
+}
+.morph-in .cube-stage { animation: cube-arrive 1s ease-out .9s backwards; }
+@keyframes cube-arrive { from { transform: scale(0) ; } to { transform: scale(1); } }
+
+/* ── results pop-in ── */
+.pop { animation: pop-in .6s cubic-bezier(.2,1.4,.4,1) backwards; }
+.pop-2 { animation-delay: .15s; } .pop-3 { animation-delay: .3s; }
+@keyframes pop-in { from { transform: scale(.7) translateY(16px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; } }
 </style>
 """, unsafe_allow_html=True)
 
@@ -250,8 +346,8 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 st.markdown("""
 <div class="topbar">
   <div class="logo-mark">⬡</div>
-  <div class="logo-name">CODED<span>Pipeline</span></div>
-  <div class="topbar-right">Government PDF → clean data</div>
+  <div class="logo-name">Data<span>Gen</span></div>
+  <div class="topbar-right">District extraction engine</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -300,9 +396,72 @@ def _cube_solver():
     return f'<div class="solver">{person}{cube}<div class="cube-shadow"></div></div>'
 
 
-def scanner_html(title, msg, sub="", pct=None):
+INTERACTIVE_CUBE = """
+<style>
+html,body{margin:0;background:transparent;overflow:hidden}
+#wrap{width:100%;height:310px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none}
+#wrap:active{cursor:grabbing}
+#persp{perspective:900px}
+#cube{position:relative;width:150px;height:150px;transform-style:preserve-3d}
+.cb{position:absolute;width:48px;height:48px;transform-style:preserve-3d}
+.f{position:absolute;width:46px;height:46px;border-radius:5px;border:1px solid #010940}
+#hint{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.24em;
+  text-transform:uppercase;color:#94b8f2;margin-top:30px}
+</style>
+<div id="wrap">
+  <div id="persp"><div id="cube"></div></div>
+  <div id="hint">drag to rotate &mdash; solved</div>
+</div>
+<script>
+const COLS={F:'#2575F6',B:'#0042AF',R:'#EEF4FF',L:'#94B8F2',U:'#D4C500',D:'#FEF1D0'};
+const cube=document.getElementById('cube'),S=50;
+for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++){
+  const c=document.createElement('div');c.className='cb';
+  c.style.transform=`translate3d(${x*S+51}px,${y*S+51}px,${z*S}px)`;
+  const faces=[];
+  if(z===1)faces.push(['rotateY(0deg)',COLS.F]);
+  if(z===-1)faces.push(['rotateY(180deg)',COLS.B]);
+  if(x===1)faces.push(['rotateY(90deg)',COLS.R]);
+  if(x===-1)faces.push(['rotateY(-90deg)',COLS.L]);
+  if(y===-1)faces.push(['rotateX(90deg)',COLS.U]);
+  if(y===1)faces.push(['rotateX(-90deg)',COLS.D]);
+  for(const[r,col]of faces){
+    const f=document.createElement('div');f.className='f';
+    f.style.background=col;f.style.transform=`${r} translateZ(24px)`;
+    c.appendChild(f);
+  }
+  cube.appendChild(c);
+}
+let rx=-26,ry=-38,dragging=false,px=0,py=0,idle=true;
+function render(){cube.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`;}
+render();
+const wrap=document.getElementById('wrap');
+wrap.addEventListener('pointerdown',e=>{dragging=true;idle=false;px=e.clientX;py=e.clientY;});
+window.addEventListener('pointermove',e=>{
+  if(!dragging)return;
+  ry+=(e.clientX-px)*0.5;rx-=(e.clientY-py)*0.5;
+  rx=Math.max(-90,Math.min(90,rx));
+  px=e.clientX;py=e.clientY;render();
+});
+window.addEventListener('pointerup',()=>{dragging=false;
+  setTimeout(()=>{idle=true},2500);});
+(function spin(){if(idle&&!dragging){ry+=0.15;render();}requestAnimationFrame(spin);})();
+</script>
+"""
+
+
+def scanner_html(title, msg, sub="", pct=None, morph=False):
     bar_cls = "scan-bar" if pct is not None else "scan-bar indet"
     width = f"{pct:.0f}%" if pct is not None else "35%"
+    solver = _cube_solver()
+    if morph:
+        solver = solver.replace(
+            'class="solver"', 'class="solver morph-in"'
+        ).replace(
+            '<div class="cube-stage">',
+            '<div class="ghost-monitor"></div><div class="cube-stage">',
+        )
     return f"""
     <div class="solver-box">
       <div class="scan-left">
@@ -311,25 +470,95 @@ def scanner_html(title, msg, sub="", pct=None):
         <div class="scan-sub">{sub}</div>
         <div class="{bar_cls}"><div style="width:{width}"></div></div>
       </div>
-      {_cube_solver()}
+      {solver}
     </div>"""
 
+
+# ── Stage previews (dev): ?stage=solve | ?stage=results ───────────────────────
+_stage = st.query_params.get("stage")
+
+if _stage == "solve":
+    st.markdown(
+        scanner_html("Solving your PDF…", "merging hierarchical headers",
+                     "table 47 · page 92 · 47 / 186", pct=42, morph=True),
+        unsafe_allow_html=True,
+    )
+    st.stop()
+
+if _stage == "results":
+    import streamlit.components.v1 as components
+    L, Rcol = st.columns([1.25, 1])
+    with L:
+        st.markdown("""
+        <div class="bpage bpage-l pop" style="border-radius:10px;border:none">
+          <div class="bk-kicker">The Extraction</div>
+          <div class="bk-title">Solved.</div>
+          <div class="bk-sub">Every table in your report, pressed into clean pages.</div>
+          <div class="bk-stats">
+            <div class="bk-stat pop pop-2"><div class="v">186</div><div class="k">Tables found</div></div>
+            <div class="bk-stat pop pop-2"><div class="v good">184</div><div class="k">Extracted</div></div>
+            <div class="bk-stat pop pop-3"><div class="v bad">2</div><div class="k">Set aside</div></div>
+            <div class="bk-stat pop pop-3"><div class="v">200</div><div class="k">Pages covered</div></div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+        b1, b2 = st.columns(2)
+        with b1:
+            st.download_button("↓ Download Excel", b"x", file_name="t.xlsx", use_container_width=True)
+        with b2:
+            st.download_button("↓ Download CSVs", b"x", file_name="t.zip", use_container_width=True)
+    with Rcol:
+        components.html(INTERACTIVE_CUBE, height=330)
+    st.stop()
 
 # ── Upload / hero ──────────────────────────────────────────────────────────────
 uploaded = None
 hero = st.empty()
 
+SITTER_SVG = """
+<svg class="sitter" viewBox="0 0 270 290" fill="none">
+  <g class="head-bob">
+    <circle cx="96" cy="58" r="20" stroke="#94B8F2" stroke-width="4"/>
+    <path d="M108 44 C 116 36, 122 36, 128 40" stroke="#94B8F2" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <path d="M96 78 C 98 110, 100 128, 104 150" stroke="#94B8F2" stroke-width="4" stroke-linecap="round"/>
+  <path class="type-arm" d="M100 96 C 124 104, 142 112, 158 116" stroke="#FEF1D0" stroke-width="4" stroke-linecap="round"/>
+  <path class="type-arm b" d="M100 104 C 122 116, 140 124, 154 128" stroke="#FEF1D0" stroke-width="4" stroke-linecap="round"/>
+  <path d="M104 150 C 126 158, 144 162, 158 164 L 158 208" stroke="#94B8F2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M104 150 L 104 208" stroke="#94B8F2" stroke-width="4" stroke-linecap="round"/>
+  <path d="M84 152 L 84 252 M 84 168 L 130 168 L 130 252" stroke="#FDE7AF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M66 252 L 148 252" stroke="#FDE7AF" stroke-width="4" stroke-linecap="round"/>
+</svg>"""
+
+STARS = "".join(
+    f'<span class="star" style="left:{l}%;top:{t}px;animation-delay:{d}s"></span>'
+    for l, t, d in [(6, 60, 0), (13, 150, 1.2), (22, 40, 2.1), (31, 110, .6),
+                    (44, 30, 1.8), (58, 50, .3), (69, 120, 2.4), (78, 35, 1),
+                    (87, 90, .9), (94, 170, 1.5), (50, 12, 2.7), (90, 290, 2)]
+)
+
 with hero.container():
-    st.markdown("""
-    <div class="hero">
-      <div class="hero-eyebrow">Government PDF → clean data</div>
-      <div class="hero-title">Every table in your PDF.<br><em>Solved, page by page.</em></div>
-      <div class="hero-sub">Upload a government statistical report — the pipeline finds every
-      table, merges hierarchical headers, translates legacy Hindi, and hands you
-      structured CSVs and a multi-sheet Excel workbook.</div>
+    st.markdown(f"""
+    <div class="scene">
+      {STARS}
+      <div class="scene-eyebrow">Government PDF → clean data</div>
+      {SITTER_SVG}
+      <div class="monitor">
+        <div class="screen-title">Data<em>Gen</em></div>
+        <div class="screen-sub">upload the data</div>
+      </div>
+      <div class="monitor-stand"></div>
+      <div class="monitor-base"></div>
+      <div class="kbd"></div>
+      <div class="mug"></div><div class="steam">~</div>
+      <div class="tower"></div>
+      <div class="desk"></div>
+      <div class="desk-leg" style="left:110px"></div>
+      <div class="desk-leg" style="right:110px"></div>
     </div>
     """, unsafe_allow_html=True)
-    c1, c2, c3 = st.columns([1, 2, 1])
+    st.markdown('<div class="upl-inside">', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([1.05, 1.1, 1.05])
     with c2:
         uploaded = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")
         if uploaded is None:
@@ -339,6 +568,7 @@ with hero.container():
               DES district reports, census annexures, statistical publications.<br>
               <strong>Not supported</strong> — scanned or image-only PDFs.
             </div>""", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if uploaded is None:
     st.stop()
@@ -357,7 +587,8 @@ try:
 
         stage.markdown(
             scanner_html("Solving your PDF…", "locating tables",
-                         f"{uploaded.name} · camelot lattice + stream"),
+                         f"{uploaded.name} · camelot lattice + stream",
+                         morph=True),
             unsafe_allow_html=True,
         )
 
@@ -447,39 +678,42 @@ try:
     R = st.session_state["results"]
     catalog, failed, table_dfs = R["catalog"], R["failed"], R["table_dfs"]
 
-    # ── Results: open-book spread ──────────────────────────────────────────────
+    # ── Results: stats left, interactive solved cube right ────────────────────
+    import streamlit.components.v1 as components
+
     fail_cls = "bad" if failed else "good"
     pages_covered = len(table_dfs) and max(m["page"] for m in catalog)
-    st.markdown(f"""
-    <div class="book">
-      <div class="bpage bpage-l">
-        <div class="bk-kicker">The Extraction</div>
-        <div class="bk-title">Solved.</div>
-        <div class="bk-sub">Every table in your report, pressed into clean pages.</div>
-      </div>
-      <div class="bpage bpage-r">
-        <div class="bk-kicker">At a glance</div>
-        <div class="bk-stats">
-          <div class="bk-stat"><div class="v">{R["n_raw"]}</div><div class="k">Tables found</div></div>
-          <div class="bk-stat"><div class="v good">{len(catalog)}</div><div class="k">Extracted</div></div>
-          <div class="bk-stat"><div class="v {fail_cls}">{len(failed)}</div><div class="k">Set aside</div></div>
-          <div class="bk-stat"><div class="v">{pages_covered}</div><div class="k">Pages covered</div></div>
-        </div>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
-
     base = uploaded.name.replace(".pdf", "")
-    s1, s2, s3 = st.columns([4, 1, 1])
-    with s1:
-        search = st.text_input("s", placeholder="Search by name or table ID…", label_visibility="collapsed")
-    with s2:
-        st.download_button("↓ Excel", R["xlsx"], file_name=f"{base}_tables.xlsx",
-                           mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                           use_container_width=True)
-    with s3:
-        st.download_button("↓ All CSVs", R["zip"], file_name=f"{base}_tables.zip",
-                           mime="application/zip", use_container_width=True)
+
+    L, Rcol = st.columns([1.25, 1])
+
+    with L:
+        st.markdown(f"""
+        <div class="bpage bpage-l pop" style="border-radius:10px;border:none">
+          <div class="bk-kicker">The Extraction</div>
+          <div class="bk-title">Solved.</div>
+          <div class="bk-sub">Every table in your report, pressed into clean pages.</div>
+          <div class="bk-stats">
+            <div class="bk-stat pop pop-2"><div class="v">{R["n_raw"]}</div><div class="k">Tables found</div></div>
+            <div class="bk-stat pop pop-2"><div class="v good">{len(catalog)}</div><div class="k">Extracted</div></div>
+            <div class="bk-stat pop pop-3"><div class="v {fail_cls}">{len(failed)}</div><div class="k">Set aside</div></div>
+            <div class="bk-stat pop pop-3"><div class="v">{pages_covered}</div><div class="k">Pages covered</div></div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+        b1, b2 = st.columns(2)
+        with b1:
+            st.download_button("↓ Download Excel", R["xlsx"], file_name=f"{base}_tables.xlsx",
+                               mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                               use_container_width=True)
+        with b2:
+            st.download_button("↓ Download CSVs", R["zip"], file_name=f"{base}_tables.zip",
+                               mime="application/zip", use_container_width=True)
+
+    with Rcol:
+        components.html(INTERACTIVE_CUBE, height=330)
+
+    search = st.text_input("s", placeholder="Search by name or table ID…", label_visibility="collapsed")
 
     tab1, tab2, tab3 = st.tabs(["Index", "Preview", f"Set aside ({len(failed)})"])
 

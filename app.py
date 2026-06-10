@@ -17,32 +17,30 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ── Design System ──────────────────────────────────────────────────────────────
+# ── Design system — GitHub dark / radar green ─────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --red:      #C8102E;
-  --red-hi:   #A80D25;
-  --red-dim:  rgba(200,16,46,0.07);
-  --red-rim:  rgba(200,16,46,0.22);
-  --text:     #1A1210;
-  --text2:    #5C5450;
-  --bg:       #F5F0EB;
-  --surf:     #FAF7F4;
-  --card:     #FFFFFF;
-  --border:   #E2D9D0;
-  --border2:  #EDE6DF;
-  --muted:    #9A908A;
-  --mono:     'JetBrains Mono', monospace;
+  --bg:      #010409;
+  --bg2:     #0d1117;
+  --card:    #0d1117;
+  --border:  #21262d;
+  --border2: #30363d;
+  --text:    #e6edf3;
+  --text2:   #848d97;
+  --muted:   #6e7681;
+  --green:   #3fb950;
+  --green-hi:#56d364;
+  --green-dk:#238636;
+  --green-dim: rgba(63,185,80,0.10);
+  --green-rim: rgba(63,185,80,0.35);
+  --mono: 'JetBrains Mono', monospace;
 }
 
-/* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body, [class*="css"], .stApp {
-  font-family: 'Space Grotesk', -apple-system, sans-serif !important;
+  font-family: 'Inter', -apple-system, sans-serif !important;
   background: var(--bg) !important;
   color: var(--text) !important;
 }
@@ -50,619 +48,410 @@ html, body, [class*="css"], .stApp {
 #MainMenu, footer, header { visibility: hidden !important; }
 
 .block-container {
-  padding: 0 80px 80px !important;
-  max-width: 100% !important;
+  padding: 24px 56px 24px !important;
+  max-width: 1500px !important;
 }
 
-/* ── Hero band ── */
-.hero {
-  margin-left: -80px;
-  margin-right: -80px;
-  padding: 72px 80px 60px;
-  border-bottom: 1px solid var(--border);
-  background:
-    radial-gradient(ellipse 55% 50% at 85% 50%, rgba(200,16,46,0.05) 0%, transparent 65%),
-    var(--surf);
-}
-
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 13px 5px 10px;
-  border: 1px solid var(--red-rim);
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--red);
-  margin-bottom: 28px;
-}
-
-.hero-eyebrow-dot {
-  width: 6px; height: 6px;
-  background: var(--red);
-  border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
-}
-
-.hero-title {
-  font-size: clamp(52px, 6vw, 80px);
-  font-weight: 700;
-  letter-spacing: -3px;
-  line-height: 0.95;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-
-.hero-title-red {
-  color: var(--red);
-  display: block;
-}
-
-.hero-divline {
-  width: 48px;
-  height: 2px;
-  background: var(--red);
-  margin: 22px 0;
-}
-
-.hero-sub {
-  font-size: 15px;
-  font-weight: 400;
-  color: var(--text2);
-  line-height: 1.65;
-  max-width: 420px;
-  margin-bottom: 40px;
-}
-
-/* ── Pipeline steps ── */
-.pipeline-row {
-  display: flex;
-  align-items: center;
-  gap: 0;
-}
-
-.p-node {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  color: var(--text2);
-  border: 1px solid var(--border);
-  background: var(--card);
-}
-
-.p-node:first-child { border-radius: 4px 0 0 4px; }
-.p-node:last-child  { border-radius: 0 4px 4px 0; }
-
-.p-node.done {
-  color: var(--red);
-  border-color: var(--red-rim);
-  background: var(--red-dim);
-}
-
-.p-sep {
-  width: 1px;
-  height: 100%;
-  background: var(--border);
-}
-
-.p-connector {
-  width: 20px;
-  height: 1px;
-  background: var(--border);
-}
-
-/* ── Main content area ── */
-.content {
-  padding: 0 80px 80px;
-  max-width: 1240px;
-}
-
-/* ── Upload section ── */
-.upload-section {
-  padding: 48px 0 32px;
-}
-
-.section-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-
-[data-testid="stFileUploader"] {
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-  border-left: 3px solid var(--red) !important;
-  border-radius: 0 6px 6px 0 !important;
-  transition: border-color 0.2s, background 0.2s !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
-}
-
-[data-testid="stFileUploader"]:hover {
-  background: #FDFAF8 !important;
-  border-color: var(--red-rim) !important;
-  border-left-color: var(--red) !important;
-}
-
-[data-testid="stFileUploaderDropzone"] {
-  padding: 32px 28px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-[data-testid="stFileUploaderDropzoneInstructions"] p,
-section[data-testid="stFileUploaderDropzone"] p {
-  color: var(--muted) !important;
-  font-size: 13px !important;
-  font-family: 'Space Grotesk', sans-serif !important;
-}
-
-/* ── Notes ── */
-.note {
-  margin-top: 14px;
-  padding: 14px 18px 14px 20px;
-  border-left: 2px solid var(--border);
-  background: var(--card);
-  border-radius: 0 4px 4px 0;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.7;
-}
-
-.note strong { color: var(--text2); font-weight: 600; }
-
-/* ── Progress ── */
-[data-testid="stProgressBar"] > div {
-  background: #1a1a1a !important;
-  border-radius: 1px !important;
-  height: 2px !important;
-}
-
-[data-testid="stProgressBar"] > div > div {
-  background: var(--red) !important;
-  border-radius: 1px !important;
-  transition: width 0.5s ease !important;
-}
-
-[data-testid="stProgressBar"] p,
-div[data-testid="stProgressBar"] + div {
-  font-family: var(--mono) !important;
-  font-size: 11px !important;
-  color: var(--muted) !important;
-}
-
-/* ── Stat cards ── */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 40px 0;
-}
-
-.stat-card {
-  padding: 28px 24px;
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-top: 2px solid;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
-
-.stat-card.total  { border-top-color: var(--border); }
-.stat-card.ok     { border-top-color: var(--red); }
-.stat-card.fail   { border-top-color: var(--border); }
-.stat-card.fail.nonzero { border-top-color: var(--red); }
-
-.stat-num {
-  font-size: 3.6rem;
-  font-weight: 700;
-  letter-spacing: -3px;
-  line-height: 1;
-  font-family: var(--mono);
-}
-
-.stat-card.total .stat-num  { color: var(--text2); }
-.stat-card.ok    .stat-num  { color: var(--red); }
-.stat-card.fail  .stat-num  { color: var(--muted); }
-.stat-card.fail.nonzero .stat-num { color: var(--red); }
-
-.stat-rule {
-  width: 24px;
-  height: 1px;
-  background: var(--border);
-  margin: 16px 0 12px;
-}
-
-.stat-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.stat-sub {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 4px;
-  font-family: var(--mono);
-}
-
-/* ── Section header ── */
-.sect {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* ── top bar ── */
+.topbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 0 16px; border-bottom: 1px solid var(--border);
   margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+}
+.logo-mark {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, var(--green-dk), #0f2a17 70%);
+  border: 1px solid var(--green-rim);
+  box-shadow: 0 0 18px rgba(63,185,80,0.35);
+}
+.logo-name { font-weight: 800; font-size: 18px; letter-spacing: -0.3px; }
+.logo-name span { color: var(--green); }
+.topbar-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text2);
+  border: 1px solid var(--border2); border-radius: 999px;
+  padding: 4px 12px; margin-left: 8px;
+}
+.topbar-right { margin-left: auto; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+
+/* ── hero (pre-upload) ── */
+.hero { text-align: center; padding: 26px 0 6px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--green);
+  background: var(--green-dim); border: 1px solid var(--green-rim);
+  border-radius: 4px; padding: 5px 14px; margin-bottom: 18px;
+}
+.hero-title {
+  font-size: 54px; font-weight: 800; letter-spacing: -2px; line-height: 1.04;
+  color: var(--text);
+}
+.hero-sub {
+  margin: 14px auto 0; max-width: 620px;
+  color: var(--text2); font-size: 15px; line-height: 1.6;
 }
 
-.sect-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* ── radar grid backdrop ── */
+.radar-wrap { position: relative; margin: 26px auto 0; width: 320px; height: 150px; overflow: hidden; }
+.radar-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(63,185,80,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63,185,80,0.12) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse at 50% 100%, black 30%, transparent 75%);
+}
+.radar-dome {
+  position: absolute; left: 50%; bottom: -90px; transform: translateX(-50%);
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, rgba(63,185,80,0.45), rgba(13,40,22,0.9) 70%);
+  border: 1px solid var(--green-rim);
+  box-shadow: 0 0 60px rgba(63,185,80,0.35);
 }
 
-.sect-name {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
+/* ── scanner / loading ── */
+.scan-box {
+  position: relative; border: 1px solid var(--border2); border-radius: 10px;
+  background: var(--bg2); padding: 34px 30px 30px; text-align: center;
+  overflow: hidden; margin: 8px 0;
 }
-
-.sect-count {
-  padding: 2px 9px;
-  background: var(--red-dim);
-  border: 1px solid var(--red-rim);
-  border-radius: 2px;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--red);
-  font-family: var(--mono);
+.scan-box::before {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(63,185,80,0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63,185,80,0.10) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 80%);
 }
-
-/* ── Section label ── */
-.section-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
+.scan-ring {
+  position: relative; width: 92px; height: 92px; margin: 0 auto 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(63,185,80,0.5), #0f2a17 75%);
+  border: 1px solid var(--green-rim);
+  box-shadow: 0 0 40px rgba(63,185,80,0.35);
 }
-
-/* ── Table ── */
-[data-testid="stDataFrame"] {
-  border: 1px solid var(--border2) !important;
-  border-radius: 4px !important;
-  overflow: hidden !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+.scan-ring::after {
+  content: ''; position: absolute; inset: -1px; border-radius: 50%;
+  border: 1px solid transparent; border-top-color: var(--green-hi);
+  animation: spin 1.1s linear infinite;
 }
-
-/* ── Download buttons ── */
-[data-testid="stDownloadButton"] button {
-  background: var(--red) !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 3px !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.8px !important;
-  padding: 10px 20px !important;
-  transition: background 0.15s, transform 0.1s !important;
-  font-family: 'Space Grotesk', sans-serif !important;
-  box-shadow: 0 2px 8px rgba(200,16,46,0.18) !important;
+.scan-ring .dot {
+  position: absolute; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green-hi); top: 8px; left: 50%;
+  box-shadow: 0 0 10px var(--green-hi);
+  transform-origin: 0 38px; animation: spin 1.1s linear infinite;
 }
-
-[data-testid="stDownloadButton"] button:hover {
-  background: var(--red-hi) !important;
-  transform: translateY(-1px) !important;
+@keyframes spin { to { transform: rotate(360deg); } }
+.scan-pulse {
+  position: absolute; left: 50%; top: 50%; width: 92px; height: 92px;
+  transform: translate(-50%, -78%); border-radius: 50%;
+  border: 1px solid var(--green-rim);
+  animation: pulse 1.8s ease-out infinite;
 }
-
-/* ── Text input ── */
-[data-testid="stTextInput"] input {
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 3px !important;
-  color: var(--text) !important;
-  font-size: 13px !important;
-  font-family: 'Space Grotesk', sans-serif !important;
-  padding: 10px 14px !important;
+@keyframes pulse {
+  0%   { opacity: .8; transform: translate(-50%,-78%) scale(1); }
+  100% { opacity: 0;  transform: translate(-50%,-78%) scale(2.1); }
 }
-
-[data-testid="stTextInput"] input:focus {
-  border-color: var(--red-rim) !important;
-  box-shadow: 0 0 0 3px rgba(200,16,46,0.06) !important;
-  outline: none !important;
+.scan-title { position: relative; font-weight: 600; font-size: 15px; }
+.scan-msg {
+  position: relative; font-family: var(--mono); font-size: 11px;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--green);
+  margin-top: 8px; min-height: 16px;
 }
-
-[data-testid="stTextInput"] input::placeholder { color: var(--muted) !important; }
-
-/* ── Selectbox ── */
-[data-testid="stSelectbox"] > div > div {
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 3px !important;
-  color: var(--text) !important;
-  font-size: 13px !important;
+.scan-msg::after { content: '▍'; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.scan-sub { position: relative; color: var(--muted); font-size: 12px; margin-top: 6px;
+  font-family: var(--mono); }
+.scan-bar {
+  position: relative; height: 4px; border-radius: 2px; background: var(--border);
+  margin: 18px auto 0; max-width: 420px; overflow: hidden;
 }
-
-/* ── Spinner ── */
-[data-testid="stSpinner"] > div { border-top-color: var(--red) !important; }
-
-/* ── Expander ── */
-[data-testid="stExpander"] {
-  background: var(--card) !important;
-  border: 1px solid var(--border2) !important;
-  border-left: 3px solid var(--red) !important;
-  border-radius: 0 4px 4px 0 !important;
+.scan-bar > div {
+  height: 100%; background: linear-gradient(90deg, var(--green-dk), var(--green-hi));
+  border-radius: 2px; box-shadow: 0 0 12px rgba(63,185,80,0.6);
+  transition: width .25s ease;
 }
-
-/* ── HR ── */
-hr {
-  border: none !important;
-  border-top: 1px solid var(--border2) !important;
-  margin: 36px 0 !important;
+.scan-bar.indet > div {
+  width: 35% !important; animation: slide 1.2s ease-in-out infinite alternate;
 }
+@keyframes slide { from { margin-left: 0; } to { margin-left: 65%; } }
+
+/* ── stat chips ── */
+.stats { display: flex; gap: 12px; margin: 4px 0 14px; }
+.stat {
+  flex: 1; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 16px;
+}
+.stat .v { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+.stat .v.green { color: var(--green); }
+.stat .v.red { color: #f85149; }
+.stat .k { font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+/* ── widgets ── */
+.stTextInput input, .stSelectbox div[data-baseweb] {
+  background: var(--bg2) !important; border-color: var(--border2) !important;
+  color: var(--text) !important; font-family: var(--mono) !important; font-size: 12px !important;
+}
+.stDownloadButton button, .stButton button {
+  background: #fff !important; color: #0d1117 !important;
+  border: 1px solid #fff !important; border-radius: 6px !important;
+  font-weight: 600 !important; font-size: 13px !important;
+}
+.stDownloadButton button:hover { background: var(--green-hi) !important; border-color: var(--green-hi) !important; }
+div[data-testid="stFileUploader"] {
+  border: 1px dashed var(--border2); border-radius: 10px; background: var(--bg2);
+  padding: 6px;
+}
+div[data-testid="stFileUploader"] section { background: transparent !important; }
+div[data-testid="stFileUploader"] section button {
+  background: #fff !important; color: #0d1117 !important; border-radius: 6px !important;
+  font-weight: 600 !important;
+}
+div[data-testid="stDataFrame"] { border: 1px solid var(--border); border-radius: 8px; }
+.stTabs [data-baseweb="tab-list"] { gap: 4px; background: transparent; border-bottom: 1px solid var(--border); }
+.stTabs [data-baseweb="tab"] {
+  font-family: var(--mono) !important; font-size: 11px !important;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2) !important;
+}
+.stTabs [aria-selected="true"] { color: var(--green) !important; border-bottom: 2px solid var(--green) !important; }
+hr { border-color: var(--border) !important; margin: 10px 0 !important; }
+.note {
+  border: 1px solid var(--border); border-left: 3px solid var(--green);
+  border-radius: 0 8px 8px 0; background: var(--bg2);
+  padding: 14px 18px; color: var(--text2); font-size: 13px; line-height: 1.7;
+  max-width: 760px; margin: 18px auto 0;
+}
+.note strong { color: var(--text); }
 </style>
 """, unsafe_allow_html=True)
 
-
-# ── Helpers ────────────────────────────────────────────────────────────────────
-
-def stat_card(cls, value, label, sub=""):
-    sub_html = f'<div class="stat-sub">{sub}</div>' if sub else ""
-    return f"""
-    <div class="stat-card {cls}">
-        <div class="stat-num">{value}</div>
-        <div class="stat-rule"></div>
-        <div class="stat-label">{label}</div>
-        {sub_html}
-    </div>"""
-
-
-def sect_header(name, count=None):
-    badge = f'<span class="sect-count">{count}</span>' if count is not None else ""
-    return f"""
-    <div class="sect">
-        <div class="sect-title">
-            <span class="sect-name">{name}</span>
-            {badge}
-        </div>
-    </div>"""
-
-
-# ── Hero ───────────────────────────────────────────────────────────────────────
-
+# ── Top bar ────────────────────────────────────────────────────────────────────
 st.markdown("""
-<div class="hero">
-    <div class="hero-eyebrow">
-        <div class="hero-eyebrow-dot"></div>
-        District Extraction Engine
-    </div>
-    <div class="hero-title">
-        CODED
-        <span class="hero-title-red">Pipeline</span>
-    </div>
-    <div class="hero-divline"></div>
-    <div class="hero-sub">
-        Upload a government statistical report.
-        The pipeline finds every table, cleans it,
-        and hands you structured CSVs — ready to analyse.
-    </div>
-    <div class="pipeline-row">
-        <div class="p-node">PDF</div>
-        <div class="p-connector"></div>
-        <div class="p-node">Camelot Extract</div>
-        <div class="p-connector"></div>
-        <div class="p-node">Clean + Dedupe</div>
-        <div class="p-connector"></div>
-        <div class="p-node">Header Detection</div>
-        <div class="p-connector"></div>
-        <div class="p-node">Validate</div>
-        <div class="p-connector"></div>
-        <div class="p-node done">&#10003; &nbsp;CSV Export</div>
-    </div>
+<div class="topbar">
+  <div class="logo-mark"></div>
+  <div class="logo-name">CODED<span>Pipeline</span></div>
+  <div class="topbar-tag">Release</div>
+  <div class="topbar-right">District Extraction Engine</div>
 </div>
-<div class="content">
 """, unsafe_allow_html=True)
 
-# ── Upload ─────────────────────────────────────────────────────────────────────
 
-st.markdown('<div class="upload-section"><div class="section-label">Input</div>', unsafe_allow_html=True)
+def scanner_html(title, msg, sub="", pct=None):
+    bar_cls = "scan-bar" if pct is not None else "scan-bar indet"
+    width = f"{pct:.0f}%" if pct is not None else "35%"
+    return f"""
+    <div class="scan-box">
+      <div class="scan-pulse"></div>
+      <div class="scan-ring"><div class="dot"></div></div>
+      <div class="scan-title">{title}</div>
+      <div class="scan-msg">{msg}</div>
+      <div class="scan-sub">{sub}</div>
+      <div class="{bar_cls}"><div style="width:{width}"></div></div>
+    </div>"""
 
-uploaded = st.file_uploader(
-    "Drop PDF here or click to browse",
-    type=["pdf"],
-    label_visibility="collapsed",
-)
 
-st.markdown('</div>', unsafe_allow_html=True)
+# ── Upload / hero ──────────────────────────────────────────────────────────────
+uploaded = None
+hero = st.empty()
 
-if uploaded is None:
+with hero.container():
     st.markdown("""
-    <div class="note">
-        <strong>Supported</strong> — Bordered / lattice tables: DES district reports, census annexures, government statistical publications.<br>
-        <strong>Not supported</strong> — Scanned PDFs, image-only files, or stream-style tables without visible cell borders.
-    </div>
+    <div class="hero">
+      <div class="hero-eyebrow">● &nbsp;Periodic table scanning of district reports</div>
+      <div class="hero-title">Every table in your PDF.<br>Cleaned. Translated. Excel-ready.</div>
+      <div class="hero-sub">Upload a government statistical report — the pipeline finds every
+      bordered table, merges hierarchical headers, translates legacy Hindi, and hands you
+      structured CSVs and a multi-sheet Excel workbook.</div>
     </div>
     """, unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([1, 2, 1])
+    with c2:
+        uploaded = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")
+        if uploaded is None:
+            st.markdown("""
+            <div class="note">
+              <strong>Supported</strong> — bordered / lattice tables: DES district reports, census
+              annexures, statistical publications.<br>
+              <strong>Not supported</strong> — scanned or image-only PDFs, borderless stream tables.
+            </div>""", unsafe_allow_html=True)
+
+if uploaded is None:
     st.stop()
 
-# ── Run pipeline ───────────────────────────────────────────────────────────────
+hero.empty()
 
+# ── Run pipeline ───────────────────────────────────────────────────────────────
 with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
     tmp.write(uploaded.getvalue())
     pdf_path = tmp.name
 
+stage = st.empty()
+
 try:
-    with st.spinner("Parsing PDF…"):
+    if "results" not in st.session_state or st.session_state.get("pdf_name") != uploaded.name:
+
+        stage.markdown(
+            scanner_html("Scanning PDF", "locating lattice tables",
+                         f"{uploaded.name} · camelot lattice engine"),
+            unsafe_allow_html=True,
+        )
+
         from backend.app.extract.table_extractor import extract_tables
         tables = extract_tables(pdf_path)
 
-    if not tables:
-        st.error("No tables found. PDF must contain bordered (lattice) tables.")
-        st.stop()
+        if not tables:
+            stage.empty()
+            st.error("No tables found. PDF must contain bordered (lattice) tables.")
+            st.stop()
 
-    from backend.app.cleaning.header_builder import apply_headers
-    from backend.app.cleaning.header_detector import detect_header_rows
-    from backend.app.cleaning.header_postprocessor import clean_headers
-    from backend.app.cleaning.universal_cleaner import clean_dataframe
-    from backend.app.standardization.metadata_builder import build_metadata
-    from backend.app.standardization.table_name_extractor import extract_table_name
-    from backend.app.translation.hindi_translator import translate_dataframe
-    from backend.app.validation.table_validator import validate_table
+        from backend.app.cleaning.header_builder import apply_headers
+        from backend.app.cleaning.header_detector import detect_header_rows
+        from backend.app.cleaning.header_postprocessor import clean_headers
+        from backend.app.cleaning.universal_cleaner import clean_dataframe
+        from backend.app.export.excel_exporter import build_workbook
+        from backend.app.standardization.metadata_builder import build_metadata
+        from backend.app.standardization.table_name_extractor import extract_table_name
+        from backend.app.translation.hindi_translator import translate_dataframe
+        from backend.app.validation.table_validator import validate_table
 
-    prog = st.progress(0, text=f"0 / {len(tables)}")
-    catalog, failed, table_dfs = [], [], {}
+        MSGS = [
+            "removing empty rows + garbage",
+            "detecting header depth",
+            "merging hierarchical headers",
+            "translating legacy hindi",
+            "validating structure",
+            "naming tables from pdf titles",
+        ]
 
-    for i, t in enumerate(tables):
-        prog.progress(
-            (i + 1) / len(tables),
-            text=f"{i+1} / {len(tables)}  ·  table {t['table_id']}  ·  p.{t['page']}",
+        catalog, failed, table_dfs = [], [], {}
+        for i, t in enumerate(tables):
+            stage.markdown(
+                scanner_html(
+                    "Processing tables",
+                    MSGS[i % len(MSGS)],
+                    f"table {t['table_id']} · page {t['page']} · {i + 1} / {len(tables)}",
+                    pct=100 * (i + 1) / len(tables),
+                ),
+                unsafe_allow_html=True,
+            )
+            try:
+                with redirect_stdout(io.StringIO()):
+                    df = clean_dataframe(t["dataframe"])
+                    h = detect_header_rows(df)
+                    nm = extract_table_name(df, h)
+                    df = apply_headers(df, h)
+                    df = translate_dataframe(df)
+                    df = clean_headers(df)
+                s = validate_table(df)
+                if s["passed"]:
+                    catalog.append(build_metadata(t["table_id"], nm, t["page"], df))
+                    table_dfs[t["table_id"]] = df
+                else:
+                    failed.append({"table": t["table_id"], "page": t["page"], "reason": s["reason"]})
+            except Exception as e:
+                failed.append({"table": t["table_id"], "page": t["page"], "reason": str(e)})
+
+        if not table_dfs:
+            stage.empty()
+            st.warning("All tables failed validation.")
+            st.stop()
+
+        stage.markdown(
+            scanner_html("Packaging", "building excel workbook + csv bundle",
+                         f"{len(table_dfs)} tables", pct=100),
+            unsafe_allow_html=True,
         )
-        try:
-            with redirect_stdout(io.StringIO()):
-                df  = clean_dataframe(t["dataframe"])
-                h   = detect_header_rows(df)
-                nm  = extract_table_name(df, h)
-                df  = apply_headers(df, h)
-                df  = translate_dataframe(df)
-                df  = clean_headers(df)
-            s = validate_table(df)
-            if s["passed"]:
-                catalog.append(build_metadata(t["table_id"], nm, t["page"], df))
-                table_dfs[t["table_id"]] = df
-            else:
-                failed.append({"table": t["table_id"], "page": t["page"], "reason": s["reason"]})
-        except Exception as e:
-            failed.append({"table": t["table_id"], "page": t["page"], "reason": str(e)})
 
-    prog.empty()
+        zip_buf = io.BytesIO()
+        with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+            for tid, df in table_dfs.items():
+                zf.writestr(f"table_{tid}.csv", df.to_csv(index=False))
+            zf.writestr("table_catalog.csv", pd.DataFrame(catalog).to_csv(index=False))
+        zip_buf.seek(0)
 
-    # ── Stats ──────────────────────────────────────────────────────────────────
-    fail_cls = "fail nonzero" if failed else "fail"
+        xlsx_buf = build_workbook(table_dfs, catalog)
+
+        st.session_state["results"] = {
+            "catalog": catalog, "failed": failed, "table_dfs": table_dfs,
+            "zip": zip_buf.getvalue(), "xlsx": xlsx_buf.getvalue(),
+            "n_raw": len(tables),
+        }
+        st.session_state["pdf_name"] = uploaded.name
+
+    stage.empty()
+    R = st.session_state["results"]
+    catalog, failed, table_dfs = R["catalog"], R["failed"], R["table_dfs"]
+
+    # ── Results (single viewport) ──────────────────────────────────────────────
+    fail_cls = "red" if failed else "green"
     st.markdown(f"""
-    <div class="stats-row">
-        {stat_card("total", len(tables),  "Total Tables",  f"{uploaded.name}")}
-        {stat_card("ok",    len(catalog), "Extracted",     f"{round(len(catalog)/len(tables)*100)}% success rate")}
-        {stat_card(fail_cls, len(failed), "Failed",        "validation" if failed else "clean run")}
+    <div class="stats">
+      <div class="stat"><div class="v">{R["n_raw"]}</div><div class="k">Tables detected</div></div>
+      <div class="stat"><div class="v green">{len(catalog)}</div><div class="k">Passed</div></div>
+      <div class="stat"><div class="v {fail_cls}">{len(failed)}</div><div class="k">Failed</div></div>
+      <div class="stat"><div class="v">{len(table_dfs) and max(m["page"] for m in catalog)}</div><div class="k">Pages covered</div></div>
     </div>
     """, unsafe_allow_html=True)
 
-    if not catalog:
-        st.warning("All tables failed validation.")
-        st.stop()
+    base = uploaded.name.replace(".pdf", "")
+    s1, s2, s3 = st.columns([4, 1, 1])
+    with s1:
+        search = st.text_input("s", placeholder="Search by name or table ID…", label_visibility="collapsed")
+    with s2:
+        st.download_button("↓ Excel", R["xlsx"], file_name=f"{base}_tables.xlsx",
+                           mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                           use_container_width=True)
+    with s3:
+        st.download_button("↓ All CSVs", R["zip"], file_name=f"{base}_tables.zip",
+                           mime="application/zip", use_container_width=True)
 
-    # ── Build ZIP ──────────────────────────────────────────────────────────────
-    zip_buf = io.BytesIO()
-    with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
-        for tid, df in table_dfs.items():
-            zf.writestr(f"table_{tid}.csv", df.to_csv(index=False))
-        zf.writestr("table_catalog.csv", pd.DataFrame(catalog).to_csv(index=False))
-    zip_buf.seek(0)
+    tab1, tab2, tab3 = st.tabs(["Catalog", "Preview", f"Failed ({len(failed)})"])
 
-    # ── Build Excel workbook (one sheet per table) ─────────────────────────────
-    from backend.app.export.excel_exporter import build_workbook
-    xlsx_buf = build_workbook(table_dfs, catalog)
-
-    # ── Catalog ────────────────────────────────────────────────────────────────
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown(sect_header("Extracted Tables", len(catalog)), unsafe_allow_html=True)
-
-    lc, mc, rc = st.columns([4, 1, 1])
-    with lc:
-        search = st.text_input(
-            "s", placeholder="Search by name or table ID…",
-            label_visibility="collapsed",
-        )
-    with mc:
-        st.download_button(
-            "↓ Excel",
-            xlsx_buf,
-            file_name=f"{uploaded.name.replace('.pdf','')}_tables.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True,
-        )
-    with rc:
-        st.download_button(
-            "↓ All CSVs",
-            zip_buf,
-            file_name=f"{uploaded.name.replace('.pdf','')}_tables.zip",
-            mime="application/zip",
-            use_container_width=True,
+    with tab1:
+        catalog_df = pd.DataFrame(catalog)
+        if search:
+            mask = (
+                catalog_df["table_name"].str.contains(search, case=False, na=False)
+                | catalog_df["table_id"].astype(str).str.contains(search)
+            )
+            catalog_df = catalog_df[mask]
+        st.dataframe(
+            catalog_df[["table_id", "table_name", "page", "rows", "columns"]],
+            use_container_width=True, hide_index=True, height=330,
+            column_config={
+                "table_id": st.column_config.NumberColumn("#", width=60),
+                "table_name": st.column_config.TextColumn("Name", width="large"),
+                "page": st.column_config.NumberColumn("Page", width=70),
+                "rows": st.column_config.NumberColumn("Rows", width=70),
+                "columns": st.column_config.NumberColumn("Cols", width=70),
+            },
         )
 
-    catalog_df = pd.DataFrame(catalog)
-    if search:
-        mask = (
-            catalog_df["table_name"].str.contains(search, case=False, na=False)
-            | catalog_df["table_id"].astype(str).str.contains(search)
-        )
-        catalog_df = catalog_df[mask]
-
-    st.dataframe(
-        catalog_df[["table_id", "table_name", "page", "rows", "columns"]],
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "table_id":   st.column_config.NumberColumn("#",     width=60),
-            "table_name": st.column_config.TextColumn("Name",   width="large"),
-            "page":       st.column_config.NumberColumn("Page", width=70),
-            "rows":       st.column_config.NumberColumn("Rows", width=70),
-            "columns":    st.column_config.NumberColumn("Cols", width=70),
-        },
-    )
-
-    # ── Preview ────────────────────────────────────────────────────────────────
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown(sect_header("Preview & Download"), unsafe_allow_html=True)
-
-    options = {
-        f"#{r.table_id}  ·  {r.table_name}  ·  p.{r.page}": r.table_id
-        for r in pd.DataFrame(catalog).itertuples()
-    }
-    sel = st.selectbox("t", list(options.keys()), label_visibility="collapsed")
-
-    if sel:
-        tid     = options[sel]
+    with tab2:
+        options = {
+            f"#{m['table_id']}  ·  {m['table_name']}  ·  p.{m['page']}": m["table_id"]
+            for m in catalog
+        }
+        pc1, pc2 = st.columns([5, 1])
+        with pc1:
+            sel = st.selectbox("t", list(options.keys()), label_visibility="collapsed")
+        tid = options[sel]
         df_prev = table_dfs[tid]
-        st.markdown(
-            f'<div style="font-size:11px;color:#9A908A;margin-bottom:10px;font-family:JetBrains Mono,monospace">'
-            f'{len(df_prev)} rows &nbsp;·&nbsp; {len(df_prev.columns)} columns</div>',
-            unsafe_allow_html=True,
-        )
-        st.dataframe(df_prev, use_container_width=True, hide_index=True)
-        st.download_button(
-            f"↓ table_{tid}.csv",
-            df_prev.to_csv(index=False),
-            file_name=f"table_{tid}.csv",
-            mime="text/csv",
-        )
+        with pc2:
+            st.download_button(f"↓ CSV", df_prev.to_csv(index=False),
+                               file_name=f"table_{tid}.csv", mime="text/csv",
+                               use_container_width=True)
+        st.dataframe(df_prev, use_container_width=True, hide_index=True, height=300)
 
-    # ── Failed ─────────────────────────────────────────────────────────────────
-    if failed:
-        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-        with st.expander(f"{len(failed)} tables failed validation", expanded=False):
-            st.dataframe(pd.DataFrame(failed), use_container_width=True, hide_index=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
+    with tab3:
+        if failed:
+            st.dataframe(pd.DataFrame(failed), use_container_width=True, hide_index=True, height=300)
+        else:
+            st.markdown('<div class="scan-sub" style="padding:20px">No failures — every table passed validation.</div>',
+                        unsafe_allow_html=True)
 
 finally:
     os.unlink(pdf_path)

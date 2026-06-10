@@ -620,8 +620,9 @@ try:
             "naming tables from pdf titles",
         ]
 
-        catalog, failed, table_dfs = [], [], {}
-        unnamed_seq = 0
+        from backend.app.standardization.table_stitcher import stitch_tables
+
+        passed, failed = [], []
         for i, t in enumerate(tables):
             status_ph.markdown(
                 status_html(
@@ -636,24 +637,36 @@ try:
                     df = clean_dataframe(t["dataframe"])
                     h = detect_header_rows(df)
                     nm = extract_table_name(df, h, t.get("caption"))
-                    if not nm:
-                        unnamed_seq += 1
-                        nm = f"Table {unnamed_seq} (p.{t['page']})"
                     df = apply_headers(df, h)
                     df = translate_dataframe(df)
                     df = clean_headers(df)
                 s = validate_table(df)
                 if s["passed"]:
-                    catalog.append(build_metadata(t["table_id"], nm, t["page"], df))
-                    table_dfs[t["table_id"]] = df
+                    passed.append({"table_id": t["table_id"], "name": nm,
+                                   "page": t["page"], "df": df})
                 else:
                     failed.append({"table": t["table_id"], "page": t["page"], "reason": s["reason"]})
             except Exception as e:
                 failed.append({"table": t["table_id"], "page": t["page"], "reason": str(e)})
 
-        if not table_dfs:
+        if not passed:
             st.warning("All tables failed validation.")
             st.stop()
+
+        # merge multi-page continuation fragments, then name the rest
+        passed = stitch_tables(passed)
+
+        catalog, table_dfs = [], {}
+        unnamed_seq = 0
+        for it in passed:
+            nm = it["name"]
+            if not nm:
+                unnamed_seq += 1
+                nm = f"Table {unnamed_seq} (p.{it['page']})"
+            if len(it["pages"]) > 1:
+                nm += f" (pp. {it['pages'][0]}–{it['pages'][-1]})"
+            catalog.append(build_metadata(it["table_id"], nm, it["page"], it["df"]))
+            table_dfs[it["table_id"]] = it["df"]
 
         status_ph.markdown(
             status_html("building excel workbook + csv bundle",

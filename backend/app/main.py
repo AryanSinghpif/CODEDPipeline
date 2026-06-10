@@ -39,6 +39,7 @@ def run_pipeline(job_id: str, pdf_path: str):
     from backend.app.standardization.metadata_builder import build_metadata
     from backend.app.translation.hindi_translator import translate_dataframe
     from backend.app.standardization.table_name_extractor import extract_table_name
+    from backend.app.standardization.table_stitcher import stitch_tables
     from backend.app.validation.table_validator import validate_table
 
     results_dir = JOBS_DIR / job_id
@@ -55,28 +56,25 @@ def run_pipeline(job_id: str, pdf_path: str):
         return
 
     JOBS[job_id]["total"] = len(tables)
-    catalog, failed = [], []
-    unnamed_seq = 0
+    passed, failed = [], []
 
     for table in tables:
         try:
             df = clean_dataframe(table["dataframe"])
             h = detect_header_rows(df)
             table_name = extract_table_name(df, h, table.get("caption"))
-            if not table_name:
-                unnamed_seq += 1
-                table_name = f"Table {unnamed_seq} (p.{table['page']})"
             df = apply_headers(df, h)
             df = translate_dataframe(df)
             df = clean_headers(df)
             status = validate_table(df)
 
             if status["passed"]:
-                metadata = build_metadata(
-                    table["table_id"], table_name, table["page"], df
-                )
-                catalog.append(metadata)
-                df.to_csv(csv_dir / f"table_{table['table_id']}.csv", index=False)
+                passed.append({
+                    "table_id": table["table_id"],
+                    "name": table_name,
+                    "page": table["page"],
+                    "df": df,
+                })
             else:
                 failed.append(
                     {
@@ -95,6 +93,24 @@ def run_pipeline(job_id: str, pdf_path: str):
             )
 
         JOBS[job_id]["progress"] = JOBS[job_id].get("progress", 0) + 1
+
+    # merge multi-page continuation fragments, then name the rest
+    passed = stitch_tables(passed)
+
+    catalog = []
+    unnamed_seq = 0
+
+    for it in passed:
+        name = it["name"]
+        if not name:
+            unnamed_seq += 1
+            name = f"Table {unnamed_seq} (p.{it['page']})"
+        if len(it["pages"]) > 1:
+            name += f" (pp. {it['pages'][0]}–{it['pages'][-1]})"
+        catalog.append(
+            build_metadata(it["table_id"], name, it["page"], it["df"])
+        )
+        it["df"].to_csv(csv_dir / f"table_{it['table_id']}.csv", index=False)
 
     pd.DataFrame(catalog).to_csv(results_dir / "table_catalog.csv", index=False)
     pd.DataFrame(failed).to_csv(results_dir / "failed_tables.csv", index=False)

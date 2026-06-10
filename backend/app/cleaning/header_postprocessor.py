@@ -68,7 +68,9 @@ def clean_column_name(col):
         w for w in english_words
         if w in KEEP_WORDS or _vowel_ratio(w) >= 0.30
     ]
-    parts = list(dict.fromkeys(plausible))
+
+    # cap runaway names (multi-row headers concatenate badly)
+    parts = list(dict.fromkeys(plausible))[:6]
 
     if years:
         for y in years:

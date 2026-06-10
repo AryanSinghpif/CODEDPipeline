@@ -371,7 +371,7 @@ try:
                 with redirect_stdout(io.StringIO()):
                     df = clean_dataframe(t["dataframe"])
                     h = detect_header_rows(df)
-                    nm = extract_table_name(df, h)
+                    nm = extract_table_name(df, h, t.get("caption"))
                     df = apply_headers(df, h)
                     df = translate_dataframe(df)
                     df = clean_headers(df)

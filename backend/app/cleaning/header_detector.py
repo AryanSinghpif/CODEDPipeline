@@ -1,39 +1,74 @@
 import re
 
 
+# any year or fiscal-year span, e.g. 2011, 2020-21, 2024-25, 2022/23
+YEAR_PATTERN = re.compile(
+    r"\b(19|20)\d{2}\s*([-–/]\s*\d{2,4})?\b"
+)
+
+NUMERIC_CELL = re.compile(
+    r"^-?[\d,]+(\.\d+)?%?$"
+)
+
+
+def _numeric_density(row):
+
+    cells = [
+        str(c).strip()
+        for c in row
+        if str(c).strip() not in ("", "nan", "None")
+    ]
+
+    if not cells:
+        return 0.0, 0
+
+    numeric = sum(
+        1 for c in cells
+        if NUMERIC_CELL.match(c.replace(" ", ""))
+    )
+
+    return numeric / len(cells), numeric
+
+
 def detect_header_rows(df):
 
     if df.empty:
         return 1
 
-    max_scan = min(
-        8,
-        len(df)
-    )
+    max_scan = min(8, len(df))
+
+    year_row = None
+    data_row = None
 
     for i in range(max_scan):
 
-        row = (
-            df.iloc[i]
-            .astype(str)
-            .tolist()
-        )
-
+        row = df.iloc[i].astype(str).tolist()
         text = " ".join(row)
 
-        if re.search(
-            r"2020[-–]21|2021[-–]22|2022[-–]23",
-            text
-        ):
+        # legacy Hindi artifact marks the last header row
+        if re.search(r"¿\d+À", text):
             return i + 1
 
-        if re.search(
-            r"¿\d+À",
-            text
-        ):
-            return i + 1
+        density, count = _numeric_density(row)
 
-    return min(
-        4,
-        len(df)
-    )
+        # a row of year labels is a header row, not data
+        year_cells = sum(
+            1 for c in row
+            if YEAR_PATTERN.fullmatch(str(c).strip())
+        )
+
+        if year_cells >= 2 and year_row is None:
+            year_row = i
+            continue
+
+        # mostly-numeric row = first data row
+        if density >= 0.5 and count >= 2 and data_row is None:
+            data_row = i
+
+    if year_row is not None:
+        return year_row + 1
+
+    if data_row is not None:
+        return max(data_row, 1)
+
+    return min(2, len(df))

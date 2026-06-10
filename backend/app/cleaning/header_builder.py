@@ -153,10 +153,6 @@ def apply_headers(df, header_rows):
 
     data_start = detect_data_start(df)
 
-    print(
-        f"\nHEADER={header_rows} DATA={data_start}"
-    )
-
     #
     # Trust data detector only when
     # it finds data BEFORE header detector
@@ -325,13 +321,5 @@ def apply_headers(df, header_rows):
         cols[1] = "district"
 
         data_df.columns = cols
-
-    print(
-        "\nHEADER BUILDER RUNNING"
-    )
-
-    print(
-        data_df.columns.tolist()
-    )
 
     return data_df

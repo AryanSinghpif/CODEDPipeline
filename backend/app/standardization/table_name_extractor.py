@@ -1,48 +1,14 @@
 import re
 
 
-KEEP_WORDS = {
-    "area",
-    "population",
-    "density",
-    "growth",
-    "rate",
-    "male",
-    "males",
-    "female",
-    "females",
-    "rural",
-    "urban",
-    "scheduled",
-    "caste",
-    "tribe",
-    "literacy",
-    "education",
-    "agriculture",
-    "forest",
-    "irrigation",
-    "irrigated",
-    "gross",
-    "net",
-    "cropping",
-    "intensity",
-    "production",
-    "banking",
-    "credit",
-    "loan",
-    "worker",
-    "workers",
-    "cultivator",
-    "labourers",
-    "household",
-    "school",
-    "schools",
-    "students",
-    "teachers",
-    "institution",
-    "institutions"
-}
-
+TITLE_PATTERN = re.compile(
+    r"(Table|Statement|Annexure|Appendix)"
+    r"[\s\-:.]*"
+    r"(\d+([.\-]\d+)*)"
+    r"[\s\-:.]*"
+    r"(.*)",
+    re.IGNORECASE,
+)
 
 VOWELS = set("aeiou")
 
@@ -67,79 +33,74 @@ def _looks_english(word):
     return (
         (bare[0].isupper() and bare[1:].islower())
         or bare.isupper()
+        or bare.islower()
     )
 
 
-def extract_pdf_title(df, header_rows):
-    """
-    Extract the real table title printed in the PDF,
-    e.g. "Table 11.2 Number of Installed Hand Pumps".
-    Returns None if no title pattern is found.
-    """
+def _clean_title_words(text, limit=10):
+
+    words = [w for w in text.split() if _looks_english(w)]
+
+    return " ".join(words[:limit])
+
+
+def _match_title(text):
+
+    m = TITLE_PATTERN.search(text)
+
+    if not m:
+        return None
+
+    label = m.group(1).title()
+    number = m.group(2).replace("-", ".")
+    rest = _clean_title_words(m.group(4))
+
+    name = f"{label} {number}"
+
+    if rest:
+        name += " " + rest
+
+    return name
+
+
+def extract_table_name(df, header_rows, caption=None):
+
+    # 1) explicit "Table X.Y ..." pattern — caption first, then header cells
+    if caption:
+
+        title = _match_title(caption)
+
+        if title:
+            return title
 
     header_df = df.iloc[:header_rows]
 
     for value in header_df.astype(str).values.flatten():
 
-        m = re.search(
-            r"Tab[a-z]*\.?\s*(\d+[.\-]\d+)\s+(.+)",
-            value,
-        )
+        title = _match_title(value)
 
-        if not m:
-            continue
+        if title:
+            return title
 
-        number = m.group(1).replace("-", ".")
+    # 2) caption text itself (line printed just above the table)
+    if caption:
 
-        words = [
-            w for w in m.group(2).split()
-            if _looks_english(w)
-        ]
+        cleaned = _clean_title_words(caption)
 
-        if words:
-            return f"Table {number} " + " ".join(words)
+        if len(cleaned.split()) >= 2:
+            return cleaned
 
-        return f"Table {number}"
+    # 3) longest English-looking header cell
+    best = ""
 
-    return None
+    for value in header_df.astype(str).values.flatten():
 
+        cleaned = _clean_title_words(value)
 
-def extract_table_name(df, header_rows):
+        if len(cleaned) > len(best):
+            best = cleaned
 
-    #
-    # Prefer the actual title printed in the PDF
-    #
+    if len(best.split()) >= 2:
+        return best
 
-    title = extract_pdf_title(df, header_rows)
-
-    if title:
-        return title
-
-    header_df = df.iloc[:header_rows]
-
-    text = " ".join(
-        header_df.astype(str)
-        .fillna("")
-        .values
-        .flatten()
-    )
-
-    words = re.findall(
-        r"[A-Za-z]+",
-        text.lower()
-    )
-
-    words = [
-        word
-        for word in words
-        if word in KEEP_WORDS
-    ]
-
-    if not words:
-        return "table"
-
-    words = list(
-        dict.fromkeys(words)
-    )
-
-    return " ".join(words[:8])
+    return "table"

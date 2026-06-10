@@ -61,7 +61,7 @@ def run_pipeline(job_id: str, pdf_path: str):
         try:
             df = clean_dataframe(table["dataframe"])
             h = detect_header_rows(df)
-            table_name = extract_table_name(df, h)
+            table_name = extract_table_name(df, h, table.get("caption"))
             df = apply_headers(df, h)
             df = translate_dataframe(df)
             df = clean_headers(df)

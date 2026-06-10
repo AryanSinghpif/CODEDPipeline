@@ -445,7 +445,7 @@ html,body{margin:0;overflow:hidden;height:100%;
 <div id="sky"></div>
 <div class="ov" id="eye"><b>&#9679;</b>GOVERNMENT PDF &rarr; CLEAN DATA<b>&#9679;</b></div>
 <div class="ov" id="title">DATA<em>GEN</em></div>
-<div class="ov" id="tsub">Every table in your report &mdash; solved, page by page.</div>
+<div class="ov" id="tsub">Your assistant for extracting data tables from any PDF.</div>
 <div class="ov" id="hint">&#8964; drop a pdf to begin</div>
 __GSAP_JS__
 <script>
@@ -560,7 +560,7 @@ with left:
     st.markdown("""
     <div class="hero-left">
       <div class="hl-title">DATA RUBIKS</div>
-      <div class="hl-sub">Every table in your report &mdash; solved, page by page.</div>
+      <div class="hl-sub">Your assistant for extracting data tables from any PDF.</div>
     </div>
     """, unsafe_allow_html=True)
     uploaded = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")

@@ -11,8 +11,8 @@ import streamlit as st
 warnings.filterwarnings("ignore")
 
 st.set_page_config(
-    page_title="CODEDPipeline",
-    page_icon="⬡",
+    page_title="DataGen",
+    page_icon="◉",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -23,19 +23,19 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg:      #010409;
-  --bg2:     #0d1117;
-  --card:    #0d1117;
-  --border:  #21262d;
-  --border2: #30363d;
-  --text:    #e6edf3;
-  --text2:   #848d97;
-  --muted:   #6e7681;
-  --green:   #3fb950;
-  --green-hi:#56d364;
-  --green-dk:#238636;
-  --green-dim: rgba(63,185,80,0.10);
-  --green-rim: rgba(63,185,80,0.35);
+  --bg:      #000000;
+  --bg2:     #0d0a12;
+  --card:    #0d0a12;
+  --border:  #221c2c;
+  --border2: #322940;
+  --text:    #f2edf7;
+  --text2:   #9b8fae;
+  --muted:   #6f6480;
+  --green:   #ff4fd8;
+  --green-hi:#ff7ce4;
+  --green-dk:#b026c9;
+  --green-dim: rgba(255,79,216,0.10);
+  --green-rim: rgba(255,79,216,0.35);
   --mono: 'JetBrains Mono', monospace;
 }
 
@@ -60,9 +60,9 @@ html, body, [class*="css"], .stApp {
 }
 .logo-mark {
   width: 30px; height: 30px; border-radius: 50%;
-  background: radial-gradient(circle at 50% 35%, var(--green-dk), #0f2a17 70%);
+  background: radial-gradient(circle at 50% 35%, var(--green-dk), #2a0a33 70%);
   border: 1px solid var(--green-rim);
-  box-shadow: 0 0 18px rgba(63,185,80,0.35);
+  box-shadow: 0 0 18px rgba(255,79,216,0.35);
 }
 .logo-name { font-weight: 800; font-size: 18px; letter-spacing: -0.3px; }
 .logo-name span { color: var(--green); }
@@ -98,17 +98,17 @@ html, body, [class*="css"], .stApp {
 .radar-grid {
   position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(63,185,80,0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(63,185,80,0.12) 1px, transparent 1px);
+    linear-gradient(rgba(255,79,216,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,79,216,0.12) 1px, transparent 1px);
   background-size: 26px 26px;
   mask-image: radial-gradient(ellipse at 50% 100%, black 30%, transparent 75%);
 }
 .radar-dome {
   position: absolute; left: 50%; bottom: -90px; transform: translateX(-50%);
   width: 180px; height: 180px; border-radius: 50%;
-  background: radial-gradient(circle at 50% 30%, rgba(63,185,80,0.45), rgba(13,40,22,0.9) 70%);
+  background: radial-gradient(circle at 50% 30%, rgba(255,79,216,0.45), rgba(13,40,22,0.9) 70%);
   border: 1px solid var(--green-rim);
-  box-shadow: 0 0 60px rgba(63,185,80,0.35);
+  box-shadow: 0 0 60px rgba(255,79,216,0.35);
 }
 
 /* ── scanner / loading ── */
@@ -120,39 +120,61 @@ html, body, [class*="css"], .stApp {
 .scan-box::before {
   content: ''; position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(63,185,80,0.10) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(63,185,80,0.10) 1px, transparent 1px);
+    linear-gradient(rgba(255,79,216,0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,79,216,0.10) 1px, transparent 1px);
   background-size: 28px 28px;
   mask-image: radial-gradient(ellipse at 50% 50%, black 20%, transparent 80%);
 }
-.scan-ring {
-  position: relative; width: 92px; height: 92px; margin: 0 auto 18px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 35%, rgba(63,185,80,0.5), #0f2a17 75%);
-  border: 1px solid var(--green-rim);
-  box-shadow: 0 0 40px rgba(63,185,80,0.35);
+/* ── plasma orb (AI-assistant style) ── */
+.orb {
+  position: relative; width: 110px; height: 110px; margin: 0 auto 20px;
+  border-radius: 50%; overflow: hidden;
+  background: radial-gradient(circle at 38% 32%,
+    #ffffff 0%, #ffc2ef 16%, #ff7ce4 38%, #ff4fd8 58%, #b026c9 78%, #4a0d5c 100%);
+  box-shadow:
+    0 0 30px rgba(255,79,216,0.85),
+    0 0 90px rgba(255,79,216,0.45),
+    0 0 160px rgba(139,92,246,0.30);
+  animation: breathe 3.2s ease-in-out infinite;
 }
-.scan-ring::after {
-  content: ''; position: absolute; inset: -1px; border-radius: 50%;
-  border: 1px solid transparent; border-top-color: var(--green-hi);
-  animation: spin 1.1s linear infinite;
+.orb .ribbon1, .orb .ribbon2 {
+  position: absolute; inset: -35%; border-radius: 50%;
 }
-.scan-ring .dot {
-  position: absolute; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--green-hi); top: 8px; left: 50%;
-  box-shadow: 0 0 10px var(--green-hi);
-  transform-origin: 0 38px; animation: spin 1.1s linear infinite;
+.orb .ribbon1 {
+  background: conic-gradient(from 0deg,
+    transparent 0%, rgba(255,255,255,0.95) 8%, transparent 22%,
+    rgba(139,92,246,0.75) 45%, transparent 60%,
+    rgba(255,255,255,0.7) 78%, transparent 92%);
+  filter: blur(10px);
+  animation: swirl 4.5s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+.orb .ribbon2 {
+  background: conic-gradient(from 140deg,
+    transparent 0%, rgba(255,194,239,0.9) 12%, transparent 30%,
+    rgba(255,255,255,0.8) 55%, transparent 70%);
+  filter: blur(14px);
+  animation: swirl 7s linear infinite reverse;
+}
+.orb .sheen {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 36% 26%,
+    rgba(255,255,255,0.9), transparent 40%);
+  mix-blend-mode: screen;
+}
+@keyframes swirl { to { transform: rotate(360deg); } }
+@keyframes breathe {
+  0%, 100% { transform: scale(1);    filter: hue-rotate(0deg); }
+  50%      { transform: scale(1.06); filter: hue-rotate(-18deg); }
+}
 .scan-pulse {
-  position: absolute; left: 50%; top: 50%; width: 92px; height: 92px;
-  transform: translate(-50%, -78%); border-radius: 50%;
+  position: absolute; left: 50%; top: 50%; width: 110px; height: 110px;
+  transform: translate(-50%, -82%); border-radius: 50%;
   border: 1px solid var(--green-rim);
-  animation: pulse 1.8s ease-out infinite;
+  animation: pulse 2s ease-out infinite;
 }
 @keyframes pulse {
-  0%   { opacity: .8; transform: translate(-50%,-78%) scale(1); }
-  100% { opacity: 0;  transform: translate(-50%,-78%) scale(2.1); }
+  0%   { opacity: .7; transform: translate(-50%,-82%) scale(1); }
+  100% { opacity: 0;  transform: translate(-50%,-82%) scale(2.2); }
 }
 .scan-title { position: relative; font-weight: 600; font-size: 15px; }
 .scan-msg {
@@ -170,7 +192,7 @@ html, body, [class*="css"], .stApp {
 }
 .scan-bar > div {
   height: 100%; background: linear-gradient(90deg, var(--green-dk), var(--green-hi));
-  border-radius: 2px; box-shadow: 0 0 12px rgba(63,185,80,0.6);
+  border-radius: 2px; box-shadow: 0 0 12px rgba(255,79,216,0.6);
   transition: width .25s ease;
 }
 .scan-bar.indet > div {
@@ -232,7 +254,7 @@ hr { border-color: var(--border) !important; margin: 10px 0 !important; }
 st.markdown("""
 <div class="topbar">
   <div class="logo-mark"></div>
-  <div class="logo-name">CODED<span>Pipeline</span></div>
+  <div class="logo-name">Data<span>Gen</span></div>
   <div class="topbar-tag">Release</div>
   <div class="topbar-right">District Extraction Engine</div>
 </div>
@@ -245,7 +267,7 @@ def scanner_html(title, msg, sub="", pct=None):
     return f"""
     <div class="scan-box">
       <div class="scan-pulse"></div>
-      <div class="scan-ring"><div class="dot"></div></div>
+      <div class="orb"><div class="ribbon1"></div><div class="ribbon2"></div><div class="sheen"></div></div>
       <div class="scan-title">{title}</div>
       <div class="scan-msg">{msg}</div>
       <div class="scan-sub">{sub}</div>
@@ -260,7 +282,10 @@ hero = st.empty()
 with hero.container():
     st.markdown("""
     <div class="hero">
-      <div class="hero-eyebrow">● &nbsp;Periodic table scanning of district reports</div>
+      <div class="orb" style="width:84px;height:84px;margin-bottom:24px">
+        <div class="ribbon1"></div><div class="ribbon2"></div><div class="sheen"></div>
+      </div>
+      <div class="hero-eyebrow">● &nbsp;DataGen — district report extraction</div>
       <div class="hero-title">Every table in your PDF.<br>Cleaned. Translated. Excel-ready.</div>
       <div class="hero-sub">Upload a government statistical report — the pipeline finds every
       bordered table, merges hierarchical headers, translates legacy Hindi, and hands you

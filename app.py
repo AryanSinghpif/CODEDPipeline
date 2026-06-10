@@ -578,15 +578,27 @@ try:
         zf.writestr("table_catalog.csv", pd.DataFrame(catalog).to_csv(index=False))
     zip_buf.seek(0)
 
+    # ── Build Excel workbook (one sheet per table) ─────────────────────────────
+    from backend.app.export.excel_exporter import build_workbook
+    xlsx_buf = build_workbook(table_dfs, catalog)
+
     # ── Catalog ────────────────────────────────────────────────────────────────
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown(sect_header("Extracted Tables", len(catalog)), unsafe_allow_html=True)
 
-    lc, rc = st.columns([5, 1])
+    lc, mc, rc = st.columns([4, 1, 1])
     with lc:
         search = st.text_input(
             "s", placeholder="Search by name or table ID…",
             label_visibility="collapsed",
+        )
+    with mc:
+        st.download_button(
+            "↓ Excel",
+            xlsx_buf,
+            file_name=f"{uploaded.name.replace('.pdf','')}_tables.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True,
         )
     with rc:
         st.download_button(

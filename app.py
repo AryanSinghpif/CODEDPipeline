@@ -702,6 +702,7 @@ try:
             try:
                 with redirect_stdout(io.StringIO()):
                     df = clean_dataframe(t["dataframe"])
+                    t["dataframe"] = None
                     h = detect_header_rows(df)
                     nm = extract_table_name(df, h, t.get("caption"))
                     df = apply_headers(df, h)
@@ -751,10 +752,15 @@ try:
 
         xlsx_buf = build_workbook(table_dfs, catalog)
 
+        import gc
+        n_raw_tables = len(tables)
+        del tables
+        gc.collect()
+
         st.session_state["results"] = {
             "catalog": catalog, "failed": failed, "table_dfs": table_dfs,
             "zip": zip_buf.getvalue(), "xlsx": xlsx_buf.getvalue(),
-            "n_raw": len(tables),
+            "n_raw": n_raw_tables,
         }
         st.session_state["pdf_name"] = uploaded.name
 

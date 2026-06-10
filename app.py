@@ -106,7 +106,7 @@ html, body, [class*="css"], .stApp {
 .scan-bar {
   position: relative; height: 3px; border-radius: 2px;
   background: rgba(148,184,242,0.25);
-  margin: 22px 0 0; max-width: 320px; overflow: hidden;
+  margin: 16px 0 0; max-width: 660px; overflow: hidden;
 }
 .scan-bar > div {
   height: 100%; background: var(--gold); border-radius: 2px;
@@ -337,10 +337,15 @@ div[data-testid="stFileUploader"] {
 .note { max-width: 660px; }
 .note { border-top: none !important; padding-top: 8px; }
 .status-left { padding: 10px 2px 0; }
+.scan-row { display: flex; align-items: baseline; justify-content: space-between;
+  max-width: 660px; }
+.scan-pct {
+  font-family: var(--serif); font-size: 30px; color: var(--gold); line-height: 1;
+}
 
-.cube-pane { position: relative; height: 460px; margin-top: 14vh; }
-.cube-pane .cube-stage { top: 140px; transform: scale(1.55); }
-.cube-pane .cube-shadow { top: 330px; transform: scale(2.4); }
+.cube-pane { position: relative; height: 520px; margin-top: 12vh; }
+.cube-pane .cube-stage { top: 150px; transform: scale(1.95); }
+.cube-pane .cube-shadow { top: 360px; transform: scale(2.9); }
 .cube-idle .slice { animation: none !important; }
 .cube-idle .cube-rotor { animation-duration: 18s; }
 
@@ -544,9 +549,14 @@ def cube_pane(mode="solving", caption=""):
 def status_html(msg, sub="", pct=None):
     bar_cls = "scan-bar" if pct is not None else "scan-bar indet"
     width = f"{pct:.0f}%" if pct is not None else "35%"
+    pct_label = (
+        f'<span class="scan-pct">{pct:.0f}%</span>'
+        if pct is not None else
+        '<span class="scan-pct">&hellip;</span>'
+    )
     return f"""
     <div class="status-left">
-      <div class="scan-msg">{msg}</div>
+      <div class="scan-row"><div class="scan-msg">{msg}</div>{pct_label}</div>
       <div class="scan-sub">{sub}</div>
       <div class="{bar_cls}"><div style="width:{width}"></div></div>
     </div>"""

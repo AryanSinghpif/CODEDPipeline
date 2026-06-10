@@ -32,7 +32,7 @@ st.markdown("""
   --ice:        #eef4ff;
   --cream:      #fef1d0;
   --cream-2:    #fde7af;
-  --gold:       #d4c500;
+  --gold:       #e6c35c;
   --ink:        #0a1240;
   --serif: 'Instrument Serif', Georgia, serif;
   --sans:  'Space Grotesk', Arial, sans-serif;
@@ -307,12 +307,12 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 
 /* uploader floats over the night scene, under the title */
 div[data-testid="stFileUploader"] {
-  margin-top: -300px; position: relative; z-index: 6;
+  margin-top: -270px; position: relative; z-index: 6;
   border: 1px dashed rgba(254,241,208,0.55) !important;
   background: rgba(1,9,64,0.55) !important;
   backdrop-filter: blur(3px);
 }
-.note { margin-top: 170px !important; border-top: none !important;
+.note { margin-top: 140px !important; border-top: none !important;
   text-align: center; }
 
 /* ── morph: monitor collapses into the cube ── */
@@ -349,7 +349,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-STICKERS = ["#D4C500", "#FEF1D0", "#94B8F2", "#2575F6", "#0042AF", "#EEF4FF"]
+STICKERS = ["#E6C35C", "#FEF1D0", "#94B8F2", "#2575F6", "#0042AF", "#EEF4FF"]
 
 
 def _sticker_row(seed):
@@ -401,27 +401,24 @@ html,body{margin:0;overflow:hidden;height:100%;
 #sky{position:absolute;inset:0;overflow:hidden}
 .s{position:absolute;border-radius:50%;background:#fef1d0;
   box-shadow:0 0 6px rgba(254,241,208,.9)}
-.s.g{background:#d4c500;box-shadow:0 0 8px rgba(212,197,0,.9)}
+.s.g{background:#e6c35c;box-shadow:0 0 8px rgba(230,195,92,.9)}
 .ov{position:absolute;left:0;right:0;text-align:center;pointer-events:none;z-index:2}
-#emblem{top:22px}
-#emblem div{display:inline-flex;align-items:center;justify-content:center;
-  width:42px;height:56px;border:2px solid #fef1d0;border-radius:50%/42%;
-  box-shadow:inset 0 0 0 3px #010d6e,inset 0 0 0 4px rgba(254,241,208,.6)}
-#emblem span{color:#fef1d0;font-size:17px;transform:rotate(-22deg)}
-#eye{top:158px;font-family:'Space Mono',monospace;font-size:11px;
+#eye{top:96px;font-family:'Space Mono',monospace;font-size:11px;
   letter-spacing:.3em;text-transform:uppercase;color:#eef4ff}
 #eye b{color:#94b8f2;font-weight:400;padding:0 12px}
-#title{top:188px;font-family:'Instrument Serif',Georgia,serif;font-size:84px;
-  color:#eef4ff;letter-spacing:.3em;text-indent:.3em;
+#title{top:126px;font-family:'Instrument Serif',Georgia,serif;font-size:60px;
+  color:#eef4ff;letter-spacing:.22em;text-indent:.22em;
   text-shadow:0 0 50px rgba(238,244,255,.3)}
-#title em{font-style:italic;color:#d4c500}
+#tsub{top:206px;font-family:'Instrument Serif',Georgia,serif;font-style:italic;
+  font-size:19px;color:#94b8f2;letter-spacing:.02em}
+#title em{font-style:italic;color:#e6c35c}
 #hint{bottom:16px;font-family:'Space Mono',monospace;font-size:10px;
   letter-spacing:.2em;color:#2575f6;text-transform:uppercase}
 </style>
 <div id="sky"></div>
-<div class="ov" id="emblem"><div><span>&#9790;</span></div></div>
 <div class="ov" id="eye"><b>&#9679;</b>GOVERNMENT PDF &rarr; CLEAN DATA<b>&#9679;</b></div>
 <div class="ov" id="title">DATA<em>GEN</em></div>
+<div class="ov" id="tsub">Every table in your report &mdash; solved, page by page.</div>
 <div class="ov" id="hint">&#8964; drop a pdf to begin</div>
 __GSAP_JS__
 <script>
@@ -439,9 +436,9 @@ for(let i=0;i<70;i++){
   gsap.to(s,{opacity:.15+Math.random()*.3,duration:.6+Math.random(),
     repeat:-1,yoyo:true,ease:'sine.inOut'});
 }
-gsap.from('#title',{opacity:0,letterSpacing:'.55em',duration:2.2,ease:'power3.out'});
+gsap.from('#title',{opacity:0,letterSpacing:'.4em',duration:2.2,ease:'power3.out'});
+gsap.from('#tsub',{opacity:0,y:10,duration:1.6,delay:.7,ease:'power2.out'});
 gsap.from('#eye',{opacity:0,y:-12,duration:1.4,delay:.4,ease:'power2.out'});
-gsap.from('#emblem',{opacity:0,scale:.6,duration:1.2,ease:'back.out(1.7)'});
 gsap.to('#eye b',{opacity:.15,duration:1,repeat:-1,yoyo:true,ease:'sine.inOut'});
 gsap.to('#hint',{y:5,duration:1.1,repeat:-1,yoyo:true,ease:'sine.inOut'});
 </script>
@@ -465,7 +462,7 @@ html,body{margin:0;background:transparent;overflow:hidden}
   <div id="hint">drag to rotate &mdash; solved</div>
 </div>
 <script>
-const COLS={F:'#2575F6',B:'#0042AF',R:'#EEF4FF',L:'#94B8F2',U:'#D4C500',D:'#FEF1D0'};
+const COLS={F:'#2575F6',B:'#0042AF',R:'#EEF4FF',L:'#94B8F2',U:'#E6C35C',D:'#FEF1D0'};
 const cube=document.getElementById('cube'),S=50;
 for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++){
   const c=document.createElement('div');c.className='cb';

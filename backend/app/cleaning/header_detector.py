@@ -71,4 +71,14 @@ def detect_header_rows(df):
     if data_row is not None:
         return max(data_row, 1)
 
+    # text-heavy tables (company/state listings) have no mostly-numeric
+    # row; the header still ends where numeric cells first appear
+    # ("Company | State | Capacity" then "ACB Ltd | MP | 12.5")
+    for i in range(max_scan):
+
+        density, count = _numeric_density(df.iloc[i].astype(str).tolist())
+
+        if count >= 1 and density >= 0.3:
+            return max(i, 1)
+
     return min(2, len(df))

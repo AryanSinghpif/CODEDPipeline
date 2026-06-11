@@ -250,20 +250,36 @@ def apply_headers(df, header_rows):
 
     columns = []
 
+    # spanning TITLE rows ("Table (15): Percentage distribution ..."
+    # alone in the row, before ffill spread it) are names, not column
+    # semantics — exclude the whole row. A title-prefixed cell in a row
+    # that has other content is a real header cell and is only
+    # prefix-stripped below.
+    title_rows = set()
+
+    for i in range(len(header_df)):
+
+        cells = [str(v).strip() for v in df.iloc[i].tolist()]
+        non_empty = [c for c in cells if c]
+
+        if (
+            len(non_empty) == 1
+            and _TITLE_FRAGMENT.match(non_empty[0])
+            and len(non_empty[0]) > 40
+        ):
+            title_rows.add(i)
+
     for col in range(df.shape[1]):
 
         parts = []
         range_tokens = []
 
-        for value in header_df.iloc[:, col]:
+        for i, value in enumerate(header_df.iloc[:, col]):
+
+            if i in title_rows:
+                continue
 
             raw = str(value).strip()
-
-            # an entire title sentence in one cell ("Table (15):
-            # Percentage distribution of persons ...") is a name, not
-            # column semantics — skip the whole cell, not just the prefix
-            if _TITLE_FRAGMENT.match(raw) and len(raw) > 40:
-                continue
 
             value = _TITLE_FRAGMENT.sub(" ", raw).strip()
 

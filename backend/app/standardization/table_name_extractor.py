@@ -82,7 +82,20 @@ def extract_table_name(df, header_rows, caption=None):
         if title:
             return title
 
-    # 2) caption text — but only if it reads like a TITLE, not prose:
+    # 2) numbered section heading in the caption: "3.1 Ranking of ..."
+    if caption:
+
+        m = re.match(
+            r"\s*(\d+(?:\.\d+)+)[\s\-–:]+([^(\n]{3,90})", str(caption)
+        )
+
+        if m:
+            words = m.group(2).strip().rstrip("–- ").split()
+            lettered = [w for w in words if re.search(r"[A-Za-z]", w)]
+            if len(lettered) >= 2:
+                return f"{m.group(1)} " + " ".join(words[:10])
+
+    # 2b) caption text — but only if it reads like a TITLE, not prose:
     #    a short line (2–10 words) without sentence punctuation.
     if caption:
 

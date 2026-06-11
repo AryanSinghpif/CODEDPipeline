@@ -82,6 +82,67 @@ TITLE_LINE = re.compile(
 )
 
 
+def _repair_header_positionally(table, plumber_pdf):
+    """
+    When a header row collapses into ONE cell (no vertical separators in
+    the PDF), the fragments arrive in scrambled visual order, so blind
+    splitting misplaces them. Rebuild such rows by reading the words'
+    x-positions with pdfplumber and bucketing them into camelot's
+    column boundaries.
+    """
+
+    df = table.df
+
+    if plumber_pdf is None:
+        return df
+
+    try:
+        page = plumber_pdf.pages[int(table.page) - 1]
+        height = page.height
+
+        for i in range(min(4, len(df))):
+
+            row = [str(v).strip() for v in df.iloc[i].tolist()]
+            non_empty = [v for v in row if v]
+
+            if len(non_empty) != 1 or len(non_empty[0].split()) < 3:
+                continue
+
+            cells = table.cells[i]
+
+            top = height - max(c.y2 for c in cells)
+            bottom = height - min(c.y1 for c in cells)
+
+            region = page.crop((
+                0, max(0, top - 1), page.width, min(height, bottom + 1)
+            ))
+            words = region.extract_words()
+
+            bounds = [(c.x1, c.x2) for c in cells]
+            buckets = [[] for _ in bounds]
+
+            for w in words:
+                xm = (w["x0"] + w["x1"]) / 2
+                for j, (x1, x2) in enumerate(bounds):
+                    if x1 <= xm <= x2:
+                        buckets[j].append((round(w["top"]), w["x0"], w["text"]))
+                        break
+
+            rebuilt = [
+                " ".join(t for _, _, t in sorted(b)) for b in buckets
+            ]
+
+            if sum(1 for v in rebuilt if v) >= 3:
+                for j, v in enumerate(rebuilt):
+                    if j < df.shape[1]:
+                        df.iat[i, j] = v
+
+    except Exception:
+        pass
+
+    return df
+
+
 def _extract_caption(plumber_pdf, page_num, bbox):
     """
     Find the table's title. First preference: an explicit
@@ -203,6 +264,7 @@ def extract_tables(pdf_path):
             continue
 
         good_lattice_pages.add(page)
+        df = _repair_header_positionally(table, plumber_pdf)
         kept.append({
             "page": page,
             "dataframe": _repair_crushed_header_rows(df),

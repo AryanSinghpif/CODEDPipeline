@@ -75,6 +75,37 @@ def kruti_to_unicode(text):
     return out
 
 
+#
+# Inverse map: Devanagari -> the ASCII that produced it. Some PDFs
+# (Energy Statistics, PLFS notes) typeset ENGLISH text in a Kruti-slot
+# font whose cmap emits Devanagari codepoints — "ज्वजंस" is literally
+# "Total". Longest Devanagari sequences first; ambiguous reverses keep
+# the first (canonical) ASCII.
+#
+
+_INVERSE = {}
+for _a, _d in _MULTI:
+    _INVERSE.setdefault(_d, _a)
+for _a, _d in _SINGLE.items():
+    _INVERSE.setdefault(_d, _a)
+
+_INVERSE_PAIRS = sorted(_INVERSE.items(), key=lambda kv: -len(kv[0]))
+
+# Kruti punctuation slots map back to their visual characters
+_PUNCT_BACK = {"&": "-", "¼": "(", "½": ")", "]": ",", "_": ";"}
+
+
+def unicode_to_ascii(text):
+    """Decode Devanagari-mojibake back to the ASCII that was typed."""
+
+    out = str(text)
+
+    for dev, asc in _INVERSE_PAIRS:
+        out = out.replace(dev, asc)
+
+    return "".join(_PUNCT_BACK.get(ch, ch) for ch in out)
+
+
 # telltales that a token is Kruti Dev soup rather than English
 _MARKERS = (
     "ks", "iq", "qj", "Uk", "[k", ".k", "kS", "Fk", "Hk", "?k",

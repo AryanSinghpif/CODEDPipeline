@@ -11,7 +11,11 @@ header / summary terms added manually.
 import re
 
 from backend.app.translation.glossary import DEV_PHRASES, DEV_WORDS
-from backend.app.translation.kruti_dev import kruti_to_unicode, looks_kruti
+from backend.app.translation.kruti_dev import (
+    kruti_to_unicode,
+    looks_kruti,
+    unicode_to_ascii,
+)
 
 # legacy-encoded Hindi -> English
 LEGACY_MAP = {
@@ -114,11 +118,64 @@ def _translate_devanagari(text):
                 rep = DEV_WORDS[bare]
                 if rep:
                     tokens.append(tok.replace(bare, rep))
+            elif _DEV_RE.search(tok):
+                tokens.append(_decode_mojibake(tok))
             else:
                 tokens.append(tok)
         out = " ".join(tokens)
 
     return re.sub(r"\s+", " ", out).strip()
+
+
+_ENGLISH_SHAPE = re.compile(r"^[A-Za-z][A-Za-z0-9./()&,-]*$")
+
+# observed low-vowel lowercase mojibake words that are real English
+_MOJIBAKE_LOWER_OK = {
+    "blocks", "ltd", "trg", "pvt", "dept", "sub", "respectively",
+}
+
+
+def _decode_mojibake(token):
+    """
+    Devanagari that the glossary does not know may be ENGLISH typed in
+    a Kruti-slot font ("ज्वजंस" = Total). Decode via the inverse glyph
+    map and keep the result only when it is English-shaped — real Hindi
+    decodes to consonant junk and passes through untouched.
+    """
+    decoded = unicode_to_ascii(token)
+
+    if _DEV_RE.search(decoded) or not _ENGLISH_SHAPE.match(decoded):
+        return token
+
+    bare = re.sub(r"[^A-Za-z]", "", decoded)
+
+    if len(bare) < 2:
+        return token
+
+    # validate case shape per hyphen/punct part: "Non-Coking",
+    # "ub-Total", "ACB(India)", "FSUs" are all fine compounds.
+    # all-lowercase decodes are the dangerous class — real Hindi can
+    # decode to lowercase junk with a stray vowel ("dkexkf"), so they
+    # must clear a higher vowel bar or be known words.
+    parts = [p for p in re.split(r"[^A-Za-z]+", decoded) if p]
+
+    def _cased(p):
+        if p.istitle() or p.isupper():
+            return True
+        if p[:-1].isupper() and p[-1] == "s":          # FSUs
+            return True
+        if p.islower():
+            low_vowels = sum(c in "aeiou" for c in p)
+            return (
+                p in _MOJIBAKE_LOWER_OK
+                or len(p) <= 3
+                or low_vowels / len(p) >= 0.3
+            )
+        return False
+
+    plausible = bool(parts) and all(_cased(p) for p in parts)
+
+    return decoded if plausible else token
 
 
 def _normalize(text):

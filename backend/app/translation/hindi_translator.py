@@ -132,6 +132,34 @@ _LOOSE_MAP = {
 }
 
 
+_ASCII_WORD = re.compile(r"^[A-Za-z`'\";.+?/-]+$")
+
+
+def _soup_by_glossary(token):
+    """
+    Some soup ("izfr", "iathd`r") evades looks_kruti's heuristics.
+    Convert the token and accept it as soup ONLY when the glossary
+    recognises the resulting Devanagari — real English ("utilization")
+    converts to junk the glossary has never seen, so it stays intact.
+    """
+    if len(token) < 3 or not _ASCII_WORD.match(token):
+        return False
+    bare = re.sub(r"[^A-Za-z]", "", token).lower()
+    if bare in _ENGLISH_SAFE:
+        return False
+    dev = kruti_to_unicode(token)
+    return dev in DEV_WORDS
+
+
+_ENGLISH_SAFE = {
+    w.lower() for w in (
+        list(LEGACY_MAP.values())
+        + ["of", "per", "and", "the", "in", "on", "for", "to", "no",
+           "by", "at", "total", "number", "year", "rate", "district"]
+    )
+}
+
+
 def translate_text(text):
     """Return English translation if known, else the original text."""
     norm = _normalize(text)
@@ -148,10 +176,11 @@ def translate_text(text):
     # legacy Kruti Dev soup? convert token-by-token so mixed
     # Hindi+English cells keep their English parts intact
     tokens = norm.split(" ")
-    if any(looks_kruti(t) for t in tokens):
+    is_soup = [looks_kruti(t) or _soup_by_glossary(t) for t in tokens]
+    if any(is_soup):
         out = [
-            kruti_to_unicode(t) if looks_kruti(t) else t
-            for t in tokens
+            kruti_to_unicode(t) if s else t
+            for t, s in zip(tokens, is_soup)
         ]
         return _translate_devanagari(" ".join(out))
 

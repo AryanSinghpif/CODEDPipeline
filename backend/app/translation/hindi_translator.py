@@ -10,6 +10,9 @@ header / summary terms added manually.
 
 import re
 
+from backend.app.translation.glossary import DEV_PHRASES, DEV_WORDS
+from backend.app.translation.kruti_dev import kruti_to_unicode, looks_kruti
+
 # legacy-encoded Hindi -> English
 LEGACY_MAP = {
     # header / common terms
@@ -83,7 +86,39 @@ LEGACY_MAP = {
     "ckyk?kkV": "Balaghat",
 }
 
+#
+# Unicode Devanagari support (e.g. MoSPI PLFS Hindi tables).
+# PDF extraction mangles conjuncts (वर्ष -> वषि, और -> औि), so the
+# glossary carries both clean and observed-mangled spellings.
+#
+
+_DEV_RE = re.compile(r"[ऀ-ॿ]")
+
 _QUOTE_FIXES = str.maketrans({"’": "'", "‘": "'", "“": '"', "”": '"'})
+
+
+def _translate_devanagari(text):
+    """Glossary translation for Unicode-Hindi cells: phrases first,
+    then word-by-word; unknown words pass through unchanged."""
+
+    out = text
+
+    for hi, en in DEV_PHRASES:
+        out = out.replace(hi, en)
+
+    if _DEV_RE.search(out):
+        tokens = []
+        for tok in out.split(" "):
+            bare = tok.strip(":,;()|.")
+            if bare in DEV_WORDS:
+                rep = DEV_WORDS[bare]
+                if rep:
+                    tokens.append(tok.replace(bare, rep))
+            else:
+                tokens.append(tok)
+        out = " ".join(tokens)
+
+    return re.sub(r"\s+", " ", out).strip()
 
 
 def _normalize(text):
@@ -107,6 +142,19 @@ def translate_text(text):
     loose = re.sub(r"\s+", "", norm).lower()
     if loose in _LOOSE_MAP:
         return _LOOSE_MAP[loose]
+    if _DEV_RE.search(norm):
+        return _translate_devanagari(norm)
+
+    # legacy Kruti Dev soup? convert token-by-token so mixed
+    # Hindi+English cells keep their English parts intact
+    tokens = norm.split(" ")
+    if any(looks_kruti(t) for t in tokens):
+        out = [
+            kruti_to_unicode(t) if looks_kruti(t) else t
+            for t in tokens
+        ]
+        return _translate_devanagari(" ".join(out))
+
     return text
 
 

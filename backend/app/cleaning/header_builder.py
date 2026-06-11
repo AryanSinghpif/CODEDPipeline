@@ -255,6 +255,23 @@ def apply_headers(df, header_rows):
         columns.append(header)
 
     data_df.columns = columns
+
+    #
+    # Drop ghost columns: camelot sometimes emits columns whose data
+    # cells are all empty (split header cells create them). They only
+    # add clutter and duplicate header names.
+    #
+
+    if data_df.shape[1] > 2:
+
+        keep = [
+            c for c in range(data_df.shape[1])
+            if not data_df.iloc[:, c].astype(str).str.strip().eq("").all()
+        ]
+
+        if len(keep) >= 2 and len(keep) < data_df.shape[1]:
+            data_df = data_df.iloc[:, keep]
+
     #
 # First column should be serial number,
 # not table title
@@ -302,17 +319,24 @@ def apply_headers(df, header_rows):
 
         english_col = district_cols[-1]
 
-        data_df.iloc[:, 1] = (
-            data_df.iloc[:, english_col]
-        )
+        if english_col != 1:
 
-        data_df = data_df.drop(
-            columns=[
-                data_df.columns[
-                    english_col
-                ]
+            data_df.iloc[:, 1] = (
+                data_df.iloc[:, english_col]
+            )
+
+            #
+            # drop by POSITION — both columns may share the
+            # name "district" (translated Hindi header), and
+            # dropping by name would remove them all
+            #
+
+            keep_idx = [
+                i for i in range(data_df.shape[1])
+                if i != english_col
             ]
-        )
+
+            data_df = data_df.iloc[:, keep_idx]
 
         cols = list(
             data_df.columns

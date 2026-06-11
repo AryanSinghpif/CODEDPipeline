@@ -452,6 +452,93 @@ div[data-testid="stFileUploader"]:hover {
 .pop-2 { animation-delay: .15s; } .pop-3 { animation-delay: .3s; }
 @keyframes pop-in { from { transform: scale(.7) translateY(16px); opacity: 0; }
   to { transform: scale(1) translateY(0); opacity: 1; } }
+
+/* ════════ responsive: tablet (≤1100px) ════════ */
+@media (max-width: 1100px) {
+  .block-container { padding: 18px 28px 24px !important; }
+  .hl-title { font-size: clamp(34px, 6vw, 46px); letter-spacing: 0.22em; }
+  .hero-left { padding-top: 4vh; }
+  .cube-pane { height: 420px; margin-top: 5vh; }
+  .cube-pane .cube-stage { top: 120px; transform: scale(1.45); }
+  .cube-pane .cube-shadow { top: 300px; transform: scale(2.2); }
+  .bk-title { font-size: 36px; }
+  .bk-stats { gap: 22px; }
+  .solver-box { padding: 32px 36px; gap: 24px; }
+}
+
+/* ════════ responsive: phone (≤700px) ════════ */
+@media (max-width: 700px) {
+  .block-container { padding: 12px 14px 20px !important; }
+
+  .topbar { padding-bottom: 12px; margin-bottom: 12px; }
+  .topbar-right { display: none; }
+  .logo-name { font-size: 16px; }
+
+  .hero-left { padding: 2vh 0 4px; text-align: center; }
+  .hl-title {
+    font-size: clamp(26px, 8.5vw, 36px);
+    letter-spacing: 0.14em; text-indent: 0.14em;
+  }
+  .hl-rule { margin: 14px auto 12px; }
+  .hl-sub { font-size: 16px; margin-bottom: 20px; }
+  .hl-eyebrow { letter-spacing: 0.18em; }
+
+  /* feature cards stack */
+  .feat-row { flex-direction: column; gap: 10px; margin-top: 18px; }
+  .feat { padding: 14px 16px; border-radius: 16px; }
+
+  /* cube pane shrinks below the stacked upload column */
+  .cube-pane { height: 260px; margin-top: 0; }
+  .cube-pane .cube-stage { top: 60px; transform: scale(1.0); }
+  .cube-pane .cube-shadow { top: 210px; transform: scale(1.4); }
+
+  /* solver box stacks: text above, cube below */
+  .solver-box {
+    flex-direction: column; align-items: flex-start;
+    padding: 22px 18px; min-height: unset; gap: 8px;
+  }
+  .solver { width: 100%; height: 200px; transform: scale(0.8); transform-origin: top center; }
+  .scan-left { max-width: 100%; }
+  .scan-title { font-size: 22px; }
+  .scan-pct { font-size: 24px; }
+
+  /* book spread stacks into single pages */
+  .book { flex-direction: column; padding: 8px; }
+  .bpage { padding: 20px 18px; }
+  .bpage-l { border-radius: 6px 6px 0 0; border-right: none;
+    border-bottom: 1px solid rgba(243,237,222,0.18); }
+  .bpage-r { border-radius: 0 0 6px 6px; }
+  .bk-title { font-size: 30px; }
+  .bk-sub { max-width: 100%; }
+  .bk-stats { gap: 16px; flex-wrap: wrap; }
+  .bk-stat .v { font-size: 28px; }
+
+  /* pill tabs: scroll instead of wrap-overflow */
+  .stTabs [data-baseweb="tab-list"] {
+    gap: 6px; overflow-x: auto !important; flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .stTabs [data-baseweb="tab"] {
+    padding: 7px 14px !important; font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  .note { font-size: 13px; line-height: 1.6; }
+  .night { height: 420px; }
+  .night-title { font-size: clamp(34px, 10vw, 52px); letter-spacing: 0.18em; text-indent: 0.18em; }
+
+  /* download buttons full width, comfortable tap targets */
+  .stDownloadButton button, .stButton button {
+    width: 100% !important; padding: 13px 16px !important;
+  }
+}
+
+/* ════════ responsive: small phone (≤400px) ════════ */
+@media (max-width: 400px) {
+  .hl-title { font-size: 24px; letter-spacing: 0.1em; }
+  .bk-stats { gap: 12px; }
+  .bk-stat .v { font-size: 24px; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -562,9 +649,15 @@ INTERACTIVE_CUBE = """
 <style>
 html,body{margin:0;background:transparent;overflow:hidden}
 #wrap{width:100%;height:500px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none}
+  justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;
+  touch-action:none}
 #wrap:active{cursor:grabbing}
 #persp{perspective:1100px;transform:scale(1.45)}
+@media (max-width:1100px){#persp{transform:scale(1.15)}}
+@media (max-width:700px){
+  #wrap{height:340px;justify-content:flex-start;padding-top:30px}
+  #persp{transform:scale(0.9)}
+}
 #cube{position:relative;width:150px;height:150px;transform-style:preserve-3d}
 .cb{position:absolute;width:48px;height:48px;transform-style:preserve-3d}
 .f{position:absolute;width:46px;height:46px;border-radius:5px;border:1px solid #2c3142}

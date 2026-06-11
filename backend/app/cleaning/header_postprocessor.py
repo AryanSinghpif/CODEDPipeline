@@ -31,6 +31,9 @@ KEEP_WORDS = {
     "transport", "communication", "post", "office", "offices",
     "road", "roads", "vehicles", "registered",
     # utilities / misc
+    "ministry", "ministries", "departments", "pending", "brought",
+    "forward", "rank", "score", "grievances", "appeals", "disposal",
+    "resolved", "receipt", "officers", "grai",
     "hand", "pump", "pumps", "installed", "thousand",
     "electrified", "villages", "village", "towns", "town",
 }
@@ -45,6 +48,10 @@ def _vowel_ratio(word):
 def clean_column_name(col):
 
     col_str = str(col).lower()
+
+    # serial-number column ("S. No.", "Sl No", bare "no")
+    if re.fullmatch(r"s?l?[._\s]*no[._\s]*", col_str):
+        return "s_no"
 
     # preserve standalone year patterns
     if re.fullmatch(r"\d{4}[_\-]\d{2}", col_str):
@@ -66,7 +73,7 @@ def clean_column_name(col):
     # a vocabulary word is also present
     plausible = [
         w for w in english_words
-        if w in KEEP_WORDS or _vowel_ratio(w) >= 0.30
+        if w in KEEP_WORDS or _vowel_ratio(w) >= 0.25
     ]
 
     # cap runaway names (multi-row headers concatenate badly)

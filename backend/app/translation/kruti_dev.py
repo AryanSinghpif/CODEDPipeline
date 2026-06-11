@@ -106,6 +106,15 @@ def looks_kruti(token):
     if bare.isupper():
         return False
 
+    # English compound like "Ministries/Departments": test each part —
+    # but only when parts are word-sized ("lh/kh" is a glyph pattern)
+    if "/" in str(token):
+        parts = [p for p in str(token).split("/") if p]
+        if parts and all(
+            len(re.sub(r"[^A-Za-z]", "", p)) >= 3 for p in parts
+        ):
+            return all(looks_kruti(p) for p in parts)
+
     # hard glyph markers that never appear in real English words
     if any(ch in str(token) for ch in "[]~<>{}|"):
         return True
@@ -115,8 +124,17 @@ def looks_kruti(token):
     if not has_vowel:
         return True
 
-    # internal capitals (eqjSuk, bUnkSj) or known soup digraphs
+    # internal capitals (eqjSuk, bUnkSj) — but CamelCase joins of real
+    # English words ("MinistriesDepartments") are not soup
     if any(c.isupper() for c in bare[1:]):
+        chunks = re.findall(r"[A-Z][a-z]+|^[a-z]+", bare)
+        if chunks and "".join(chunks) == bare and all(
+            len(c) >= 4
+            and any(v in c.lower() for v in "aeiou")
+            and not re.search(r"q(?!u)", c.lower())
+            for c in chunks
+        ):
+            return False
         return True
 
     return any(m in token for m in _MARKERS)

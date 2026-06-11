@@ -22,6 +22,16 @@ def _named_frac(cols):
     ) / max(len(cols), 1)
 
 
+_STRONG_TITLE = re.compile(
+    r"^(table|tabel|statement|annexure|appendix)\b|^\d{1,2}(\.\d{1,2})+\s",
+    re.IGNORECASE,
+)
+
+
+def _strong_title(name):
+    return bool(name) and bool(_STRONG_TITLE.match(str(name).strip()))
+
+
 def _continues(prev, cur):
     """cur is a continuation of prev if it is on the next page with the
     same shape, and shares either the extracted title or the header row."""
@@ -38,14 +48,42 @@ def _continues(prev, cur):
     if prev["name"] and cur["name"] and prev["name"] == cur["name"]:
         return True
 
+    # two DIFFERENT *strong* titles (Table X.Y / numbered headings) are
+    # two different tables even when the column structure is identical
+    # (3.1 Group A vs 3.2 Group B share the exact same grid). Weak
+    # prose-derived names vary across continuation pages and must NOT
+    # block the header-equality merge below.
+    if (
+        _strong_title(prev["name"])
+        and _strong_title(cur["name"])
+        and prev["name"] != cur["name"]
+    ):
+        return False
+
     # identical, meaningfully-named header row repeated on the next page —
     # but only for substantial tables: small KPI strips often share a
     # generic year header (2022 / 2023 / Total) while being unrelated.
     cols_a = [str(c) for c in a.columns]
     cols_b = [str(c) for c in b.columns]
 
+    # header word-wrap differs page to page ("brough t forwar d" /
+    # "resolved within t" vs "brought forward" / "resolved within
+    # time") — compare letters-only and tolerate truncation: a column
+    # matches when one normalised name is a prefix of the other
+    norm_a = [re.sub(r"[^a-z0-9]", "", c.lower()) for c in cols_a]
+    norm_b = [re.sub(r"[^a-z0-9]", "", c.lower()) for c in cols_b]
+
+    def _col_match(x, y):
+        if x == y:
+            return True
+        if len(x) >= 4 and len(y) >= 4:
+            return x.startswith(y) or y.startswith(x)
+        return False
+
+    matched = sum(_col_match(x, y) for x, y in zip(norm_a, norm_b))
+
     if (
-        cols_a == cols_b
+        matched / len(norm_a) >= 0.8
         and _named_frac(cols_a) >= 0.5
         and len(a) >= 6
         and len(b) >= 2

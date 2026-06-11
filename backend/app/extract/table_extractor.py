@@ -156,12 +156,55 @@ def _repair_header_positionally(table, plumber_pdf):
     return df
 
 
+# numbered section heading: "2.4 Ranking of Ministries/Departments – Group A"
+SECTION_LINE = re.compile(r"^\d{1,2}(\.\d{1,2})+[\s\-–:]+[A-Z]")
+
+
+def _title_from_lines(lines):
+    """Best title candidate from text lines above a table, or None."""
+
+    # explicit title line, closest one to the table wins;
+    # absorb a wrapped continuation line (starts lowercase)
+    for i in range(len(lines) - 1, -1, -1):
+
+        if TITLE_LINE.match(lines[i]):
+
+            title = lines[i]
+
+            if (
+                i + 1 < len(lines)
+                and lines[i + 1][:1].islower()
+                and not TITLE_LINE.match(lines[i + 1])
+            ):
+                title += " " + lines[i + 1]
+
+            return title[:300]
+
+    # numbered section heading ("2.4 Ranking of ..."): headings are
+    # short; prose paragraphs are not. Absorb a following parenthetical
+    # qualifier line ("(Ministries/Departments with ...)").
+    for i in range(len(lines) - 1, -1, -1):
+
+        line = lines[i]
+
+        if SECTION_LINE.match(line) and len(line) < 90:
+
+            if i + 1 < len(lines) and lines[i + 1].startswith("("):
+                line += " " + lines[i + 1]
+
+            return line[:300]
+
+    return None
+
+
 def _extract_caption(plumber_pdf, page_num, bbox):
     """
-    Find the table's title. First preference: an explicit
-    "Table/Statement/Annexure N ..." line anywhere above the table
-    (reports like PLFS print it at the top of the page, far from the
-    table). Fallback: the text lines printed just above the table.
+    Find the table's title. Preference order: an explicit
+    "Table/Statement/Annexure N ..." line above the table, then a
+    numbered section heading ("2.4 Ranking of ..."), then — when the
+    table starts at the very top of its page — the same search over
+    the bottom of the PREVIOUS page. Fallback: the lines printed just
+    above the table.
     """
 
     if plumber_pdf is None or bbox is None:
@@ -174,33 +217,39 @@ def _extract_caption(plumber_pdf, page_num, bbox):
         # pdfplumber uses top-down coords.
         table_top = page.height - max(bbox[1], bbox[3])
 
-        if table_top <= 0:
-            return None
+        lines = []
 
-        region = page.crop((0, 0, page.width, table_top))
-        text = region.extract_text() or ""
+        if table_top > 0:
+            region = page.crop((0, 0, page.width, table_top))
+            text = region.extract_text() or ""
+            lines = [l.strip() for l in text.split("\n") if l.strip()]
 
-        lines = [l.strip() for l in text.split("\n") if l.strip()]
+        title = _title_from_lines(lines)
+
+        if title:
+            return title
+
+        # table starts at the very top of its page: the heading may sit
+        # at the bottom of the previous page
+        if table_top < 0.15 * page.height and page_num >= 2:
+
+            prev = plumber_pdf.pages[page_num - 2]
+            band = prev.crop((
+                0, prev.height * 0.7, prev.width, prev.height
+            ))
+            prev_lines = [
+                l.strip()
+                for l in (band.extract_text() or "").split("\n")
+                if l.strip()
+            ]
+
+            title = _title_from_lines(prev_lines)
+
+            if title:
+                return title
 
         if not lines:
             return None
-
-        # explicit title line, closest one to the table wins;
-        # absorb a wrapped continuation line (starts lowercase)
-        for i in range(len(lines) - 1, -1, -1):
-
-            if TITLE_LINE.match(lines[i]):
-
-                title = lines[i]
-
-                if (
-                    i + 1 < len(lines)
-                    and lines[i + 1][:1].islower()
-                    and not TITLE_LINE.match(lines[i + 1])
-                ):
-                    title += " " + lines[i + 1]
-
-                return title[:300]
 
         # fallback: the line(s) printed right above the table
         return " ".join(lines[-2:])[:300]

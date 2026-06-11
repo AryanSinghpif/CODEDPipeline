@@ -77,6 +77,21 @@ def _has_vowel(word):
 ALLOWED_LOWER = {
     "of", "per", "and", "the", "in", "on", "for", "to",
     "no", "by", "at",
+    # statistical-report header vocabulary: modern Unicode reports
+    # (PLFS, DARPG, Energy) print headers in lowercase, which the
+    # Titlecase-only rule (an anti-Kruti defence) was discarding
+    "rural", "urban", "male", "female", "person", "persons",
+    "age", "ages", "group", "groups", "years", "year", "status",
+    "industry", "sector", "work", "worker", "workers", "activity",
+    "education", "level", "general", "current", "weekly", "usual",
+    "principal", "subsidiary", "labour", "force", "participation",
+    "rate", "rates", "unemployment", "employment", "employed",
+    "distribution", "percentage", "monthly", "earnings", "wages",
+    "wage", "self", "casual", "regular", "salaried", "household",
+    "households", "size", "religion", "social", "category",
+    "expenditure", "class", "state", "india", "division", "code",
+    "item", "broad", "each", "according", "total", "number",
+    "all", "category", "workers", "occupation", "quintile",
 }
 
 
@@ -137,6 +152,9 @@ _TITLE_FRAGMENT = re.compile(
     r"(\s*\(?\s*\d+([.\-]\d+)*\s*\)?)?",
     re.IGNORECASE,
 )
+
+# age / size-class column headers: "0-4", "15-29", "60+", "5 - 9"
+_RANGE_TOKEN = re.compile(r"\d{1,3}\s*[-–]\s*\d{1,3}|\d{1,3}\s*\+")
 
 
 def clean_header(text):
@@ -235,10 +253,19 @@ def apply_headers(df, header_rows):
     for col in range(df.shape[1]):
 
         parts = []
+        range_tokens = []
 
         for value in header_df.iloc[:, col]:
 
-            value = _TITLE_FRAGMENT.sub(" ", str(value)).strip()
+            raw = str(value).strip()
+
+            # an entire title sentence in one cell ("Table (15):
+            # Percentage distribution of persons ...") is a name, not
+            # column semantics — skip the whole cell, not just the prefix
+            if _TITLE_FRAGMENT.match(raw) and len(raw) > 40:
+                continue
+
+            value = _TITLE_FRAGMENT.sub(" ", raw).strip()
 
             if not value:
                 continue
@@ -266,6 +293,18 @@ def apply_headers(df, header_rows):
                 parts.append(
                     value
                 )
+
+            elif _RANGE_TOKEN.fullmatch(value):
+
+                # age/size-class headers are pure ranges ("0-4",
+                # "15-29", "60+") with no letters to extract
+                range_tokens.append(value)
+
+        if range_tokens:
+
+            # the range is the distinguishing part of the header
+            # ("0-4" vs "5-9") — keep it even when group labels exist
+            parts.append(range_tokens[-1])
 
         if parts:
 

@@ -1,5 +1,6 @@
 import io
 import os
+import threading
 import time
 from pathlib import Path
 import tempfile
@@ -18,6 +19,14 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+
+@st.cache_resource
+def _extraction_gate():
+    """One process-wide lock: a single Camelot run can use most of the
+    container's RAM/CPU, so concurrent extractions would OOM-restart
+    the app for everyone. Later arrivals wait and retry automatically."""
+    return threading.Lock()
 
 # ── Design system — sleep-well-creatives: night blues, cream paper, gold ──────
 st.markdown("""
@@ -859,8 +868,22 @@ with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
     tmp.write(uploaded.getvalue())
     pdf_path = tmp.name
 
+_gate = _extraction_gate()
+_gate_held = False
+
 try:
     if "results" not in st.session_state or st.session_state.get("pdf_name") != uploaded.name:
+
+        _gate_held = _gate.acquire(blocking=False)
+
+        if not _gate_held:
+            status_ph.markdown(
+                status_html("in queue",
+                            "another extraction is running — yours starts automatically"),
+                unsafe_allow_html=True,
+            )
+            time.sleep(6)
+            st.rerun()
 
         status_ph.markdown(
             status_html("reading the document",
@@ -1119,4 +1142,6 @@ try:
                         unsafe_allow_html=True)
 
 finally:
+    if _gate_held:
+        _gate.release()
     os.unlink(pdf_path)

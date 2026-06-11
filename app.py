@@ -22,28 +22,31 @@ st.set_page_config(
 # ── Design system — sleep-well-creatives: night blues, cream paper, gold ──────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
-  --night:      #010d6e;
-  --night-deep: #010940;
-  --navy:       #002e77;
-  --blue:       #2575f6;
-  --blue-dim:   #0042af;
-  --soft:       #94b8f2;
-  --ice:        #eef4ff;
-  --cream:      #fef1d0;
-  --cream-2:    #fde7af;
-  --gold:       #e6c35c;
-  --ink:        #0a1240;
-  --serif: 'Instrument Serif', Georgia, serif;
-  --sans:  'Space Grotesk', Arial, sans-serif;
+  --night:      #f6efdf;
+  --night-deep: #ebdfc6;
+  --navy:       #fdfaf1;
+  --blue:       #5468a8;
+  --blue-dim:   #9fb0d8;
+  --soft:       #76809c;
+  --ice:        #232c45;
+  --cream:      #273050;
+  --cream-2:    #1b2440;
+  --gold:       #c09a4a;
+  --ink:        #f3edda;
+  --serif: 'Fraunces', Georgia, serif;
+  --sans:  'Hanken Grotesk', Arial, sans-serif;
   --mono:  'Space Mono', monospace;
 }
 
 html, body, [class*="css"], .stApp {
   font-family: var(--sans) !important;
-  background: radial-gradient(120% 90% at 50% 0%, var(--navy) 0%, var(--night) 55%, var(--night-deep) 100%) fixed !important;
+  background:
+    radial-gradient(60% 45% at 12% 0%, rgba(192,154,74,0.16), transparent 70%),
+    radial-gradient(55% 60% at 82% 38%, rgba(84,104,168,0.10), transparent 70%),
+    radial-gradient(120% 90% at 50% 0%, var(--navy) 0%, var(--night) 55%, var(--night-deep) 100%) fixed !important;
   color: var(--cream) !important;
 }
 
@@ -57,15 +60,15 @@ html, body, [class*="css"], .stApp {
 /* ── top bar ── */
 .topbar {
   display: flex; align-items: center; gap: 12px;
-  padding: 0 0 16px; border-bottom: 1px solid rgba(148,184,242,0.25);
+  padding: 6px 0 18px; border-bottom: 1px solid rgba(35,44,69,0.14);
   margin-bottom: 20px;
 }
-.logo-mark { color: var(--gold); font-size: 20px; }
-.logo-name { font-size: 17px; letter-spacing: 0.04em; color: var(--ice); }
-.logo-name span { font-weight: 600; color: var(--soft); }
+.logo-name { font-family: var(--serif); font-size: 19px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ice); }
 .topbar-right {
-  margin-left: auto; font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--soft);
+  margin-left: auto; font-family: var(--mono); font-size: 10.5px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(35,44,69,0.55);
 }
 
 /* ── hero ── */
@@ -90,24 +93,24 @@ html, body, [class*="css"], .stApp {
 /* ── the solver: person + rubik's cube (pure CSS) ── */
 .solver-box {
   position: relative; border-radius: 14px;
-  border: 1px solid rgba(148,184,242,0.25);
-  background: rgba(238,244,255,0.03);
+  border: 1px solid rgba(35,44,69,0.25);
+  background: rgba(236,237,242,0.03);
   padding: 44px 64px; margin: 8px 0; min-height: 360px;
   display: flex; align-items: center; justify-content: space-between; gap: 40px;
 }
 .scan-left { position: relative; text-align: left; max-width: 400px; }
 .scan-title { font-family: var(--serif); font-size: 28px; color: var(--ice); }
 .scan-msg {
-  font-family: var(--mono); font-size: 10px;
+  font-family: var(--mono); font-size: 12px;
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold);
   margin-top: 12px; min-height: 14px;
 }
 .scan-msg::after { content: '▍'; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
-.scan-sub { color: var(--soft); font-size: 10px; margin-top: 6px; font-family: var(--mono); letter-spacing: 0.08em; }
+.scan-sub { color: var(--soft); font-size: 12px; margin-top: 6px; font-family: var(--mono); letter-spacing: 0.08em; }
 .scan-bar {
   position: relative; height: 3px; border-radius: 2px;
-  background: rgba(148,184,242,0.25);
+  background: rgba(35,44,69,0.25);
   margin: 16px 0 0; max-width: 660px; overflow: hidden;
 }
 .scan-bar > div {
@@ -136,8 +139,11 @@ html, body, [class*="css"], .stApp {
   animation: cube-spin 9s linear infinite;
 }
 @keyframes cube-spin {
-  from { transform: rotateX(-24deg) rotateY(0deg); }
-  to   { transform: rotateX(-24deg) rotateY(360deg); }
+  0%   { transform: rotateX(-24deg) rotateY(0deg)   rotateZ(0deg); }
+  25%  { transform: rotateX(-42deg) rotateY(90deg)  rotateZ(7deg); }
+  50%  { transform: rotateX(-8deg)  rotateY(180deg) rotateZ(-7deg); }
+  75%  { transform: rotateX(-40deg) rotateY(270deg) rotateZ(6deg); }
+  100% { transform: rotateX(-24deg) rotateY(360deg) rotateZ(0deg); }
 }
 .slice {
   position: absolute; left: 0; width: 126px; height: 42px;
@@ -153,7 +159,7 @@ html, body, [class*="css"], .stApp {
 .slice-face {
   position: absolute; width: 126px; height: 42px;
   display: flex; flex-direction: column;
-  background: var(--night-deep);
+  background: #2c3142;
 }
 .sf-0 { transform: rotateY(0deg)   translateZ(63px); }
 .sf-1 { transform: rotateY(90deg)  translateZ(63px); }
@@ -166,20 +172,20 @@ html, body, [class*="css"], .stApp {
 .cube-shadow {
   position: absolute; left: 50%; top: 250px; width: 130px; height: 18px;
   margin-left: -55px; border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(1,9,64,0.9) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(35,44,69,0.30) 0%, transparent 70%);
 }
 
 /* ── book spread (results) ── */
 .book {
   position: relative; display: flex; border-radius: 10px;
   background: var(--night-deep); padding: 12px; margin: 4px 0 18px;
-  box-shadow: 0 30px 60px rgba(1,9,64,0.5), inset 0 0 0 1px rgba(148,184,242,0.18);
+  box-shadow: 0 30px 60px rgba(35,44,69,0.5), inset 0 0 0 1px rgba(35,44,69,0.18);
 }
 .bpage {
   background: linear-gradient(135deg, var(--cream) 0%, var(--cream-2) 100%);
   color: var(--ink); padding: 30px 34px; flex: 1;
 }
-.bpage-l { border-radius: 6px 0 0 6px; border-right: 1px solid rgba(10,18,64,0.18); }
+.bpage-l { border-radius: 6px 0 0 6px; border-right: 1px solid rgba(243,237,222,0.18); }
 .bpage-r { border-radius: 0 6px 6px 0; }
 .bk-kicker {
   font-family: var(--mono); font-size: 10px; text-transform: uppercase;
@@ -189,61 +195,101 @@ html, body, [class*="css"], .stApp {
   font-family: var(--serif); font-style: italic; font-weight: 400;
   font-size: 44px; line-height: 1; margin: 10px 0 8px; color: var(--ink);
 }
-.bk-sub { font-size: 13px; font-weight: 300; color: rgba(10,18,64,0.7); max-width: 320px; }
+.bk-sub { font-size: 13px; font-weight: 300; color: rgba(243,237,222,0.7); max-width: 320px; }
 .bk-stats { display: flex; gap: 30px; margin-top: 8px; }
 .bk-stat .v { font-family: var(--serif); font-size: 38px; line-height: 1.1; color: var(--ink); }
 .bk-stat .v.good { color: var(--blue-dim); }
-.bk-stat .v.bad { color: #a4541b; }
+.bk-stat .v.bad { color: #e0a36a; }
 .bk-stat .k {
   font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: rgba(10,18,64,0.6); margin-top: 2px;
+  text-transform: uppercase; color: rgba(243,237,222,0.6); margin-top: 2px;
 }
 
 /* ── widgets, recoloured to the palette ── */
 .stTextInput input, .stSelectbox div[data-baseweb] {
-  background: rgba(238,244,255,0.06) !important;
-  border-color: rgba(148,184,242,0.35) !important;
+  background: rgba(236,237,242,0.06) !important;
+  border-color: rgba(35,44,69,0.35) !important;
   color: var(--ice) !important; font-family: var(--mono) !important; font-size: 12px !important;
 }
+.stDownloadButton { margin-top: 10px; }
 .stDownloadButton button, .stButton button {
   background: var(--cream) !important; color: var(--ink) !important;
-  border: 1px solid var(--cream) !important; border-radius: 6px !important;
-  font-family: var(--mono) !important; font-weight: 700 !important; font-size: 12px !important;
-  letter-spacing: 0.06em !important;
+  border: 1px solid var(--cream) !important; border-radius: 9px !important;
+  font-family: var(--sans) !important; font-weight: 500 !important; font-size: 13px !important;
+  letter-spacing: 0.02em !important; padding: 12px 20px !important;
+  font-size: 14.5px !important;
+  transition: transform .15s ease !important;
+}
+.stDownloadButton button:active, .stButton button:active {
+  transform: scale(0.98) !important;
 }
 .stDownloadButton button:hover, .stButton button:hover {
   background: var(--gold) !important; border-color: var(--gold) !important;
 }
 div[data-testid="stFileUploader"] {
-  border: 1px dashed rgba(254,241,208,0.35); border-radius: 14px;
-  background: rgba(238,244,255,0.03); padding: 6px;
+  border: 1px dashed rgba(242,234,216,0.35); border-radius: 14px;
+  background: rgba(236,237,242,0.03); padding: 6px;
 }
 div[data-testid="stFileUploader"]:hover { border-color: var(--gold); }
 div[data-testid="stFileUploader"] section { background: transparent !important; }
+div[data-testid="stFileUploader"] section span,
+div[data-testid="stFileUploader"] section small,
+div[data-testid="stFileUploader"] section div {
+  color: rgba(35,44,69,0.75) !important; font-size: 15px !important;
+}
+div[data-testid="stFileUploader"] [data-testid="stFileUploaderFile"],
+div[data-testid="stFileUploader"] [data-testid="stFileUploaderFile"] * {
+  color: #f7f2e4 !important; font-size: 14px !important;
+}
+div[data-testid="stFileUploader"] [data-testid="stFileUploaderFile"] small {
+  color: rgba(247,242,228,0.7) !important;
+}
+div[data-testid="stFileUploader"] section button,
+div[data-testid="stFileUploader"] section button * {
+  color: #f7f2e4 !important; fill: #f7f2e4 !important;
+  font-size: 15px !important; font-weight: 500 !important;
+}
 div[data-testid="stFileUploader"] section button {
   background: var(--cream) !important; color: var(--ink) !important; border-radius: 6px !important;
   font-weight: 600 !important;
 }
 div[data-testid="stDataFrame"] {
-  border: 1px solid rgba(148,184,242,0.25); border-radius: 8px;
+  border: 1px solid rgba(35,44,69,0.25); border-radius: 8px;
 }
-.stTabs { margin-top: 14px; }
+.stTabs { margin-top: 16px; }
 .stTabs [data-baseweb="tab-list"] {
-  gap: 4px; background: transparent;
-  border-bottom: 1px solid rgba(148,184,242,0.25);
+  gap: 10px; background: transparent; border-bottom: none !important;
 }
 .stTabs [data-baseweb="tab"] {
-  font-family: var(--mono) !important; font-size: 11px !important;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft) !important;
+  font-family: var(--sans) !important; font-size: 13.5px !important;
+  font-weight: 500 !important; letter-spacing: 0.04em;
+  text-transform: uppercase; color: rgba(35,44,69,0.65) !important;
+  background: rgba(255,255,255,0.38) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(35,44,69,0.16) !important;
+  border-radius: 999px !important;
+  padding: 9px 24px !important;
+  box-shadow: 0 2px 10px rgba(35,44,69,0.05) !important;
+  transition: background .2s, color .2s, border-color .2s !important;
+}
+.stTabs [data-baseweb="tab"]:hover {
+  background: rgba(255,255,255,0.65) !important;
+  border-color: rgba(192,154,74,0.5) !important;
 }
 .stTabs [aria-selected="true"] {
-  color: var(--gold) !important; border-bottom: 2px solid var(--gold) !important;
+  color: #f3edda !important;
+  background: rgba(39,48,80,0.92) !important;
+  border: 1px solid rgba(39,48,80,0.92) !important;
+  box-shadow: 0 4px 16px rgba(35,44,69,0.22) !important;
 }
-hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important; }
+.stTabs [data-baseweb="tab-highlight"],
+.stTabs [data-baseweb="tab-border"] { display: none !important; }
+hr { border-color: rgba(35,44,69,0.25) !important; margin: 10px 0 !important; }
 .note {
-  border-top: 1px solid rgba(148,184,242,0.3);
-  padding: 14px 0 0; color: var(--soft); font-size: 13px;
-  font-weight: 300; line-height: 1.7; max-width: 660px; margin: 18px 0 0 !important;
+  border-top: 1px solid rgba(35,44,69,0.3);
+  padding: 14px 0 0; color: rgba(35,44,69,0.85); font-size: 14.5px;
+  font-weight: 400; line-height: 1.8; max-width: 660px; margin: 16px 0 0 !important;
 }
 .note strong { color: var(--ice); font-weight: 500; }
 
@@ -258,9 +304,9 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
 .aurora {
   position: absolute; left: -10%; right: -10%; top: 270px; height: 170px;
   background:
-    radial-gradient(50% 90% at 30% 50%, rgba(148,184,242,0.30), transparent 70%),
+    radial-gradient(50% 90% at 30% 50%, rgba(35,44,69,0.30), transparent 70%),
     radial-gradient(45% 80% at 70% 40%, rgba(37,117,246,0.28), transparent 70%),
-    radial-gradient(60% 100% at 50% 60%, rgba(238,244,255,0.14), transparent 75%);
+    radial-gradient(60% 100% at 50% 60%, rgba(236,237,242,0.14), transparent 75%);
   filter: blur(14px);
   animation: aurora-drift 9s ease-in-out infinite alternate;
 }
@@ -273,7 +319,7 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   width: 44px; height: 58px; border: 2px solid var(--cream);
   border-radius: 50% / 42%;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: inset 0 0 0 3px var(--night), inset 0 0 0 4px rgba(254,241,208,0.6);
+  box-shadow: inset 0 0 0 3px var(--night), inset 0 0 0 4px rgba(242,234,216,0.6);
 }
 .moon-emblem span { color: var(--cream); font-size: 18px; line-height: 1;
   transform: rotate(-22deg); }
@@ -288,7 +334,7 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   font-family: var(--serif); font-weight: 400;
   font-size: 76px; letter-spacing: 0.30em; text-indent: 0.30em;
   color: var(--ice); line-height: 1.1;
-  text-shadow: 0 0 40px rgba(238,244,255,0.25);
+  text-shadow: 0 0 40px rgba(236,237,242,0.25);
   animation: title-in 2.2s ease-out backwards;
 }
 @keyframes title-in { from { opacity: 0; letter-spacing: 0.5em; }
@@ -309,7 +355,7 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   mix-blend-mode: overlay; }
 
 /* ── single-page layout: heading + dropzone left, cube right ── */
-.hero-left { padding: 18vh 0 8px; text-align: left; }
+.hero-left { padding: 7vh 0 8px; text-align: left; }
 .hl-eyebrow {
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.28em;
   text-transform: uppercase; color: var(--ice);
@@ -318,26 +364,60 @@ hr { border-color: rgba(148,184,242,0.25) !important; margin: 10px 0 !important;
   animation: eyeflash 2s ease-in-out infinite; }
 @keyframes eyeflash { 0%,100% { opacity: .2; } 50% { opacity: 1; } }
 .hl-title {
-  font-family: var(--serif); font-weight: 700; font-size: 42px;
+  font-family: var(--serif); font-weight: 700; font-size: 54px;
   letter-spacing: 0.30em; line-height: 1.15; color: var(--ice);
   text-transform: uppercase;
-  margin-top: 12px; text-shadow: 0 0 50px rgba(238,244,255,0.25);
+  margin-top: 12px; text-shadow: 0 0 50px rgba(236,237,242,0.25);
   animation: hl-in 1.6s ease-out backwards;
 }
 @keyframes hl-in { from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); } }
 .hl-title em { font-style: normal; color: var(--ice); }
+.hl-rule {
+  width: 64px; height: 2px; background: var(--gold);
+  margin: 16px 0 14px; border-radius: 1px;
+  box-shadow: 0 0 12px rgba(192,154,74,0.45);
+}
 .hl-sub {
-  font-family: var(--serif); font-style: italic; font-size: 19px;
-  color: var(--soft); margin: 6px 0 26px;
+  font-family: var(--serif); font-style: italic; font-size: 21px;
+  color: rgba(35,44,69,0.78); margin: 0 0 34px;
   animation: hl-in 1.6s ease-out .4s backwards;
 }
 div[data-testid="stFileUploader"] {
-  border: 1px dashed rgba(254,241,208,0.55) !important;
-  background: rgba(1,9,64,0.45) !important;
+  border: 1px dashed rgba(236,237,242,0.28) !important;
+  border-radius: 12px !important;
+  background: rgba(35,44,69,0.35) !important;
   max-width: 660px !important;
+  transition: border-color .25s ease;
+}
+div[data-testid="stFileUploader"]:hover {
+  border-color: rgba(230,195,92,0.65) !important;
 }
 .note { border-top: none !important; padding-top: 8px; }
+.feat-row {
+  display: flex; gap: 14px; margin-top: 26px; max-width: 660px;
+}
+.feat {
+  flex: 1; padding: 18px 20px; border-radius: 22px;
+  background: rgba(255,255,255,0.42);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(35,44,69,0.14);
+  box-shadow: 0 4px 18px rgba(35,44,69,0.07);
+  transition: transform .2s ease, border-color .2s ease;
+}
+.feat:hover { transform: translateY(-3px); border-color: rgba(192,154,74,0.55); }
+.feat-n {
+  font-family: var(--serif); font-style: italic; font-size: 20px;
+  color: var(--gold);
+}
+.feat-t {
+  font-family: var(--sans); font-weight: 600; font-size: 14.5px;
+  color: var(--ice); margin-top: 6px;
+}
+.feat-d {
+  font-size: 12.5px; color: rgba(35,44,69,0.65); line-height: 1.55;
+  margin-top: 5px;
+}
 .status-left { padding: 10px 2px 0; }
 .scan-row { display: flex; align-items: baseline; justify-content: space-between;
   max-width: 660px; }
@@ -345,7 +425,7 @@ div[data-testid="stFileUploader"] {
   font-family: var(--serif); font-size: 30px; color: var(--gold); line-height: 1;
 }
 
-.cube-pane { position: relative; height: 520px; margin-top: 12vh; }
+.cube-pane { position: relative; height: 520px; margin-top: 9vh; }
 .cube-pane .cube-stage { top: 150px; transform: scale(1.95); }
 .cube-pane .cube-shadow { top: 360px; transform: scale(2.9); }
 .cube-idle .slice { animation: none !important; }
@@ -378,14 +458,13 @@ div[data-testid="stFileUploader"] {
 # ── Top bar ────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="topbar">
-  <div class="logo-mark">⬡</div>
-  <div class="logo-name">Data<span>Rubiks</span></div>
-  <div class="topbar-right">District extraction engine</div>
+  <div class="logo-name">Data Rubiks</div>
+  <div class="topbar-right">PDF &rarr; clean tables</div>
 </div>
 """, unsafe_allow_html=True)
 
 
-STICKERS = ["#E6C35C", "#FEF1D0", "#94B8F2", "#2575F6", "#0042AF", "#EEF4FF"]
+STICKERS = ["#D9B25F", "#F4F1E8", "#D08B4C", "#6F9573", "#5B74A8", "#B0524A"]
 
 
 def _sticker_row(seed):
@@ -431,25 +510,24 @@ def _cube_solver():
 
 HERO_GSAP = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=Space+Mono&display=swap');
 html,body{margin:0;overflow:hidden;height:100%;
-  background:radial-gradient(120% 100% at 50% 0%,#002e77 0%,#010d6e 55%,#010940 100%)}
+  background:radial-gradient(120% 100% at 50% 0%,#002e77 0%,#121a30 55%,#0a0f1f 100%)}
 #sky{position:absolute;inset:0;overflow:hidden}
-.s{position:absolute;border-radius:50%;background:#fef1d0;
-  box-shadow:0 0 6px rgba(254,241,208,.9)}
-.s.g{background:#e6c35c;box-shadow:0 0 8px rgba(230,195,92,.9)}
+.s{position:absolute;border-radius:50%;background:#f5edda;
+  box-shadow:0 0 6px rgba(242,234,216,.9)}
+.s.g{background:#c09a4a;box-shadow:0 0 8px rgba(230,195,92,.9)}
 .ov{position:absolute;left:0;right:0;text-align:center;pointer-events:none;z-index:2}
 #eye{top:96px;font-family:'Space Mono',monospace;font-size:11px;
-  letter-spacing:.3em;text-transform:uppercase;color:#eef4ff}
-#eye b{color:#94b8f2;font-weight:400;padding:0 12px}
-#title{top:126px;font-family:'Instrument Serif',Georgia,serif;font-size:60px;
-  color:#eef4ff;letter-spacing:.22em;text-indent:.22em;
-  text-shadow:0 0 50px rgba(238,244,255,.3)}
-#tsub{top:206px;font-family:'Instrument Serif',Georgia,serif;font-style:italic;
-  font-size:19px;color:#94b8f2;letter-spacing:.02em}
-#title em{font-style:italic;color:#e6c35c}
-#hint{bottom:16px;font-family:'Space Mono',monospace;font-size:10px;
-  letter-spacing:.2em;color:#2575f6;text-transform:uppercase}
+  letter-spacing:.3em;text-transform:uppercase;color:#f2f4fb}
+#eye b{color:#76809c;font-weight:400;padding:0 12px}
+#title{top:126px;font-family:'Fraunces',Georgia,serif;font-size:60px;
+  color:#f2f4fb;letter-spacing:.22em;text-indent:.22em;
+  text-shadow:0 0 50px rgba(236,237,242,.3)}
+#tsub{top:206px;font-family:'Fraunces',Georgia,serif;font-style:italic;
+  font-size:19px;color:#76809c;letter-spacing:.02em}
+#title em{font-style:italic;color:#c09a4a}
+
 </style>
 <div id="sky"></div>
 <div class="ov" id="eye"><b>&#9679;</b>GOVERNMENT PDF &rarr; CLEAN DATA<b>&#9679;</b></div>
@@ -489,16 +567,19 @@ html,body{margin:0;background:transparent;overflow:hidden}
 #persp{perspective:1100px;transform:scale(1.45)}
 #cube{position:relative;width:150px;height:150px;transform-style:preserve-3d}
 .cb{position:absolute;width:48px;height:48px;transform-style:preserve-3d}
-.f{position:absolute;width:46px;height:46px;border-radius:5px;border:1px solid #010d6e}
-#hint{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.24em;
-  text-transform:uppercase;color:#94b8f2;margin-top:64px}
+.f{position:absolute;width:46px;height:46px;border-radius:5px;border:1px solid #2c3142}
+
+
+
+
+
 </style>
 <div id="wrap">
   <div id="persp"><div id="cube"></div></div>
-  <div id="hint">drag to rotate &mdash; solved</div>
 </div>
 <script>
-const COLS={F:'#2575F6',B:'#0042AF',R:'#EEF4FF',L:'#94B8F2',U:'#E6C35C',D:'#FEF1D0'};
+const COLS={F:'#6F9573',B:'#5B74A8',R:'#B0524A',L:'#D08B4C',U:'#F4F1E8',D:'#D9B25F'};
+const SCRAMBLE=__SCRAMBLE__,PAL=Object.values(COLS),PLAYLABEL='__PLAYBTN__';
 const cube=document.getElementById('cube'),S=50;
 for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++){
   const c=document.createElement('div');c.className='cb';
@@ -512,13 +593,14 @@ for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++){
   if(y===1)faces.push(['rotateX(-90deg)',COLS.D]);
   for(const[r,col]of faces){
     const f=document.createElement('div');f.className='f';
-    f.style.background=col;f.style.transform=`${r} translateZ(24px)`;
+    f.style.background=SCRAMBLE?PAL[Math.floor(Math.random()*6)]:col;
+    f.style.transform=`${r} translateZ(24px)`;
     c.appendChild(f);
   }
   cube.appendChild(c);
 }
-let rx=-26,ry=-38,dragging=false,px=0,py=0,idle=true;
-function render(){cube.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`;}
+let rx=-26,ry=-38,rz=0,t0=0,dragging=false,px=0,py=0,idle=true;
+function render(){cube.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg)`;}
 render();
 const wrap=document.getElementById('wrap');
 wrap.addEventListener('pointerdown',e=>{dragging=true;idle=false;px=e.clientX;py=e.clientY;});
@@ -530,9 +612,28 @@ window.addEventListener('pointermove',e=>{
 });
 window.addEventListener('pointerup',()=>{dragging=false;
   setTimeout(()=>{idle=true},2500);});
-(function spin(){if(idle&&!dragging){ry+=0.15;render();}requestAnimationFrame(spin);})();
+(function spin(){
+  if(idle&&!dragging&&!handMode){
+    t0+=0.012;
+    ry+=0.35;
+    rx=-24+20*Math.sin(t0*1.1);
+    rz=10*Math.sin(t0*0.6);
+    render();
+  }
+  requestAnimationFrame(spin);})();
+
+const handMode=false;
 </script>
 """
+
+
+def interactive_cube(hint, play_label, scramble):
+    return (
+        INTERACTIVE_CUBE
+        .replace("__HINT__", hint)
+        .replace("__PLAYBTN__", play_label)  # legacy, markup removed
+        .replace("__SCRAMBLE__", "true" if scramble else "false")
+    )
 
 
 def cube_pane(mode="solving", caption=""):
@@ -558,13 +659,13 @@ def status_anim(msg, sub, pct_prev, pct, eta=""):
 html,body{{margin:0;background:transparent;overflow:hidden}}
 #wrap{{max-width:660px;font-family:'Space Mono',monospace}}
 #row{{display:flex;align-items:baseline;justify-content:space-between}}
-#msg{{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#e6c35c}}
+#msg{{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#c09a4a}}
 #msg::after{{content:'\258d';animation:bl 1s steps(1) infinite}}
 @keyframes bl{{50%{{opacity:0}}}}
-#pct{{font-family:'Instrument Serif',Georgia,serif;font-size:34px;color:#e6c35c;line-height:1}}
-#sub{{color:#94b8f2;font-size:10px;margin-top:6px;letter-spacing:.08em}}
-#bar{{height:3px;border-radius:2px;background:rgba(148,184,242,.25);margin-top:14px;overflow:hidden}}
-#fill{{height:100%;border-radius:2px;background:#e6c35c;width:{pct_prev:.1f}%}}
+#pct{{font-family:'Fraunces',Georgia,serif;font-size:40px;color:#c09a4a;line-height:1}}
+#sub{{color:#5d6781;font-size:12.5px;margin-top:6px;letter-spacing:.08em}}
+#bar{{height:3px;border-radius:2px;background:rgba(35,44,69,.25);margin-top:14px;overflow:hidden}}
+#fill{{height:100%;border-radius:2px;background:#c09a4a;width:{pct_prev:.1f}%}}
 </style>
 <div id="wrap">
   <div id="row"><span id="msg">{msg}</span><span id="pct">{pct_prev:.0f}%</span></div>
@@ -583,6 +684,14 @@ if(window.gsap){{
   el.textContent='{pct:.0f}%';fill.style.width='{pct:.1f}%';
 }}
 </script>"""
+
+
+def _nice_name(filename):
+    """Shorten unwieldy upload names: keep the meaningful tail."""
+    stem = filename.rsplit(".", 1)[0]
+    if len(stem) > 42:
+        stem = "…" + stem[-40:]
+    return stem + ".pdf"
 
 
 def _fmt_eta(seconds):
@@ -618,6 +727,7 @@ with left:
     st.markdown("""
     <div class="hero-left">
       <div class="hl-title">DATA RUBIKS</div>
+      <div class="hl-rule"></div>
       <div class="hl-sub">Your assistant for extracting data tables from any PDF.</div>
     </div>
     """, unsafe_allow_html=True)
@@ -630,9 +740,22 @@ if uploaded is None:
         unsafe_allow_html=True,
     )
     status_ph.markdown("""
-    <div class="note">
-      <strong>Supported</strong> &mdash; bordered (lattice) and borderless (stream)
-      tables: DES district reports, census annexures, statistical publications.
+    <div class="feat-row">
+      <div class="feat">
+        <span class="feat-n">#1</span>
+        <div class="feat-t">650+ pages, one go</div>
+        <div class="feat-d">Handles full statistical reports &mdash; every bordered or borderless table.</div>
+      </div>
+      <div class="feat">
+        <span class="feat-n">#2</span>
+        <div class="feat-t">Hindi &rarr; English</div>
+        <div class="feat-d">Detects Kruti Dev &amp; Devanagari scripts and translates tables automatically.</div>
+      </div>
+      <div class="feat">
+        <span class="feat-n">#3</span>
+        <div class="feat-t">Excel &amp; CSV, ready</div>
+        <div class="feat-d">Multi-page tables stitched, named and bundled into clean workbooks.</div>
+      </div>
     </div>""", unsafe_allow_html=True)
     st.stop()
 
@@ -647,8 +770,8 @@ try:
     if "results" not in st.session_state or st.session_state.get("pdf_name") != uploaded.name:
 
         status_ph.markdown(
-            status_html("locating tables",
-                        f"{uploaded.name} · camelot lattice + stream"),
+            status_html("reading the document",
+                        f"{_nice_name(uploaded.name)} · locating every table"),
             unsafe_allow_html=True,
         )
 
@@ -666,16 +789,16 @@ try:
         from backend.app.export.excel_exporter import build_workbook
         from backend.app.standardization.metadata_builder import build_metadata
         from backend.app.standardization.table_name_extractor import extract_table_name
-        from backend.app.translation.hindi_translator import translate_dataframe
+        from backend.app.translation.hindi_translator import translate_dataframe, translate_text
         from backend.app.validation.table_validator import validate_table
 
         MSGS = [
-            "removing empty rows + garbage",
-            "detecting header depth",
-            "merging hierarchical headers",
-            "translating legacy hindi",
-            "validating structure",
-            "naming tables from pdf titles",
+            "cleaning rows",
+            "reading headers",
+            "merging header levels",
+            "translating hindi",
+            "validating tables",
+            "naming tables",
         ]
 
         from backend.app.standardization.table_stitcher import stitch_tables
@@ -726,10 +849,12 @@ try:
                 with redirect_stdout(io.StringIO()):
                     df = clean_dataframe(t["dataframe"])
                     t["dataframe"] = None
-                    h = detect_header_rows(df)
-                    nm = extract_table_name(df, h, t.get("caption"))
-                    df = apply_headers(df, h)
                     df = translate_dataframe(df)
+                    h = detect_header_rows(df)
+                    nm = extract_table_name(
+                        df, h, translate_text(t.get("caption") or "") or None
+                    )
+                    df = apply_headers(df, h)
                     df = clean_headers(df)
                 s = validate_table(df)
                 if s["passed"]:
@@ -815,7 +940,14 @@ try:
     import streamlit.components.v1 as components
 
     with cube_ph:
-        components.html(INTERACTIVE_CUBE, height=520)
+        components.html(
+            interactive_cube(
+                "drag to rotate &mdash; solved",
+                "&#9654; &nbsp;play with your hand",
+                scramble=False,
+            ),
+            height=520,
+        )
 
     fail_cls = "bad" if failed else "good"
     pages_covered = max((m["page"] for m in catalog), default=0)
@@ -823,7 +955,7 @@ try:
 
     status_ph.markdown(f"""
     <div class="bpage bpage-l pop" style="border-radius:10px;border:none;
-         max-width:660px;padding:22px 28px 24px">
+         max-width:660px;padding:22px 28px 24px;margin-bottom:18px">
       <div class="bk-kicker">The Extraction</div>
       <div class="bk-title" style="font-size:36px">Solved.</div>
       <div class="bk-stats">
@@ -878,7 +1010,8 @@ try:
         with pc1:
             sel = st.selectbox("t", list(options.keys()), label_visibility="collapsed")
         tid = options[sel]
-        df_prev = pd.read_csv(Path(R["csv_dir"]) / f"table_{tid}.csv")
+        df_prev = pd.read_csv(Path(R["csv_dir"]) / f"table_{tid}.csv",
+                              dtype=str, keep_default_na=False)
         with pc2:
             st.download_button(f"↓ CSV", df_prev.to_csv(index=False),
                                file_name=f"table_{tid}.csv", mime="text/csv",

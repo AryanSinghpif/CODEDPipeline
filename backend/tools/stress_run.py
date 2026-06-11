@@ -70,7 +70,7 @@ def run(pdf_path, outdir, chunk=50):
                 continue
             passed_items.append({
                 "table_id": tid,
-                "name": nm or f"Table {tid} (p.{real_page})",
+                "name": nm,
                 "titled": nm is not None,
                 "page": real_page,
                 "df": df,
@@ -82,6 +82,10 @@ def run(pdf_path, outdir, chunk=50):
 
     meta = []
     for it in stitched:
+        # fallback names only AFTER stitching — a pre-assigned
+        # "Table N (p.X)" reads as a strong title and blocks merges
+        if not it["name"]:
+            it["name"] = f"Table {it['table_id']} (p.{it['page']})"
         df = it["df"]
         cols = list(df.columns)
         coln = sum(1 for c in cols if re.fullmatch(r"col(_\d+)?", str(c)))

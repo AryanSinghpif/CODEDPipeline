@@ -1,6 +1,7 @@
 import io
 import os
 import time
+from pathlib import Path
 import tempfile
 import warnings
 import zipfile
@@ -680,7 +681,29 @@ try:
         from backend.app.standardization.table_stitcher import stitch_tables
         import streamlit.components.v1 as _components
 
-        passed, failed = [], []
+        import gc
+        import shutil
+        from backend.app.standardization.table_stitcher import _continues
+
+        old_dir = st.session_state.get("workdir")
+        if old_dir:
+            shutil.rmtree(old_dir, ignore_errors=True)
+        workdir = Path(tempfile.mkdtemp(prefix="datarubiks_"))
+        csv_dir = workdir / "csv"
+        csv_dir.mkdir()
+        st.session_state["workdir"] = str(workdir)
+
+        flushed, failed = [], []
+
+        def _flush(item):
+            """Write a finished table straight to disk and free its memory."""
+            item["rows"], item["cols"] = item["df"].shape
+            item["columns_list"] = [str(c) for c in item["df"].columns]
+            item["df"].to_csv(csv_dir / f"table_{item['table_id']}.csv", index=False)
+            item["df"] = None
+            flushed.append(item)
+
+        open_item = None
         t0 = time.time()
         prev_pct = 0.0
         step = max(1, len(tables) // 100)
@@ -710,62 +733,83 @@ try:
                     df = clean_headers(df)
                 s = validate_table(df)
                 if s["passed"]:
-                    passed.append({"table_id": t["table_id"], "name": nm,
-                                   "page": t["page"], "df": df})
+                    it = {"table_id": t["table_id"], "name": nm,
+                          "page": t["page"], "df": df, "pages": [t["page"]]}
+                    # incremental stitch: only the current table stays in memory
+                    if open_item is not None and _continues(open_item, it):
+                        open_item["df"] = pd.concat(
+                            [open_item["df"], it["df"]], ignore_index=True
+                        )
+                        open_item["pages"].append(it["page"])
+                        if not open_item["name"] and it["name"]:
+                            open_item["name"] = it["name"]
+                    else:
+                        if open_item is not None:
+                            _flush(open_item)
+                        open_item = it
                 else:
                     failed.append({"table": t["table_id"], "page": t["page"], "reason": s["reason"]})
             except Exception as e:
                 failed.append({"table": t["table_id"], "page": t["page"], "reason": str(e)})
 
-        if not passed:
+        if open_item is not None:
+            _flush(open_item)
+
+        if not flushed:
             st.warning("All tables failed validation.")
             st.stop()
 
-        # merge multi-page continuation fragments, then name the rest
-        passed = stitch_tables(passed)
-
-        catalog, table_dfs = [], {}
+        catalog = []
         unnamed_seq = 0
-        for it in passed:
+        for it in flushed:
             nm = it["name"]
             if not nm:
                 unnamed_seq += 1
                 nm = f"Table {unnamed_seq} (p.{it['page']})"
             if len(it["pages"]) > 1:
                 nm += f" (pp. {it['pages'][0]}–{it['pages'][-1]})"
-            catalog.append(build_metadata(it["table_id"], nm, it["page"], it["df"]))
-            table_dfs[it["table_id"]] = it["df"]
+            catalog.append({
+                "table_id": it["table_id"], "table_name": nm, "page": it["page"],
+                "rows": it["rows"], "columns": it["cols"],
+                "column_names": "|".join(it["columns_list"]),
+            })
 
         with status_ph:
             _components.html(
                 status_anim("building excel workbook + csv bundle",
-                            f"{len(passed)} tables", prev_pct, 100),
+                            f"{len(flushed)} tables", prev_pct, 100),
                 height=110,
             )
 
-        zip_buf = io.BytesIO()
-        with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
-            for tid, df in table_dfs.items():
-                zf.writestr(f"table_{tid}.csv", df.to_csv(index=False))
+        zip_path = workdir / "tables.zip"
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+            for it in flushed:
+                p = csv_dir / f"table_{it['table_id']}.csv"
+                zf.write(p, p.name)
             zf.writestr("table_catalog.csv", pd.DataFrame(catalog).to_csv(index=False))
-        zip_buf.seek(0)
 
-        xlsx_buf = build_workbook(table_dfs, catalog)
+        xlsx_path = workdir / "tables.xlsx"
+        sources = {
+            it["table_id"]: str(csv_dir / f"table_{it['table_id']}.csv")
+            for it in flushed
+        }
+        _buf = build_workbook(sources, catalog)
+        xlsx_path.write_bytes(_buf.getbuffer())
+        del _buf
 
-        import gc
         n_raw_tables = len(tables)
         del tables
         gc.collect()
 
         st.session_state["results"] = {
-            "catalog": catalog, "failed": failed, "table_dfs": table_dfs,
-            "zip": zip_buf.getvalue(), "xlsx": xlsx_buf.getvalue(),
-            "n_raw": n_raw_tables,
+            "catalog": catalog, "failed": failed,
+            "csv_dir": str(csv_dir), "zip_path": str(zip_path),
+            "xlsx_path": str(xlsx_path), "n_raw": n_raw_tables,
         }
         st.session_state["pdf_name"] = uploaded.name
 
     R = st.session_state["results"]
-    catalog, failed, table_dfs = R["catalog"], R["failed"], R["table_dfs"]
+    catalog, failed = R["catalog"], R["failed"]
 
     # ── Results: solved cube right, stats + downloads left ────────────────────
     import streamlit.components.v1 as components
@@ -774,7 +818,7 @@ try:
         components.html(INTERACTIVE_CUBE, height=520)
 
     fail_cls = "bad" if failed else "good"
-    pages_covered = len(table_dfs) and max(m["page"] for m in catalog)
+    pages_covered = max((m["page"] for m in catalog), default=0)
     base = uploaded.name.replace(".pdf", "")
 
     status_ph.markdown(f"""
@@ -794,11 +838,11 @@ try:
     with left:
         b1, b2 = st.columns(2)
         with b1:
-            st.download_button("↓ Download Excel", R["xlsx"], file_name=f"{base}_tables.xlsx",
+            st.download_button("↓ Download Excel", Path(R["xlsx_path"]).read_bytes(), file_name=f"{base}_tables.xlsx",
                                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                use_container_width=True)
         with b2:
-            st.download_button("↓ Download CSVs", R["zip"], file_name=f"{base}_tables.zip",
+            st.download_button("↓ Download CSVs", Path(R["zip_path"]).read_bytes(), file_name=f"{base}_tables.zip",
                                mime="application/zip", use_container_width=True)
 
     search = st.text_input("s", placeholder="Search by name or table ID…", label_visibility="collapsed")
@@ -834,7 +878,7 @@ try:
         with pc1:
             sel = st.selectbox("t", list(options.keys()), label_visibility="collapsed")
         tid = options[sel]
-        df_prev = table_dfs[tid]
+        df_prev = pd.read_csv(Path(R["csv_dir"]) / f"table_{tid}.csv")
         with pc2:
             st.download_button(f"↓ CSV", df_prev.to_csv(index=False),
                                file_name=f"table_{tid}.csv", mime="text/csv",

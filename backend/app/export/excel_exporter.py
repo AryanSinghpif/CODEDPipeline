@@ -7,6 +7,7 @@ plus an Index sheet with hyperlinks to every table.
 import io
 import re
 
+import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -63,6 +64,10 @@ def build_workbook(table_dfs, catalog):
     index_rows = []
 
     for tid, df in table_dfs.items():
+
+        # disk-backed mode: value may be a CSV path — load one at a time
+        if isinstance(df, str):
+            df = pd.read_csv(df, dtype=str, keep_default_na=False)
 
         info = meta.get(tid, {})
         title = info.get("table_name", f"table_{tid}")

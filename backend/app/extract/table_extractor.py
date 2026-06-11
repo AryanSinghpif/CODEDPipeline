@@ -25,7 +25,20 @@ def _is_crushed(df):
 
     multiline = sum(1 for c in cells if c.count("\n") >= 2)
 
-    return multiline / len(cells) > 0.25
+    if multiline / len(cells) > 0.25:
+        return True
+
+    # a single mega-row can hide a whole table: one cell holding many
+    # newline-separated numbers IS the column, crushed (Annual Report
+    # GVA statements: 4 camelot rows, data row = '26,97,294\n23,67,287\n...')
+    for c in cells:
+        frags = [f.strip() for f in c.split("\n") if f.strip()]
+        if len(frags) >= 4:
+            numeric = sum(bool(NUMERIC_FRAGMENT.match(f)) for f in frags)
+            if numeric / len(frags) >= 0.7:
+                return True
+
+    return False
 
 
 NUMERIC_FRAGMENT = re.compile(r"^-?[\d,]+(\.\d+)?%?$")

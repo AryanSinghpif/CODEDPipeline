@@ -1,0 +1,139 @@
+"""Regression guards — all must pass before any commit.
+
+a) DES district_indicatoe.pdf p145-155: 11/11 passed, names "Tabel 6.x ...",
+   district column English, p148 cols start [s_no, district, telephone_number_center_2020_21, ...]
+b) DARPG Jan 2026 pp8-9: name "3.1 Ranking of Ministries/Departments - Group A",
+   cols exactly s_no|ministry_department|brought_forward|receipts|disposal|pending|grai_score|grai_rank, 60 rows
+c) PLFS p11: 72 numeric cells, cols incl rural_males, rows "Persons aged 15 years & above"
+
+Usage: python backend/tools/regression_guards.py
+"""
+import os
+import re
+import sys
+import tempfile
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+
+from pypdf import PdfReader, PdfWriter
+
+from backend.app.cleaning.header_builder import apply_headers
+from backend.app.cleaning.header_detector import detect_header_rows
+from backend.app.cleaning.header_postprocessor import clean_headers
+from backend.app.cleaning.universal_cleaner import clean_dataframe
+from backend.app.extract.table_extractor import extract_tables
+from backend.app.standardization.table_name_extractor import extract_table_name
+from backend.app.standardization.table_stitcher import stitch_tables
+from backend.app.translation.hindi_translator import translate_dataframe, translate_text
+from backend.app.validation.table_validator import validate_table
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+FAILURES = []
+
+
+def _slice(pdf, lo, hi):
+    """1-indexed inclusive page slice -> temp pdf path."""
+    reader = PdfReader(pdf)
+    writer = PdfWriter()
+    for p in range(lo - 1, hi):
+        writer.add_page(reader.pages[p])
+    tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+    writer.write(tmp)
+    tmp.close()
+    return tmp.name
+
+
+def _pipeline(pdf_path):
+    items = []
+    for t in extract_tables(pdf_path):
+        df = clean_dataframe(t["dataframe"])
+        df = translate_dataframe(df)
+        h = detect_header_rows(df)
+        cap = t.get("caption")
+        nm = extract_table_name(df, h, translate_text(cap) if cap else None)
+        df = apply_headers(df, h)
+        df = clean_headers(df)
+        s = validate_table(df)
+        items.append({"table_id": t["table_id"], "name": nm, "page": t["page"],
+                      "df": df, "passed": s["passed"], "reason": s["reason"]})
+    return items
+
+
+def check(label, cond, detail=""):
+    status = "PASS" if cond else "FAIL"
+    print(f"  [{status}] {label}" + (f" — {detail}" if detail and not cond else ""))
+    if not cond:
+        FAILURES.append(f"{label}: {detail}")
+
+
+def guard_des():
+    print("Guard A — DES p145-155")
+    path = _slice(os.path.join(ROOT, "backend/data/uploads/district_indicatoe.pdf"), 145, 155)
+    items = _pipeline(path)
+    os.unlink(path)
+    passed = [i for i in items if i["passed"]]
+    check("11/11 passed", len(passed) == 11, f"got {len(passed)}/{len(items)}")
+    tabel = [i for i in passed if i["name"] and re.match(r"Tabel 6\.\d", i["name"])]
+    check("names Tabel 6.x", len(tabel) >= 9, f"got {len(tabel)} of {len(passed)}: " +
+          "; ".join(str(i['name'])[:40] for i in passed[:4]))
+    # p148 = 4th page in slice -> table on that page
+    p148 = [i for i in passed if i["page"] == 4]
+    cols = list(p148[0]["df"].columns) if p148 else []
+    check("p148 cols start s_no|district|telephone_number_center_2020_21",
+          cols[:3] == ["s_no", "district", "telephone_number_center_2020_21"], f"got {cols[:4]}")
+    if p148:
+        dvals = p148[0]["df"].iloc[:, 1].astype(str).head(5).tolist()
+        eng = sum(1 for v in dvals if re.fullmatch(r"[A-Za-z .()-]+", v.strip()))
+        check("district column English", eng >= 4, f"got {dvals}")
+
+
+def guard_darpg():
+    print("Guard B — DARPG Jan pp8-9 table 3.1")
+    path = _slice(os.path.join(ROOT, "Testpdfs/DARPG_Monthly_Report_Central_January_2026_v4.pdf"), 8, 9)
+    items = [i for i in _pipeline(path) if i["passed"]]
+    os.unlink(path)
+    stitched = stitch_tables([{"table_id": i["table_id"], "name": i["name"] or "",
+                               "page": i["page"], "df": i["df"], "titled": bool(i["name"]),
+                               "flavor": ""} for i in items])
+    t31 = [s for s in stitched if s["name"] and "Ranking of Ministries" in s["name"]]
+    check("found 3.1 Ranking of Ministries/Departments – Group A",
+          bool(t31) and t31[0]["name"].startswith("3.1"),
+          f"names: {[s['name'] for s in stitched]}")
+    if t31:
+        df = t31[0]["df"]
+        want = ["s_no", "ministry_department", "brought_forward", "receipts",
+                "disposal", "pending", "grai_score", "grai_rank"]
+        check("cols exact", list(df.columns) == want, f"got {list(df.columns)}")
+        check("60 rows", len(df) == 60, f"got {len(df)}")
+
+
+def guard_plfs():
+    print("Guard C — PLFS p11")
+    plfs = os.path.join(ROOT, "Testpdfs/publications_reports1780040415321_0624fb13-fb47-40bc-b470-7c7e9635c3ef_PLFS_2025_F_REV_29052026.pdf")
+    path = _slice(plfs, 11, 11)
+    items = [i for i in _pipeline(path) if i["passed"]]
+    os.unlink(path)
+    check("table on p11", bool(items), "none extracted")
+    if items:
+        df = items[0]["df"]
+        numeric = int(df.map(lambda v: bool(re.fullmatch(r"-?[\d,]+(\.\d+)?", str(v).strip()))).to_numpy().sum())
+        check("72 numeric cells", numeric == 72, f"got {numeric}")
+        check("cols incl rural_males", "rural_males" in list(df.columns), f"got {list(df.columns)}")
+        body = " ".join(df.iloc[:, 0].astype(str))
+        check("rows incl 'Persons aged 15 years'", "15 years" in body, body[:120])
+
+
+if __name__ == "__main__":
+    import warnings
+    warnings.filterwarnings("ignore")
+    for g in (guard_des, guard_darpg, guard_plfs):
+        try:
+            g()
+        except Exception as e:
+            FAILURES.append(f"{g.__name__} crashed: {e}")
+            print(f"  [FAIL] {g.__name__} crashed: {e}")
+    print()
+    if FAILURES:
+        print(f"RED — {len(FAILURES)} failure(s)")
+        sys.exit(1)
+    print("GREEN — all guards pass")

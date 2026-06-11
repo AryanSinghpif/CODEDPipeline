@@ -7,6 +7,8 @@ header row on every page. Camelot returns one table per page; this
 module merges those fragments into one continuous table.
 """
 
+import re
+
 import pandas as pd
 
 
@@ -14,7 +16,10 @@ def _named_frac(cols):
 
     cols = [str(c) for c in cols]
 
-    return sum(not c.startswith("col_") for c in cols) / max(len(cols), 1)
+    # unnamed fallbacks appear as both "col" and "col_<n>"
+    return sum(
+        not re.fullmatch(r"col(_\d+)?", c) for c in cols
+    ) / max(len(cols), 1)
 
 
 def _continues(prev, cur):
@@ -67,9 +72,15 @@ def stitch_tables(items):
         if out and _continues(out[-1], it):
 
             prev = out[-1]
+            # concat positionally: label-based concat raises
+            # InvalidIndexError when columns contain duplicates
+            # (e.g. several unnamed "col" columns); _continues already
+            # guarantees equal width
+            cont = it["df"].set_axis(range(it["df"].shape[1]), axis=1)
+            base = prev["df"].set_axis(range(prev["df"].shape[1]), axis=1)
             prev["df"] = pd.concat(
-                [prev["df"], it["df"]], ignore_index=True
-            )
+                [base, cont], ignore_index=True
+            ).set_axis(prev["df"].columns, axis=1)
             prev["pages"].append(it["page"])
 
             if not prev["name"] and it["name"]:

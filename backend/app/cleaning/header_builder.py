@@ -178,11 +178,13 @@ def apply_headers(df, header_rows):
 
     #
     # Trust data detector only when
-    # it finds data BEFORE header detector
+    # it finds data BEFORE header detector.
+    # data_start == 0 is real: continuation pages print data from the
+    # first row (no header) — consuming a row as header loses data.
     #
 
     if (
-        data_start > 0
+        data_start is not None
         and data_start < header_rows
     ):
         header_rows = data_start

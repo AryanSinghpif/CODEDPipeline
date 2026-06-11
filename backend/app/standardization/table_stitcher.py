@@ -52,6 +52,19 @@ def _continues(prev, cur):
     ):
         return True
 
+    # headerless continuation: wide matrices (DARPG indicator grids)
+    # print data from row one on follow-on pages — no title, no header,
+    # every column an unnamed fallback. Same width + adjacent page +
+    # a substantial, titled predecessor is the only signal available.
+    if (
+        not cur["name"]
+        and _named_frac(cols_b) < 0.2
+        and bool(prev["name"])
+        and len(a) >= 4
+        and len(b) >= 2
+    ):
+        return True
+
     return False
 
 

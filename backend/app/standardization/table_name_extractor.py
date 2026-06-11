@@ -1,5 +1,7 @@
 import re
 
+from backend.app.translation.kruti_dev import looks_kruti
+
 
 TITLE_PATTERN = re.compile(
     r"(Table|Tabel|Statement|Annexure|Appendix)"
@@ -39,9 +41,18 @@ def _looks_english(word):
 
 def _clean_title_words(text, limit=10):
 
-    words = [w for w in text.split() if _looks_english(w)]
+    words = [
+        w for w in text.split()
+        if _looks_english(w) and not looks_kruti(w) and "`" not in w
+    ]
 
-    return " ".join(words[:limit])
+    # drop consecutive duplicates ("Number Number", "Telephone Telephone")
+    deduped = []
+    for w in words:
+        if not deduped or deduped[-1].lower() != w.lower():
+            deduped.append(w)
+
+    return " ".join(deduped[:limit])
 
 
 def _match_title(text):

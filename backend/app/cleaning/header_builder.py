@@ -126,6 +126,19 @@ def extract_english(text):
     return " ".join(filtered).strip()
 
 
+#
+# Table-title fragments ("Table 6.2", "Tabel 6-2") leak into header
+# cells on DES-style pages where the title row spans the grid; they
+# are names, not column semantics — strip before building headers.
+#
+
+_TITLE_FRAGMENT = re.compile(
+    r"\b(table|tabel|statement|annexure|appendix)\b"
+    r"(\s*\(?\s*\d+([.\-]\d+)*\s*\)?)?",
+    re.IGNORECASE,
+)
+
+
 def clean_header(text):
 
     text = str(text).lower()
@@ -142,7 +155,17 @@ def clean_header(text):
         text
     )
 
-    return text.strip("_")
+    # bilingual sources emit both spellings / repeated words
+    # ("telephone_centre_center", "number_number") — normalise and
+    # drop consecutive duplicates
+    text = text.replace("centre", "center")
+
+    tokens = []
+    for tok in text.strip("_").split("_"):
+        if not tokens or tokens[-1] != tok:
+            tokens.append(tok)
+
+    return "_".join(tokens)
 
 
 def apply_headers(df, header_rows):
@@ -213,7 +236,7 @@ def apply_headers(df, header_rows):
 
         for value in header_df.iloc[:, col]:
 
-            value = str(value).strip()
+            value = _TITLE_FRAGMENT.sub(" ", str(value)).strip()
 
             if not value:
                 continue
